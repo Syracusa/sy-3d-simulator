@@ -11,14 +11,14 @@ export class MySceneContext {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xeeeeee);
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true } );
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
         this.sceneDomParent = document.getElementById("three_scene");
         this.sceneDomParent.appendChild(this.renderer.domElement);
 
-        if (USE_WINDOW_SIZE){
+        if (USE_WINDOW_SIZE) {
             this.renderer.setSize(
                 window.innerWidth,
                 window.innerHeight);
@@ -39,6 +39,9 @@ export class MySceneContext {
         this.spherePos = { x: 8, y: 8, z: 8 };
         this.genLight();
         this.genSphere();
+
+        this.infoPanel = document.getElementById("info");
+        this.randerNum = 0;
     }
 
     inputHandler(timeDiff) {
@@ -86,7 +89,27 @@ export class MySceneContext {
         if (this.controller.isKeyPressed('v')) {
             this.cam.ViewBottom(timeDiff);
         }
-        
+    }
+
+
+    updateInfoPanel() {
+        let text = "";
+        text += "Frame : " + this.randerNum + "\n";
+        text += "Cam Position : "
+            + this.cam.CamPos.x.toPrecision(6) + ", "
+            + this.cam.CamPos.y.toPrecision(6) + ", "
+            + this.cam.CamPos.z.toPrecision(6) + "\n";
+
+            text += "Cam Lookat : "
+            + this.cam.CamLookat.x.toPrecision(6) + ", "
+            + this.cam.CamLookat.y.toPrecision(6) + ", "
+            + this.cam.CamLookat.z.toPrecision(6)+ "\n";
+
+            text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180 ).toPrecision(4) + "\n"
+            
+            let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
+            text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180 );
+        this.infoPanel.innerText = text;
     }
 
     update(timeDiff) {
@@ -95,9 +118,11 @@ export class MySceneContext {
         this.sphere.position.set(this.spherePos.x, this.spherePos.y, this.spherePos.z);
         this.light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
         this.lightSource.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
-    
+
         this.cam.UpdateCamera();
         this.renderer.render(this.scene, this.cam.camera);
+        this.randerNum++;
+        this.updateInfoPanel();
     }
 
     genLight() {
@@ -121,11 +146,11 @@ export class MySceneContext {
         light.shadow.camera.near = -20
         light.shadow.camera.far = 100
         light.shadow.camera.top = 10
-        light.shadow.camera.right = 10 
-        light.shadow.camera.left = -10 
-        light.shadow.camera.bottom = -10 
+        light.shadow.camera.right = 10
+        light.shadow.camera.left = -10
+        light.shadow.camera.bottom = -10
         this.scene.add(light);
-        
+
         this.light = light;
         this.lightSource = lightSource;
 
