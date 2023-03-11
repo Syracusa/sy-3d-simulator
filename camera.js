@@ -93,7 +93,6 @@ export class Camera {
         this.camera.left = this.ViewScale * -1 * this.screenRatio;
         this.camera.right = this.ViewScale * this.screenRatio;
         this.camera.updateProjectionMatrix();
-        console.log("Scale :" + this.ViewScale);
     }
 
     RightRotate(scalar) {
@@ -117,7 +116,5 @@ export class Camera {
     UpdateCamera() {
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
         this.camera.lookAt(this.CamLookat.x, this.CamLookat.y, this.CamLookat.z);
-        // console.log('Campos ' + this.CamPos.x + ' ' + this.CamPos.y + ' ' + this.CamPos.z);
-        // console.log('CamLookat ' + this.CamLookat.x + ' ' + this.CamLookat.y + ' ' + this.CamLookat.z);
     }
 }

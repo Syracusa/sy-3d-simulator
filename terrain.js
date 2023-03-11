@@ -4,7 +4,6 @@ export class Terrain {
     heights = [];
 
     constructor(scene) {
-        console.log(scene);
         this.scene = scene;
         this.genRandomTerrain();
     }
@@ -52,7 +51,6 @@ export class Terrain {
                     i + 1, this.heights[i + 1][j], j,
                     i, this.heights[i][j], j,
                 ];
-                console.log(v);
                 this.drawSquare(v);
 
                 if (RANDER_BOTH_SIDE){
@@ -62,7 +60,6 @@ export class Terrain {
                         i + 1, this.heights[i + 1][j + 1], j + 1,
                         i, this.heights[i][j + 1], j + 1,
                     ];
-                    console.log(v);
                     this.drawSquare(v);
                 }
 
