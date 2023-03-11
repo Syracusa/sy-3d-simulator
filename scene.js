@@ -19,7 +19,9 @@ export class MySceneContext {
             this.sceneDomParent.offsetWidth,
             this.sceneDomParent.offsetHeight);
 
-        this.cam = new Camera();
+        this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
+
+        this.cam = new Camera(this.screenRatio);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
 
@@ -61,6 +63,20 @@ export class MySceneContext {
         if (this.controller.isKeyPressed('4')) {
             this.cam.GetClose(-0.1 * timeDiff);
         }
+
+        if (this.controller.isKeyPressed('z')) {
+            this.cam.GoUp(timeDiff);
+        }
+        if (this.controller.isKeyPressed('x')) {
+            this.cam.GoDown(timeDiff);
+        }
+        if (this.controller.isKeyPressed('c')) {
+            this.cam.ViewUp(timeDiff);
+        }
+        if (this.controller.isKeyPressed('v')) {
+            this.cam.ViewBottom(timeDiff);
+        }
+        
     }
 
     update(timeDiff) {

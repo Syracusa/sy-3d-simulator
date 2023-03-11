@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 export class Camera {
-    constructor() {
+    constructor(screen_ratio) {
+        this.screenRatio = screen_ratio;
         this.CamPos = { x: 10, y: 20, z: 10 };
         this.CamLookat = { x: 5, y: 0, z: 0 };
 
@@ -9,8 +10,11 @@ export class Camera {
         this.CamdirDiameter = 5;
 
         this.ViewScale = 10;
-        this.camera = new THREE.OrthographicCamera(-1 * this.ViewScale, this.ViewScale,
-            this.ViewScale, -1 * this.ViewScale,
+        this.camera = new THREE.OrthographicCamera(
+            -1 * this.ViewScale * this.screenRatio, 
+            this.ViewScale * this.screenRatio,
+            this.ViewScale, 
+            -1 * this.ViewScale,
             -200, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
 
@@ -71,6 +75,14 @@ export class Camera {
         this.UpdateLookat();
     }
 
+    ViewUp(scalar) {
+        this.CamLookat.y += 0.1 * scalar;
+    }
+
+    ViewBottom(scalar) {
+        this.CamLookat.y -= 0.1 * scalar;
+    }
+
     GetClose(scalar) {
         this.ViewScale -= scalar;
         if (this.ViewScale < 2)
@@ -78,8 +90,8 @@ export class Camera {
 
         this.camera.top = this.ViewScale;
         this.camera.bottom = this.ViewScale * -1;
-        this.camera.left = this.ViewScale * -1;
-        this.camera.right = this.ViewScale;
+        this.camera.left = this.ViewScale * -1 * this.screenRatio;
+        this.camera.right = this.ViewScale * this.screenRatio;
         this.camera.updateProjectionMatrix();
         console.log("Scale :" + this.ViewScale);
     }
