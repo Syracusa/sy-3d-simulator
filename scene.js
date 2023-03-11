@@ -95,6 +95,7 @@ export class MySceneContext {
     updateInfoPanel() {
         let text = "";
         text += "Frame : " + this.randerNum + "\n";
+        text += "View scale : " + this.cam.ViewScale.toPrecision(4) + "\n";
         text += "Cam Position : "
             + this.cam.CamPos.x.toPrecision(6) + ", "
             + this.cam.CamPos.y.toPrecision(6) + ", "
@@ -108,8 +109,10 @@ export class MySceneContext {
             text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180 ).toPrecision(4) + "\n"
             
             let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
-            text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180 );
-        this.infoPanel.innerText = text;
+            text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180 ).toPrecision(4);
+
+
+            this.infoPanel.innerText = text;
     }
 
     update(timeDiff) {

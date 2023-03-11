@@ -7,7 +7,7 @@ export class Camera {
         this.CamLookat = { x: 5, y: 0, z: 0 };
 
         this.CamdirAngle = 0.3;
-        this.CamdirDiameter = 5;
+        this.CamdirDiameter = 20;
 
         this.ViewScale = 10;
         this.camera = new THREE.OrthographicCamera(
@@ -29,8 +29,8 @@ export class Camera {
     }
 
     GoAngle(angle, scalar) {
-        this.CamPos.x += 0.1 * Math.cos(angle) * scalar;
-        this.CamPos.z += 0.1 * Math.sin(angle) * scalar;
+        this.CamPos.x += 0.1 * Math.cos(angle) * scalar * this.ViewScale / 5;
+        this.CamPos.z += 0.1 * Math.sin(angle) * scalar * this.ViewScale / 5;
         this.UpdateLookat();
     }
 
@@ -96,7 +96,7 @@ export class Camera {
     }
 
     RightRotate(scalar) {
-        this.CamdirAngle += 0.01 * scalar;
+        this.CamdirAngle += 0.005 * scalar;
         if (this.CamdirAngle > 2 * Math.PI) {
             this.CamdirAngle -= 2 * Math.PI;
         }
@@ -105,7 +105,7 @@ export class Camera {
     }
 
     LeftRotate(scalar) {
-        this.CamdirAngle -= 0.01 * scalar;
+        this.CamdirAngle -= 0.005 * scalar;
         if (this.CamdirAngle < 0) {
             this.CamdirAngle += 2 * Math.PI;
         }
