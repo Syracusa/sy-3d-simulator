@@ -12,3 +12,18 @@
 .container {
     height: 100vh;
 }
+
+body {
+    overflow: hidden; 
+}
+
+#info {
+	position: absolute;
+	top: 10px;
+    left: 10px;
+	width: 100%;
+	text-align: left;
+	z-index: 100;
+	display:block;
+    font-size: small;
+}
