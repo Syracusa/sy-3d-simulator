@@ -1,0 +1,14 @@
+* {
+    margin: 0px;
+}
+#control_panel {
+    height: 10%;
+}
+
+#three_scene {
+    height: 90%;
+}
+
+.container {
+    height: 100vh;
+}
