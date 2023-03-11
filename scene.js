@@ -72,8 +72,8 @@ export class MySceneContext {
         }
         if (this.controller.isKeyPressed('3')) {
             this.cam.GetClose(0.1 * timeDiff);
-        }
-        if (this.controller.isKeyPressed('4')) {
+    }
+    if (this.controller.isKeyPressed('4')) {
             this.cam.GetClose(-0.1 * timeDiff);
         }
 
@@ -106,7 +106,7 @@ export class MySceneContext {
             + this.cam.CamLookat.y.toPrecision(6) + ", "
             + this.cam.CamLookat.z.toPrecision(6)+ "\n";
 
-            text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180 ).toPrecision(4) + "\n"
+            text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180 ).toPrecision(4) + "\n";
             
             let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
             text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180 ).toPrecision(4);
@@ -144,14 +144,14 @@ export class MySceneContext {
         light.target.position.set(0, 0, 0);
         light.castShadow = true;
 
-        light.shadow.mapSize.width = 10240
-        light.shadow.mapSize.height = 10240
-        light.shadow.camera.near = -20
-        light.shadow.camera.far = 100
-        light.shadow.camera.top = 10
-        light.shadow.camera.right = 10
-        light.shadow.camera.left = -10
-        light.shadow.camera.bottom = -10
+        light.shadow.mapSize.width = 10240;
+        light.shadow.mapSize.height = 10240;
+        light.shadow.camera.near = -20;
+        light.shadow.camera.far = 100;
+        light.shadow.camera.top = 10;
+        light.shadow.camera.right = 10;
+        light.shadow.camera.left = -10;
+        light.shadow.camera.bottom = -10;
         this.scene.add(light);
 
         this.light = light;
@@ -168,7 +168,7 @@ export class MySceneContext {
 
     genPlain() {
         const geometryP = new THREE.PlaneGeometry(100, 100);
-        const materialP = new THREE.MeshStandardMaterial({ color: 0xFCF7DE })
+        const materialP = new THREE.MeshStandardMaterial({ color: 0xFCF7DE });
         const plane = new THREE.Mesh(geometryP, materialP);
 
         plane.castShadow = false;

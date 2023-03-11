@@ -1,3 +1,4 @@
+import { GUI } from 'dat.gui'
 
 export class Controller {
     constructor(){
@@ -9,6 +10,9 @@ export class Controller {
         window.onkeyup = (e) => {
             this.keystate[e.key] = 0;
         }
+
+        this.gui = new GUI();
+        
     }
 
     isKeyPressed(key){
