@@ -39,10 +39,9 @@ export class Terrain {
         for (let i = 0; i < mapsize + 1; i++) {
             let xarr = [];
             for (let j = 0; j < mapsize + 1; j++) {
-                xarr[j] = Math.random() * 2 + 1;
+                xarr[j] = Math.random() * 2;
             }
             this.heights[i] = xarr;
-
         }
 
         for (let i = 0; i < mapsize; i++) {

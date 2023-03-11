@@ -15,7 +15,7 @@ export class Camera {
             this.ViewScale * this.screenRatio,
             this.ViewScale, 
             -1 * this.ViewScale,
-            -200, 1000);
+            0, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
 
         this.UpdateLookat();
@@ -58,8 +58,8 @@ export class Camera {
 
     GoDown(scalar) {
         this.CamPos.y -= 0.1 * scalar;
-        if (this.CamPos.y < 1)
-            this.CamPos.y = 1;
+        if (this.CamPos.y < this.ViewScale)
+            this.CamPos.y = this.ViewScale;
     }
 
     ViewFar(scalar) {

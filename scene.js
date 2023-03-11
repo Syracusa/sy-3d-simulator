@@ -6,21 +6,31 @@ import { Controller } from './controller.js';
 
 export class MySceneContext {
     constructor() {
+
+        let USE_WINDOW_SIZE = 0;
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xeeeeee);
 
-        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.WebGLRenderer({ antialias: true } );
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
         this.sceneDomParent = document.getElementById("three_scene");
         this.sceneDomParent.appendChild(this.renderer.domElement);
-        this.renderer.setSize(
-            this.sceneDomParent.offsetWidth,
-            this.sceneDomParent.offsetHeight);
 
-        this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
+        if (USE_WINDOW_SIZE){
+            this.renderer.setSize(
+                window.innerWidth,
+                window.innerHeight);
 
+            this.screenRatio = window.innerWidth / window.innerHeight;
+        } else {
+            this.renderer.setSize(
+                this.sceneDomParent.offsetWidth,
+                this.sceneDomParent.offsetHeight);
+
+            this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
+        }
         this.cam = new Camera(this.screenRatio);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
