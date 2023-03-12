@@ -31,6 +31,7 @@ export class MySceneContext {
 
             this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
         }
+        this.raycaster = new THREE.Raycaster();
         this.cam = new Camera(this.screenRatio);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
@@ -72,8 +73,8 @@ export class MySceneContext {
         }
         if (this.controller.isKeyPressed('3')) {
             this.cam.GetClose(0.1 * timeDiff);
-    }
-    if (this.controller.isKeyPressed('4')) {
+        }
+        if (this.controller.isKeyPressed('4')) {
             this.cam.GetClose(-0.1 * timeDiff);
         }
 
@@ -91,7 +92,6 @@ export class MySceneContext {
         }
     }
 
-
     updateInfoPanel() {
         let text = "";
         text += "Frame : " + this.randerNum + "\n";
@@ -101,18 +101,22 @@ export class MySceneContext {
             + this.cam.CamPos.y.toPrecision(6) + ", "
             + this.cam.CamPos.z.toPrecision(6) + "\n";
 
-            text += "Cam Lookat : "
+        text += "Cam Lookat : "
             + this.cam.CamLookat.x.toPrecision(6) + ", "
             + this.cam.CamLookat.y.toPrecision(6) + ", "
-            + this.cam.CamLookat.z.toPrecision(6)+ "\n";
+            + this.cam.CamLookat.z.toPrecision(6) + "\n";
 
-            text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180 ).toPrecision(4) + "\n";
-            
-            let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
-            text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180 ).toPrecision(4);
+        text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
 
+        let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
+        text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
 
-            this.infoPanel.innerText = text;
+        text += "Mouse x: "
+            + this.controller.pointer.x.toPrecision(6)
+            + " y: "
+            + this.controller.pointer.y.toPrecision(6)
+            + "\n";
+        this.infoPanel.innerText = text;
     }
 
     update(timeDiff) {
@@ -122,8 +126,23 @@ export class MySceneContext {
         this.light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
         this.lightSource.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
 
+        /* Camera update */
         this.cam.UpdateCamera();
+
+        /* Raycaster */
+        this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, false);
+        if (intersects.length > 0) {
+            console.log(intersects.length);
+            
+            for (let i = 0; i < intersects.length; i++)
+        		intersects[ i ].object.material.color.set( 0xff0000 );
+        }
+
+        /* Randerer call */
         this.renderer.render(this.scene, this.cam.camera);
+
+        /* Update stat */
         this.randerNum++;
         this.updateInfoPanel();
     }

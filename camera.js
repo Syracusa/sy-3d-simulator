@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 export class Camera {
+
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
         this.CamPos = { x: 10, y: 20, z: 10 };
