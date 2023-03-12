@@ -43,6 +43,8 @@ export class MySceneContext {
 
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
+
+        this.currIntersected = null;
     }
 
     inputHandler(timeDiff) {
@@ -133,12 +135,18 @@ export class MySceneContext {
         this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (intersects.length > 0) {
-            console.log(intersects.length);
+            if (this.currIntersected){
+                if (this.currIntersected != intersects[0]){
+                    this.currIntersected.object.material.color.set(0x110000);
+                    intersects[0].object.material.color.set( 0xff0000 );
+                    this.currIntersected = intersects[0];
+                }
+            } else {
+                this.currIntersected = intersects[0];
+            }
             
-            for (let i = 0; i < intersects.length; i++)
-        		intersects[ i ].object.material.color.set( 0xff0000 );
         }
-
+        
         /* Randerer call */
         this.renderer.render(this.scene, this.cam.camera);
 
@@ -176,8 +184,8 @@ export class MySceneContext {
         this.light = light;
         this.lightSource = lightSource;
 
-        // const ambientLight = new THREE.AmbientLight( 0x404040, 1 );
-        // scene.add(ambientLight);
+        const ambientLight = new THREE.AmbientLight( 0x404040, 2 );
+        this.scene.add(ambientLight);
     }
 
     genGrid() {

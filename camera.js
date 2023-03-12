@@ -16,7 +16,7 @@ export class Camera {
             this.ViewScale * this.screenRatio,
             this.ViewScale, 
             -1 * this.ViewScale,
-            0, 1000);
+            -500, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
 
         this.UpdateLookat();
