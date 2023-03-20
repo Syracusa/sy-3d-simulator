@@ -57,11 +57,9 @@ export class MySceneContext {
         cubes1.receiveShadow = true;
 
         cubes1.tname = 'BoxMesh';
-    
         this.scene.add( cubes1 );
-    
-        this.scene.fog = new THREE.Fog( 0x59472b, 0, 156 );
 
+        this.scene.fog = new THREE.Fog( 0x59472b, 0, 156 );
     }
 
     inputHandler(timeDiff) {
