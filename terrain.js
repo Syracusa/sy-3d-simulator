@@ -40,15 +40,14 @@ export class Terrain {
         let blue = parseInt(intense * 0.01);
 
         let hcolor = (blue + green * 0x100 + red * 0x10000);
-        console.log(hcolor);
+        // hcolor = 0x999999;
 
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         const material = new THREE.MeshBasicMaterial({ color: hcolor });
         const mesh = new THREE.Mesh(geometry, material);
-        // const mesh = new THREE.Mesh(geometry, this.meshMaterial);
 
-        // mesh.castShadow = true;
-        // mesh.receiveShadow = true;
+        mesh.receiveShadow = true;
+        mesh.tname = 'floor';
         this.scene.add(mesh);
     }
 
@@ -77,8 +76,8 @@ export class Terrain {
             }
         }
 
-        for (let i = 0; i < mapsize; i++) {
-            for (let j = 0; j < mapsize; j++) {
+        for (let i = 1; i < mapsize - 1; i++) {
+            for (let j = 1; j < mapsize - 1; j++) {
                 let v = [
                     i, this.heights[i][j + 1], j + 1,
                     i + 1, this.heights[i + 1][j + 1], j + 1,

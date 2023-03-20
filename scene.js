@@ -45,6 +45,23 @@ export class MySceneContext {
         this.randerNum = 0;
 
         this.currIntersected = null;
+
+        const planeMaterial = new THREE.MeshPhongMaterial( { color: 0xffb851 } );
+        const cubes1 = new THREE.Mesh( new THREE.BoxGeometry( 3, 3, 3 ), planeMaterial );
+
+        cubes1.position.y = 10;
+        cubes1.position.x = 25;
+        cubes1.position.z = 25;
+    
+        cubes1.castShadow = true;
+        cubes1.receiveShadow = true;
+
+        cubes1.tname = 'BoxMesh';
+    
+        this.scene.add( cubes1 );
+    
+        this.scene.fog = new THREE.Fog( 0x59472b, 0, 156 );
+
     }
 
     inputHandler(timeDiff) {
@@ -135,17 +152,27 @@ export class MySceneContext {
         this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (intersects.length > 0) {
-            if (this.currIntersected){
-                if (this.currIntersected != intersects[0]){
-                    this.currIntersected.object.material.color.set(0x110000);
-                    intersects[0].object.material.color.set( 0xff0000 );
-                    this.currIntersected = intersects[0];
-                }
+            if (intersects[0].object.hasOwnProperty('tname')){
+                console.log(intersects[0].object.tname);
+
             } else {
-                this.currIntersected = intersects[0];
+                console.log(intersects[0]);
             }
-            
         }
+
+
+        // console.log(intersects);
+        // if (intersects.length > 0) {
+        //     if (this.currIntersected){
+        //         if (this.currIntersected != intersects[0]){
+        //             this.currIntersected.object.material.color.set(0x110000);
+        //             intersects[0].object.material.color.set( 0xff0000 );
+        //             this.currIntersected = intersects[0];
+        //         }
+        //     } else {
+        //         this.currIntersected = intersects[0];
+        //     }
+        // }
         
         /* Randerer call */
         this.renderer.render(this.scene, this.cam.camera);
@@ -156,6 +183,7 @@ export class MySceneContext {
     }
 
     genLight() {
+        /* ========== LightSource ========= */
         const geometrylightSource = new THREE.SphereGeometry(1, 8, 8);
         const materiallightSource = new THREE.MeshStandardMaterial({
             color: 0xffffff
@@ -164,28 +192,49 @@ export class MySceneContext {
         const lightSource = new THREE.Mesh(geometrylightSource, materiallightSource);
         lightSource.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
         this.scene.add(lightSource);
-
-        // light
-        let light = new THREE.DirectionalLight(0xa0a0a0, 0.5);
-        light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
-        light.target.position.set(0, 0, 0);
-        light.castShadow = true;
-
-        light.shadow.mapSize.width = 10240;
-        light.shadow.mapSize.height = 10240;
-        light.shadow.camera.near = -20;
-        light.shadow.camera.far = 100;
-        light.shadow.camera.top = 10;
-        light.shadow.camera.right = 10;
-        light.shadow.camera.left = -10;
-        light.shadow.camera.bottom = -10;
-        this.scene.add(light);
-
-        this.light = light;
         this.lightSource = lightSource;
 
-        const ambientLight = new THREE.AmbientLight( 0x404040, 2 );
-        this.scene.add(ambientLight);
+        /* ========== Light ========= */
+
+        const USE_DIRECTIONAL_LIGHT = 0;
+        if (USE_DIRECTIONAL_LIGHT){
+            let light = new THREE.DirectionalLight(0xa0a0a0, 0.5);
+            light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
+            light.target.position.set(0, 0, 0);
+            light.castShadow = true;
+    
+            light.shadow.mapSize.width = 10240;
+            light.shadow.mapSize.height = 10240;
+            light.shadow.camera.near = -20;
+            light.shadow.camera.far = 100;
+            light.shadow.camera.top = 10;
+            light.shadow.camera.right = 10;
+            light.shadow.camera.left = -10;
+            light.shadow.camera.bottom = -10;
+            this.scene.add(light);
+    
+            this.light = light;
+        } else {
+            let light = new THREE.PointLight( 0xffffff, 1, 0, Math.PI / 5, 0.001 );
+            light.position.set( 10, 3, 10 );
+            // light.target.position.set( 10, 25, 25 );
+        
+            light.castShadow = true;
+            light.shadow.camera.near = -1000;
+            light.shadow.camera.far = 2500;
+            light.shadow.bias = 0.0001;
+        
+            light.shadow.mapSize.width = 2048;
+            light.shadow.mapSize.height = 1024;
+            this.scene.add(light);
+    
+            this.light = light;
+        }
+
+
+        /* ========== Ambient Light ========= */
+        // const ambientLight = new THREE.AmbientLight( 0x404040, 2 );
+        // this.scene.add(ambientLight);
     }
 
     genGrid() {
