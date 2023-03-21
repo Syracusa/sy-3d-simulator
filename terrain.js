@@ -141,9 +141,15 @@ export class Terrain {
 
 
         for (let i = 0; i < size; i++) {
-            data[i] += Math.random() * 5;
+            data[i] += Math.random() * 10;
         }
 
+        for (let i = 1; i < width - 1; i++) {
+            for (let j = 1; j < height - 1; j++) {
+                data[i * width + j] =
+                    (data[(i - 1) * width + j] + data[(i - 1) * width + j - 1] + data[i * width + j - 1] + data[i * width + j]) / 4;
+            }
+        }
         for (let i = 1; i < width - 1; i++) {
             for (let j = 1; j < height - 1; j++) {
                 data[i * width + j] =
@@ -155,7 +161,7 @@ export class Terrain {
     }
 
     genRandomTerrain() {
-        const USE_PLANE = 0;
+        const USE_PLANE = 1;
         const segments = 100;
 
         if (USE_PLANE) {
@@ -204,26 +210,31 @@ export class Terrain {
         context.fillRect(0, 0, width, height);
 
         image = context.getImageData(0, 0, canvas.width, canvas.height);
-        imageData = image.data;
+        imageData = image.data;              
 
         for (let i = 0, j = 0, l = imageData.length; i < l; i += 4, j++) {
 
-            vector3.x = data[j - 2] - data[j + 2];
-            vector3.y = 2;
-            vector3.z = data[j - width * 2] - data[j + width * 2];
-            vector3.normalize();
-
-            shade = vector3.dot(sun);
-            console.log(shade);
-
-            // imageData[i] = ( shade * 256 ) * (0.5 + data[j] * 0.007);
-            // imageData[i + 1] = (shade * 256) * (0.5 + data[j] * 0.007);
-            // imageData[i + 2] = ( shade * 256) * (0.5 + data[j] * 0.007);
-
-            imageData[i] = (shade * 0xFC) * (0.5 + data[j] * 0.07);;
-            imageData[i + 1] = (shade * 0xF7) * (0.5 + data[j] * 0.07);;
-            imageData[i + 2] = (shade * 0xDE) * (0.5 + data[j] * 0.07);;
-
+            if (data[j] < 1.51 && data[j] > 1.49){
+                imageData[i] = 0xFF;
+                imageData[i + 1] = 0xFF;
+                imageData[i + 2] = 0xFF;
+            }else {
+                vector3.x = data[j - 2] - data[j + 2];
+                vector3.y = 1;
+                vector3.z = data[j - width * 2] - data[j + width * 2];
+                vector3.normalize();
+    
+                shade = vector3.dot(sun);
+                console.log(shade);
+    
+                // imageData[i] = ( shade * 256 ) * (0.5 + data[j] * 0.007);
+                // imageData[i + 1] = (shade * 256) * (0.5 + data[j] * 0.007);
+                // imageData[i + 2] = ( shade * 256) * (0.5 + data[j] * 0.007);
+    
+                imageData[i] = (shade * 0xDA) * (0.5 + data[j] * 0.07);
+                imageData[i + 1] = (shade * 0xF7) * (0.5 + data[j] * 0.07);
+                imageData[i + 2] = (shade * 0x77) * (0.5 + data[j] * 0.07);
+            }
         }
 
         context.putImageData(image, 0, 0);
@@ -242,12 +253,11 @@ export class Terrain {
         imageData = image.data;
 
         for (let i = 0, l = imageData.length; i < l; i += 4) {
+            // const v = ~ ~(Math.random() * 5);
 
-            const v = ~ ~(Math.random() * 5);
-
-            imageData[i] += v;
-            imageData[i + 1] += v;
-            imageData[i + 2] += v;
+            // imageData[i] += v;
+            // imageData[i + 1] += v;
+            // imageData[i + 2] += v;
 
         }
 
