@@ -43,7 +43,18 @@ export class Terrain {
         // hcolor = 0x999999;
 
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        const material = new THREE.MeshBasicMaterial({ color: hcolor });
+
+        let material;
+        if (1){
+            material = new THREE.ShaderMaterial({
+                vertexShader: document.getElementById('vertexShader').textContent,
+                fragmentShader: document.getElementById('fragmentShader').textContent
+            });
+        } else {
+
+            material = new THREE.MeshBasicMaterial({ color: hcolor });
+        }
+
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
@@ -98,6 +109,7 @@ export class Terrain {
 
                 if (RANDER_DIAGONAL_LINE && DRAW_LINE) {
                     const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+
                     const points = [];
                     points.push(new THREE.Vector3(i, this.heights[i][j + 1] + 0.02, j + 1));
                     points.push(new THREE.Vector3(i + 1, this.heights[i + 1][j] + 0.02, j));
@@ -161,7 +173,7 @@ export class Terrain {
     }
 
     genRandomTerrain() {
-        const USE_PLANE = 1;
+        const USE_PLANE = 0;
         const segments = 100;
 
         if (USE_PLANE) {
