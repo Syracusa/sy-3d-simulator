@@ -45,19 +45,20 @@ export class Terrain {
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
         let material;
-        if (1){
+        if (0){
             material = new THREE.ShaderMaterial({
                 vertexShader: document.getElementById('vertexShader').textContent,
                 fragmentShader: document.getElementById('fragmentShader').textContent
             });
         } else {
 
-            material = new THREE.MeshBasicMaterial({ color: hcolor });
+            // material = new THREE.MeshBasicMaterial({ color: hcolor });
+            material = new THREE.MeshLambertMaterial   ({ color: hcolor });
         }
 
         const mesh = new THREE.Mesh(geometry, material);
 
-        mesh.receiveShadow = true;
+        mesh.receiveShadow = false;
         mesh.tname = 'floor';
         this.scene.add(mesh);
     }

@@ -194,9 +194,9 @@ export class MySceneContext {
 
         /* ========== Light ========= */
 
-        const USE_DIRECTIONAL_LIGHT = 0;
+        const USE_DIRECTIONAL_LIGHT = 1;
         if (USE_DIRECTIONAL_LIGHT){
-            let light = new THREE.DirectionalLight(0xa0a0a0, 0.5);
+            let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
             light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
             light.target.position.set(0, 0, 0);
             light.castShadow = true;
@@ -213,8 +213,8 @@ export class MySceneContext {
     
             this.light = light;
         } else {
-            let light = new THREE.PointLight( 0xffffff, 1, 0, Math.PI / 5, 0.001 );
-            light.position.set( 10, 3, 10 );
+            let light = new THREE.PointLight( 0xffffff, 10, 1000);
+            light.position.set( 10, 50, 10 );
             // light.target.position.set( 10, 25, 25 );
         
             light.castShadow = true;
