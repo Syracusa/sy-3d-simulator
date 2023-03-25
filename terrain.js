@@ -45,7 +45,7 @@ export class Terrain {
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
         let material;
-        if (0){
+        if (1){
             material = new THREE.ShaderMaterial({
                 vertexShader: document.getElementById('vertexShader').textContent,
                 fragmentShader: document.getElementById('fragmentShader').textContent
