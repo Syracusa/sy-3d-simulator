@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { Terrain } from './terrain.js';
 import { Camera } from './camera.js';
 import { Controller } from './controller.js';
+import { ArrowShape } from './arrow.js';
 
 export class MySceneContext {
     constructor() {
@@ -35,6 +36,7 @@ export class MySceneContext {
         this.cam = new Camera(this.screenRatio);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
+        this.arrow = new ArrowShape(this.scene);
 
         this.lightPos = { x: 3, y: 15, z: 3 };
         this.spherePos = { x: 8, y: 8, z: 8 };
@@ -46,20 +48,23 @@ export class MySceneContext {
 
         this.currIntersected = null;
 
-        const planeMaterial = new THREE.MeshPhongMaterial( { color: 0xffb851 } );
-        const cubes1 = new THREE.Mesh( new THREE.BoxGeometry( 3, 3, 3 ), planeMaterial );
+        const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xffb851 });
+        const cubes1 = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), planeMaterial);
 
         cubes1.position.y = 10;
         cubes1.position.x = 25;
         cubes1.position.z = 25;
-    
+
         cubes1.castShadow = true;
         cubes1.receiveShadow = true;
 
         cubes1.tname = 'BoxMesh';
-        this.scene.add( cubes1 );
+        this.scene.add(cubes1);
 
-        this.scene.fog = new THREE.Fog( 0x59472b, 0, 156 );
+        this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
+
+        const axesHelper = new THREE.AxesHelper(5);
+        this.scene.add(axesHelper);
     }
 
     inputHandler(timeDiff) {
@@ -150,7 +155,7 @@ export class MySceneContext {
         this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (intersects.length > 0) {
-            if (intersects[0].object.hasOwnProperty('tname')){
+            if (intersects[0].object.hasOwnProperty('tname')) {
                 console.log(intersects[0].object.tname);
 
             } else {
@@ -171,7 +176,7 @@ export class MySceneContext {
         //         this.currIntersected = intersects[0];
         //     }
         // }
-        
+
         /* Randerer call */
         this.renderer.render(this.scene, this.cam.camera);
 
@@ -195,12 +200,12 @@ export class MySceneContext {
         /* ========== Light ========= */
 
         const USE_DIRECTIONAL_LIGHT = 1;
-        if (USE_DIRECTIONAL_LIGHT){
+        if (USE_DIRECTIONAL_LIGHT) {
             let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
             light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
             light.target.position.set(0, 0, 0);
             light.castShadow = true;
-    
+
             light.shadow.mapSize.width = 10240;
             light.shadow.mapSize.height = 10240;
             light.shadow.camera.near = -20;
@@ -210,29 +215,29 @@ export class MySceneContext {
             light.shadow.camera.left = -10;
             light.shadow.camera.bottom = -10;
             this.scene.add(light);
-    
+
             this.light = light;
         } else {
-            let light = new THREE.PointLight( 0xffffff, 10, 1000);
-            light.position.set( 10, 50, 10 );
+            let light = new THREE.PointLight(0xffffff, 10, 1000);
+            light.position.set(10, 50, 10);
             // light.target.position.set( 10, 25, 25 );
-        
+
             light.castShadow = true;
             light.shadow.camera.near = -1000;
             light.shadow.camera.far = 2500;
             light.shadow.bias = 0.0001;
-        
+
             light.shadow.mapSize.width = 2048;
             light.shadow.mapSize.height = 1024;
             this.scene.add(light);
-    
+
             this.light = light;
         }
 
 
         /* ========== Ambient Light ========= */
-        // const ambientLight = new THREE.AmbientLight( 0x404040, 2 );
-        // this.scene.add(ambientLight);
+        const ambientLight = new THREE.AmbientLight(0x404040, 2);
+        this.scene.add(ambientLight);
     }
 
     genGrid() {
