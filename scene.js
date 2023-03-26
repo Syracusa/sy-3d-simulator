@@ -88,29 +88,16 @@ export class MySceneContext {
             this.cam.RightRotate(timeDiff);
         }
         if (this.controller.isKeyPressed('1')) {
-            this.cam.ViewFar(timeDiff);
+            this.cam.ViewUp(timeDiff);
         }
         if (this.controller.isKeyPressed('2')) {
-            this.cam.ViewNear(timeDiff);
+            this.cam.ViewBottom(timeDiff);
         }
         if (this.controller.isKeyPressed('3')) {
             this.cam.GetClose(0.1 * timeDiff);
         }
         if (this.controller.isKeyPressed('4')) {
             this.cam.GetClose(-0.1 * timeDiff);
-        }
-
-        if (this.controller.isKeyPressed('z')) {
-            this.cam.GoUp(timeDiff);
-        }
-        if (this.controller.isKeyPressed('x')) {
-            this.cam.GoDown(timeDiff);
-        }
-        if (this.controller.isKeyPressed('c')) {
-            this.cam.ViewUp(timeDiff);
-        }
-        if (this.controller.isKeyPressed('v')) {
-            this.cam.ViewBottom(timeDiff);
         }
     }
 

@@ -4,8 +4,8 @@ export class Camera {
 
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
-        this.CamPos = { x: 10, y: 20, z: 10 };
-        this.CamLookat = { x: 5, y: 0, z: 0 };
+        this.CamPos = { x: 20, y: 20, z: 20 };
+        this.CamLookat = { x: 15, y: 10, z: 20 };
 
         this.CamdirAngle = 0.3;
         this.CamdirDiameter = 20;
@@ -18,9 +18,7 @@ export class Camera {
             -1 * this.ViewScale,
             -500, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
-
-        this.UpdateLookat();
-        this.camera.lookAt(this.CamLookat.x, this.CamLookat.y, this.CamLookat.z);
+        this.ViewBottom(3.0);
     }
 
 
@@ -73,15 +71,29 @@ export class Camera {
         if (this.CamdirDiameter < 0.5) {
             this.CamdirDiameter = 0.5;
         }
+
         this.UpdateLookat();
     }
 
     ViewUp(scalar) {
         this.CamLookat.y += 0.1 * scalar;
+        if (this.CamLookat.y > this.CamPos.y + 18)
+            this.CamLookat.y = this.CamPos.y + 18;
+        
+        this.CamdirDiameter = 20.0 - Math.abs(this.CamPos.y - this.CamLookat.y);
+
+        this.UpdateLookat();
     }
 
     ViewBottom(scalar) {
         this.CamLookat.y -= 0.1 * scalar;
+        if (this.CamLookat.y < this.CamPos.y - 18)
+            this.CamLookat.y = this.CamPos.y - 18;
+
+        this.CamdirDiameter = 20.0 - Math.abs(this.CamPos.y - this.CamLookat.y);
+
+        this.UpdateLookat();
+
     }
 
     GetClose(scalar) {
