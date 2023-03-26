@@ -31,14 +31,28 @@ export class ArrowShape {
         this.cylinder.dbg_name = name;
     }
 
-    setColor(color) {
+    setOriginalColor() {
+        this.setTempColor(this.originalColor);
+    }
+
+    setTempColor(color) {
         this.cone.material.color.set(color);
         this.cylinder.material.color.set(color);
+    }
+
+    setColor(color) {
+        this.originalColor = color;
+        this.setTempColor(color);
     }
 
     setIntersectHandler(func) {
         this.cone.intersectHandler = func;
         this.cylinder.intersectHandler = func;
+    }
+
+    setIntersectOutHandler(func) {
+        this.cone.intersectOutHandler = func;
+        this.cylinder.intersectOutHandler = func;
     }
 
     reposition(vStart, vEnd) {

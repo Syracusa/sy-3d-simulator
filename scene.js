@@ -69,35 +69,68 @@ export class MySceneContext {
         const axesHelper = new THREE.AxesHelper(5);
         this.scene.add(axesHelper);
 
-        this.drawArrows();
+        this.intersected = null;
 
+        this.drawArrows();
+        this.addMouseEventListener();
     }
+
+
+    addMouseEventListener() {
+        window.onmousedown = function (e) {
+            // console.log("Mouse down pos : " + e.clientX + ", " + e.clientY + "");
+        }
+
+        window.onmousemove = function (e) {
+            // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
+        }
+
+        window.onmouseup = function (e) {
+            // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
+        }
+
+        window.onmouseout = function (e) {
+            // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
+        }
+    }
+
 
     drawArrows() {
         let xdest = this.spherePos.clone();
         xdest.x += 8;
-        this.a1 = new ArrowShape(this.scene, this.spherePos, xdest);
-        this.a1.setColor(0xFF0000);
-        this.a1.setDebugName('X_Arrow');
-        this.a1.setIntersectHandler(() => {
-            console.log('x arrow ish'); 
-            this.a1.setColor(0xFF5555);
+        this.arrowX = new ArrowShape(this.scene, this.spherePos, xdest);
+        this.arrowX.setColor(0xFF0000);
+        this.arrowX.setDebugName('X_Arrow');
+        this.arrowX.setIntersectHandler(() => {
+            this.arrowX.setTempColor(0xFFFF00);
+        });
+        this.arrowX.setIntersectOutHandler(() => {
+            this.arrowX.setOriginalColor();
         });
 
         let ydest = this.spherePos.clone();
         ydest.y += 8;
-        this.a2 = new ArrowShape(this.scene, this.spherePos, ydest);
-        this.a2.setColor(0x00FF00);
-        this.a2.setDebugName('Y_Arrow');
-        this.a2.setIntersectHandler(() => {console.log('y arrow ish');});
-        
-        
+        this.arrowY = new ArrowShape(this.scene, this.spherePos, ydest);
+        this.arrowY.setColor(0x00FF00);
+        this.arrowY.setDebugName('Y_Arrow');
+        this.arrowY.setIntersectHandler(() => {
+            this.arrowY.setTempColor(0xFFFF00);
+        });
+        this.arrowY.setIntersectOutHandler(() => {
+            this.arrowY.setOriginalColor();
+        });
+
         let zdest = this.spherePos.clone();
         zdest.z += 8;
-        this.a3 = new ArrowShape(this.scene, this.spherePos, zdest);
-        this.a3.setColor(0x0000FF);
-        this.a3.setDebugName('Z_Arrow');
-        this.a3.setIntersectHandler(() => {console.log('z arrow ish');});
+        this.arrowZ = new ArrowShape(this.scene, this.spherePos, zdest);
+        this.arrowZ.setColor(0x0000FF);
+        this.arrowZ.setDebugName('Z_Arrow');
+        this.arrowZ.setIntersectHandler(() => {
+            this.arrowZ.setTempColor(0xFFFF00);
+        });
+        this.arrowX.setIntersectOutHandler(() => {
+            this.arrowZ.setOriginalColor();
+        });
     }
 
     inputHandler(timeDiff) {
@@ -162,6 +195,7 @@ export class MySceneContext {
     }
 
     update(timeDiff) {
+
         this.inputHandler(timeDiff);
 
         this.sphere.position.set(this.spherePos.x, this.spherePos.y, this.spherePos.z);
@@ -186,15 +220,29 @@ export class MySceneContext {
             }
         } else {
             if (intersects.length > 0) {
-                if (intersects[0].object.hasOwnProperty('dbg_name')) {
-                    console.log(intersects[0].object.dbg_name);
-                } else {
-                    console.log(intersects[0]);
+                const INTERSECT_VERBOSE = 0;
+                if (INTERSECT_VERBOSE) {
+                    if (intersects[0].object.hasOwnProperty('dbg_name')) {
+                        console.log(intersects[0].object.dbg_name);
+                    } else {
+                        console.log(intersects[0]);
+                    }
                 }
-                if (intersects[0].object.hasOwnProperty('intersectHandler')) {
-                    intersects[0].object.intersectHandler();
+
+                if (this.intersected != intersects[0]) {
+                    if (this.intersected &&
+                        this.intersected.object.hasOwnProperty('intersectOutHandler')) {
+                        this.intersected.object.intersectOutHandler();
+                        console.log('out handler');
+                    }
+
+                    this.intersected = intersects[0];
+                    if (intersects[0].object.hasOwnProperty('intersectHandler')) {
+                        intersects[0].object.intersectHandler();
+                    }
                 }
             }
+
         }
 
 
