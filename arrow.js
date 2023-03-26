@@ -30,7 +30,7 @@ export class ArrowShape {
         this.cone.dbg_name = name;
         this.cylinder.dbg_name = name;
     }
-
+1
     setColor(color){
         this.cone.material.color.set(color);
         this.cylinder.material.color.set(color);

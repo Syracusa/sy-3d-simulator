@@ -4,13 +4,14 @@ export class Camera {
 
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
-        this.CamPos = { x: 20, y: 20, z: 20 };
-        this.CamLookat = { x: 15, y: 10, z: 20 };
+        this.CamPos = { x: 34, y: 50, z: 76 };
+        this.CamLookat = { x: 0, y: 40, z: 0 };
 
-        this.CamdirAngle = 0.3;
-        this.CamdirDiameter = 20;
+        this.CamdirAngle = Math.PI * 5 / 3;
+        this.CamdirDiameter = 20.0 - Math.abs(this.CamPos.y - this.CamLookat.y);
+        this.UpdateLookat();
 
-        this.ViewScale = 10;
+        this.ViewScale = 16;
         this.camera = new THREE.OrthographicCamera(
             -1 * this.ViewScale * this.screenRatio, 
             this.ViewScale * this.screenRatio,
@@ -18,7 +19,6 @@ export class Camera {
             -1 * this.ViewScale,
             -500, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
-        this.ViewBottom(3.0);
     }
 
     updateScreenRatio(screen_ratio){
@@ -28,7 +28,7 @@ export class Camera {
             this.ViewScale * this.screenRatio,
             this.ViewScale, 
             -1 * this.ViewScale,
-            -500, 1000);
+            0, 1000);
     }
 
     UpdateLookat() {
@@ -100,9 +100,7 @@ export class Camera {
             this.CamLookat.y = this.CamPos.y - 18;
 
         this.CamdirDiameter = 20.0 - Math.abs(this.CamPos.y - this.CamLookat.y);
-
         this.UpdateLookat();
-
     }
 
     GetClose(scalar) {

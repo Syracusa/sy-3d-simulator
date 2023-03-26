@@ -42,7 +42,7 @@ export class MySceneContext {
         this.controller = new Controller();
 
         this.lightPos = new Vector3(3, 15, 3);
-        this.spherePos = new Vector3(18, 18, 18);
+        this.spherePos = new Vector3(48, 18, 48);
         this.genLight();
         this.genSphere();
 
@@ -167,14 +167,27 @@ export class MySceneContext {
         /* Raycaster */
         this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
-        if (intersects.length > 0) {
-            if (intersects[0].object.hasOwnProperty('dbg_name')) {
-                console.log(intersects[0].object.dbg_name);
+        if (0) {
+            if (intersects.length > 0) {
+                for (let i = 0; i < intersects.length; i++) {
+                    if (intersects[i].object.hasOwnProperty('dbg_name')) {
+                        console.log(intersects[i].object.dbg_name);
+                    } else {
+                        console.log(intersects[i]);
+                    }
+                }
+            }
+        } else {
+            if (intersects.length > 0) {
+                if (intersects[0].object.hasOwnProperty('dbg_name')) {
+                    console.log(intersects[0].object.dbg_name);
+                } else {
+                    console.log(intersects[0]);
+                }
 
-            } else {
-                console.log(intersects[0]);
             }
         }
+
 
 
         // console.log(intersects);
@@ -253,22 +266,6 @@ export class MySceneContext {
         this.scene.add(ambientLight);
     }
 
-    genGrid() {
-        const gridHelper = new THREE.GridHelper(10, 10);
-        this.scene.add(gridHelper);
-    }
-
-    genPlain() {
-        const geometryP = new THREE.PlaneGeometry(100, 100);
-        const materialP = new THREE.MeshStandardMaterial({ color: 0xFCF7DE });
-        const plane = new THREE.Mesh(geometryP, materialP);
-
-        plane.castShadow = false;
-        plane.receiveShadow = true;
-        plane.rotation.x = -Math.PI / 2;
-        this.scene.add(plane);
-    }
-
     genSphere() {
         const geometryS = new THREE.SphereGeometry(2, 32, 32);
         const materialS = new THREE.MeshPhongMaterial({
@@ -280,6 +277,7 @@ export class MySceneContext {
 
         sphere.position.set(this.spherePos.x, this.spherePos.y, this.spherePos.z);
         sphere.castShadow = true;
+        sphere.dbg_name = 'Pink Circle';
         this.scene.add(sphere);
 
         this.sphere = sphere;

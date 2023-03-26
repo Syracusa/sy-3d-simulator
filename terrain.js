@@ -41,7 +41,7 @@ export class Terrain {
 
         let hcolor = (blue + green * 0x100 + red * 0x10000);
         // hcolor = 0x999999;
-
+45
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.computeVertexNormals();
 
@@ -63,7 +63,7 @@ export class Terrain {
 
         const mesh = new THREE.Mesh(geometry, material);
 
-        mesh.receiveShadow = false;
+        mesh.receiveShadow = true;
         mesh.dbg_name = 'floor';
         this.scene.add(mesh);
     }
