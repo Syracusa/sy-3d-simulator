@@ -43,6 +43,11 @@ export class Terrain {
         // hcolor = 0x999999;
 
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.computeVertexNormals();
+
+        
+
+        // geometry.setAttribute('sNormal', new THREE.BufferAttribute(vertices, 3));
 
         let material;
         if (1){
@@ -71,7 +76,7 @@ export class Terrain {
         for (let i = 0; i < mapsize + 1; i++) {
             let xarr = [];
             for (let j = 0; j < mapsize + 1; j++) {
-                xarr[j] = Math.random() * 10;
+                xarr[j] = Math.random() * 30;
             }
             this.heights[i] = xarr;
         }
