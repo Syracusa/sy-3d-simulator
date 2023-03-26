@@ -10,12 +10,12 @@ export class ArrowShape {
     }
 
 
-    test(){
+    test() {
         const geometry = new THREE.ConeGeometry(1, 4, 32);
         const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
         let cone = new THREE.Mesh(geometry, material);
-        cone.position.set(0,0,0);
-        
+        cone.position.set(0, 0, 0);
+
         let target = new THREE.Vector3(1, -1, 1);
         const direction = target.clone().normalize();
         const angleXZ = Math.atan2(direction.x, direction.z);
@@ -30,10 +30,15 @@ export class ArrowShape {
         this.cone.dbg_name = name;
         this.cylinder.dbg_name = name;
     }
-1
-    setColor(color){
+
+    setColor(color) {
         this.cone.material.color.set(color);
         this.cylinder.material.color.set(color);
+    }
+
+    setIntersectHandler(func) {
+        this.cone.intersectHandler = func;
+        this.cylinder.intersectHandler = func;
     }
 
     reposition(vStart, vEnd) {

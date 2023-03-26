@@ -79,18 +79,25 @@ export class MySceneContext {
         this.a1 = new ArrowShape(this.scene, this.spherePos, xdest);
         this.a1.setColor(0xFF0000);
         this.a1.setDebugName('X_Arrow');
+        this.a1.setIntersectHandler(() => {
+            console.log('x arrow ish'); 
+            this.a1.setColor(0xFF5555);
+        });
 
         let ydest = this.spherePos.clone();
         ydest.y += 8;
         this.a2 = new ArrowShape(this.scene, this.spherePos, ydest);
         this.a2.setColor(0x00FF00);
         this.a2.setDebugName('Y_Arrow');
-
+        this.a2.setIntersectHandler(() => {console.log('y arrow ish');});
+        
+        
         let zdest = this.spherePos.clone();
         zdest.z += 8;
         this.a3 = new ArrowShape(this.scene, this.spherePos, zdest);
         this.a3.setColor(0x0000FF);
         this.a3.setDebugName('Z_Arrow');
+        this.a3.setIntersectHandler(() => {console.log('z arrow ish');});
     }
 
     inputHandler(timeDiff) {
@@ -184,10 +191,11 @@ export class MySceneContext {
                 } else {
                     console.log(intersects[0]);
                 }
-
+                if (intersects[0].object.hasOwnProperty('intersectHandler')) {
+                    intersects[0].object.intersectHandler();
+                }
             }
         }
-
 
 
         // console.log(intersects);
