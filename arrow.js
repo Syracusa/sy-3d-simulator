@@ -1,16 +1,14 @@
 import * as THREE from 'three'
 
 export class ArrowShape {
-    constructor(scene) {
+    constructor(scene, vStart, vEnd) {
         this.scene = scene;
-        this.createArrow();
-
-        let vStart = new THREE.Vector3(10, 10, 10);
-        let vEnd = new THREE.Vector3(15, 15, 15);
+        let scale = vStart.distanceTo(vEnd);
+        this.createArrow(scale);
 
         this.reposition(vStart, vEnd);
-        // this.test();
     }
+
 
     test(){
         const geometry = new THREE.ConeGeometry(1, 4, 32);
@@ -28,13 +26,17 @@ export class ArrowShape {
         this.scene.add(cone);
     }
 
+    setColor(color){
+        this.cone.material.color.set(color);
+        this.cylinder.material.color.set(color);
+    }
+
     reposition(vStart, vEnd) {
-        let length = vStart.distanceTo(vEnd);
         let rotation = vEnd.clone();
         rotation.sub(vStart);
 
-        let cylinderPos = new THREE.Vector3().lerpVectors(vStart, vEnd, 0.3);
-        let conePos = new THREE.Vector3().lerpVectors(vStart, vEnd, 0.9);
+        let cylinderPos = new THREE.Vector3().lerpVectors(vStart, vEnd, 0.5);
+        let conePos = new THREE.Vector3().lerpVectors(vStart, vEnd, 1.0);
 
         this.cone.position.copy(conePos);
         this.cylinder.position.copy(cylinderPos);
@@ -48,9 +50,9 @@ export class ArrowShape {
         this.cylinder.rotation.copy(euler);
     }
 
-    createArrow() {
+    createArrow(scale) {
         this.createCone();
-        this.createCylinder();
+        this.createCylinder(scale);
     }
 
     createCone() {
@@ -60,8 +62,8 @@ export class ArrowShape {
         this.scene.add(this.cone);
     }
 
-    createCylinder() {
-        const geometry = new THREE.CylinderGeometry(0.2, 0.2, 9, 32);
+    createCylinder(scale) {
+        const geometry = new THREE.CylinderGeometry(0.2, 0.2, scale, 32);
         const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
         this.cylinder = new THREE.Mesh(geometry, material);
 

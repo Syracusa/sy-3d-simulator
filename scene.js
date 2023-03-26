@@ -4,6 +4,7 @@ import { Terrain } from './terrain.js';
 import { Camera } from './camera.js';
 import { Controller } from './controller.js';
 import { ArrowShape } from './arrow.js';
+import { Vector3 } from 'three';
 
 export class MySceneContext {
     constructor() {
@@ -36,10 +37,9 @@ export class MySceneContext {
         this.cam = new Camera(this.screenRatio);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
-        this.arrow = new ArrowShape(this.scene);
 
-        this.lightPos = { x: 3, y: 15, z: 3 };
-        this.spherePos = { x: 8, y: 8, z: 8 };
+        this.lightPos = new Vector3(3, 15, 3);
+        this.spherePos = new Vector3(18, 18, 18);
         this.genLight();
         this.genSphere();
 
@@ -65,6 +65,25 @@ export class MySceneContext {
 
         const axesHelper = new THREE.AxesHelper(5);
         this.scene.add(axesHelper);
+
+        this.drawArrows();
+    }
+
+    drawArrows(){
+        let xdest = this.spherePos.clone();
+        xdest.x += 8;
+        this.a1 = new ArrowShape(this.scene, this.spherePos, xdest);
+        this.a1.setColor(0xFF0000);
+
+        let ydest = this.spherePos.clone();
+        ydest.y += 8;
+        this.a2 = new ArrowShape(this.scene, this.spherePos, ydest);
+        this.a2.setColor(0x00FF00);
+
+        let zdest = this.spherePos.clone();
+        zdest.z += 8;
+        this.a3 = new ArrowShape(this.scene, this.spherePos, zdest);
+        this.a3.setColor(0x0000FF);
     }
 
     inputHandler(timeDiff) {
