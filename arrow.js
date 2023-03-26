@@ -26,6 +26,11 @@ export class ArrowShape {
         this.scene.add(cone);
     }
 
+    setDebugName(name) {
+        this.cone.dbg_name = name;
+        this.cylinder.dbg_name = name;
+    }
+
     setColor(color){
         this.cone.material.color.set(color);
         this.cylinder.material.color.set(color);

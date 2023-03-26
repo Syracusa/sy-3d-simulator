@@ -21,6 +21,15 @@ export class Camera {
         this.ViewBottom(3.0);
     }
 
+    updateScreenRatio(screen_ratio){
+        this.screenRatio = screen_ratio;
+        this.camera = new THREE.OrthographicCamera(
+            -1 * this.ViewScale * this.screenRatio, 
+            this.ViewScale * this.screenRatio,
+            this.ViewScale, 
+            -1 * this.ViewScale,
+            -500, 1000);
+    }
 
     UpdateLookat() {
         this.CamLookat.x = this.CamPos.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);

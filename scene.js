@@ -9,7 +9,7 @@ import { Vector3 } from 'three';
 export class MySceneContext {
     constructor() {
 
-        let USE_WINDOW_SIZE = 0;
+        let USE_WINDOW_SIZE = 1;
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xeeeeee);
 
@@ -21,11 +21,14 @@ export class MySceneContext {
         this.sceneDomParent.appendChild(this.renderer.domElement);
 
         if (USE_WINDOW_SIZE) {
+
+            this.renderer.setPixelRatio(window.devicePixelRatio);
             this.renderer.setSize(
                 window.innerWidth,
                 window.innerHeight);
 
             this.screenRatio = window.innerWidth / window.innerHeight;
+
         } else {
             this.renderer.setSize(
                 this.sceneDomParent.offsetWidth,
@@ -34,7 +37,7 @@ export class MySceneContext {
             this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
         }
         this.raycaster = new THREE.Raycaster();
-        this.cam = new Camera(this.screenRatio);
+        this.cam = new Camera(window.innerWidth / window.innerHeight);
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
 
@@ -58,7 +61,7 @@ export class MySceneContext {
         cubes1.castShadow = true;
         cubes1.receiveShadow = true;
 
-        cubes1.tname = 'BoxMesh';
+        cubes1.dbg_name = 'BoxMesh';
         this.scene.add(cubes1);
 
         this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
@@ -67,23 +70,27 @@ export class MySceneContext {
         this.scene.add(axesHelper);
 
         this.drawArrows();
+
     }
 
-    drawArrows(){
+    drawArrows() {
         let xdest = this.spherePos.clone();
         xdest.x += 8;
         this.a1 = new ArrowShape(this.scene, this.spherePos, xdest);
         this.a1.setColor(0xFF0000);
+        this.a1.setDebugName('X_Arrow');
 
         let ydest = this.spherePos.clone();
         ydest.y += 8;
         this.a2 = new ArrowShape(this.scene, this.spherePos, ydest);
         this.a2.setColor(0x00FF00);
+        this.a2.setDebugName('Y_Arrow');
 
         let zdest = this.spherePos.clone();
         zdest.z += 8;
         this.a3 = new ArrowShape(this.scene, this.spherePos, zdest);
         this.a3.setColor(0x0000FF);
+        this.a3.setDebugName('Z_Arrow');
     }
 
     inputHandler(timeDiff) {
@@ -161,8 +168,8 @@ export class MySceneContext {
         this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (intersects.length > 0) {
-            if (intersects[0].object.hasOwnProperty('tname')) {
-                console.log(intersects[0].object.tname);
+            if (intersects[0].object.hasOwnProperty('dbg_name')) {
+                console.log(intersects[0].object.dbg_name);
 
             } else {
                 console.log(intersects[0]);
