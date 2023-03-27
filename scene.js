@@ -57,7 +57,7 @@ export class MySceneContext {
         cubes1.castShadow = true;
         cubes1.receiveShadow = true;
 
-        cubes1.dbg_name = 'BoxMesh';
+        cubes1.meshName = 'BoxMesh';
         this.scene.add(cubes1);
 
         this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
@@ -67,14 +67,20 @@ export class MySceneContext {
 
         this.intersected = null;
 
-        let shiftHelper = new ShiftHelper(this.scene);
-        this.addMouseEventListener();
+        this.addMouseEventListener(this);
     }
 
-
-    addMouseEventListener() {
+    addMouseEventListener(ctx) {
         window.onmousedown = function (e) {
-            // console.log("Mouse down pos : " + e.clientX + ", " + e.clientY + "");
+            if (ctx.intersected) {
+                if (ctx.intersected.object.hasOwnProperty('onMouseDownHandler')) {
+                    ctx.intersected.object.onMouseDownHandler();
+                } else {
+                    console.log('no handler');
+                }
+            } else {
+                console.log('no intersected');
+            }
         }
 
         window.onmousemove = function (e) {
@@ -149,8 +155,8 @@ export class MySceneContext {
             + this.controller.pointer.y.toPrecision(6)
             + "\n";
 
-        if (this.intersected != null && this.intersected.object.hasOwnProperty('dbg_name')){
-            text += "Intersected : " + this.intersected.object.dbg_name + "\n";
+        if (this.intersected != null && this.intersected.object.hasOwnProperty('meshName')) {
+            text += "Intersected : " + this.intersected.object.meshName + "\n";
         }
 
         this.infoPanel.innerText = text;
@@ -168,8 +174,8 @@ export class MySceneContext {
         if (0) {
             if (intersects.length > 0) {
                 for (let i = 0; i < intersects.length; i++) {
-                    if (intersects[i].object.hasOwnProperty('dbg_name')) {
-                        console.log(intersects[i].object.dbg_name);
+                    if (intersects[i].object.hasOwnProperty('meshName')) {
+                        console.log(intersects[i].object.meshName);
                     } else {
                         console.log(intersects[i]);
                     }
@@ -179,8 +185,8 @@ export class MySceneContext {
             if (intersects.length > 0) {
                 const INTERSECT_VERBOSE = 0;
                 if (INTERSECT_VERBOSE) {
-                    if (intersects[0].object.hasOwnProperty('dbg_name')) {
-                        console.log(intersects[0].object.dbg_name);
+                    if (intersects[0].object.hasOwnProperty('meshName')) {
+                        console.log(intersects[0].object.meshName);
                     } else {
                         console.log(intersects[0]);
                     }
@@ -292,9 +298,10 @@ export class MySceneContext {
 
         sphere.position.set(48, 18, 48);
         sphere.castShadow = true;
-        sphere.dbg_name = 'Pink Circle';
+        sphere.meshName = 'Pink Circle';
         this.scene.add(sphere);
 
+        let shiftHelper = new ShiftHelper(this.scene, sphere);
         this.sphere = sphere;
     }
 }

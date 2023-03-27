@@ -26,9 +26,9 @@ export class ArrowShape {
         this.scene.add(cone);
     }
 
-    setDebugName(name) {
-        this.cone.dbg_name = name;
-        this.cylinder.dbg_name = name;
+    setMeshName(name) {
+        this.cone.meshName = name;
+        this.cylinder.meshName = name;
     }
 
     setOriginalColor() {
@@ -43,6 +43,21 @@ export class ArrowShape {
     setColor(color) {
         this.originalColor = color;
         this.setTempColor(color);
+    }
+
+    setOnMouseDownHandler(func) {
+        this.cone.onMouseDownHandler = func;
+        this.cylinder.onMouseDownHandler = func;
+    }
+
+    setOnMouseMoveHandler(func) {
+        this.cone.onMouseMoveHandler = func;
+        this.cylinder.onMouseMoveHandler = func;
+    }
+
+    setOnMouseUpHandler(func) {
+        this.cone.onMouseUpHandler = func;
+        this.cylinder.onMouseUpHandler = func;
     }
 
     setIntersectHandler(func) {
