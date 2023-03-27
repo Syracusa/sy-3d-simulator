@@ -229,10 +229,8 @@ export class MySceneContext {
                     }
                 }
 
-                if (this.intersected.object != intersects[0].object) {
-                    /* TODO : Same object but statement looks like true */
-                    console.log(this.intersected)
-                    console.log(intersects[0])
+                if (this.intersected == null
+                    || this.intersected.object.uuid != intersects[0].object.uuid) {
                     if (this.intersected &&
                         this.intersected.object.hasOwnProperty('intersectOutHandler')) {
                         this.intersected.object.intersectOutHandler();
