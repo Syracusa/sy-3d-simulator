@@ -128,7 +128,7 @@ export class MySceneContext {
         this.arrowZ.setIntersectHandler(() => {
             this.arrowZ.setTempColor(0xFFFF00);
         });
-        this.arrowX.setIntersectOutHandler(() => {
+        this.arrowZ.setIntersectOutHandler(() => {
             this.arrowZ.setOriginalColor();
         });
     }
@@ -229,7 +229,10 @@ export class MySceneContext {
                     }
                 }
 
-                if (this.intersected != intersects[0]) {
+                if (this.intersected.object != intersects[0].object) {
+                    /* TODO : Same object but statement looks like true */
+                    console.log(this.intersected)
+                    console.log(intersects[0])
                     if (this.intersected &&
                         this.intersected.object.hasOwnProperty('intersectOutHandler')) {
                         this.intersected.object.intersectOutHandler();
@@ -239,6 +242,7 @@ export class MySceneContext {
                     this.intersected = intersects[0];
                     if (intersects[0].object.hasOwnProperty('intersectHandler')) {
                         intersects[0].object.intersectHandler();
+                        console.log('in handler');
                     }
                 }
             }
