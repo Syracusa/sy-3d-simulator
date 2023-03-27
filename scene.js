@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Terrain } from './terrain.js';
 import { Camera } from './camera.js';
 import { Controller } from './controller.js';
-import { ArrowShape } from './arrow.js';
+import { ShiftHelper } from './shift-helper.js';
 import { Vector3 } from 'three';
 
 export class MySceneContext {
@@ -26,9 +26,7 @@ export class MySceneContext {
             this.renderer.setSize(
                 window.innerWidth,
                 window.innerHeight);
-
             this.screenRatio = window.innerWidth / window.innerHeight;
-
         } else {
             this.renderer.setSize(
                 this.sceneDomParent.offsetWidth,
@@ -41,8 +39,6 @@ export class MySceneContext {
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
 
-        this.lightPos = new Vector3(3, 15, 3);
-        this.spherePos = new Vector3(48, 18, 48);
         this.genLight();
         this.genSphere();
 
@@ -71,7 +67,7 @@ export class MySceneContext {
 
         this.intersected = null;
 
-        this.drawArrows();
+        let shiftHelper = new ShiftHelper(this.scene);
         this.addMouseEventListener();
     }
 
@@ -92,45 +88,6 @@ export class MySceneContext {
         window.onmouseout = function (e) {
             // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
         }
-    }
-
-
-    drawArrows() {
-        let xdest = this.spherePos.clone();
-        xdest.x += 8;
-        this.arrowX = new ArrowShape(this.scene, this.spherePos, xdest);
-        this.arrowX.setColor(0xFF0000);
-        this.arrowX.setDebugName('X_Arrow');
-        this.arrowX.setIntersectHandler(() => {
-            this.arrowX.setTempColor(0xFFFF00);
-        });
-        this.arrowX.setIntersectOutHandler(() => {
-            this.arrowX.setOriginalColor();
-        });
-
-        let ydest = this.spherePos.clone();
-        ydest.y += 8;
-        this.arrowY = new ArrowShape(this.scene, this.spherePos, ydest);
-        this.arrowY.setColor(0x00FF00);
-        this.arrowY.setDebugName('Y_Arrow');
-        this.arrowY.setIntersectHandler(() => {
-            this.arrowY.setTempColor(0xFFFF00);
-        });
-        this.arrowY.setIntersectOutHandler(() => {
-            this.arrowY.setOriginalColor();
-        });
-
-        let zdest = this.spherePos.clone();
-        zdest.z += 8;
-        this.arrowZ = new ArrowShape(this.scene, this.spherePos, zdest);
-        this.arrowZ.setColor(0x0000FF);
-        this.arrowZ.setDebugName('Z_Arrow');
-        this.arrowZ.setIntersectHandler(() => {
-            this.arrowZ.setTempColor(0xFFFF00);
-        });
-        this.arrowZ.setIntersectOutHandler(() => {
-            this.arrowZ.setOriginalColor();
-        });
     }
 
     inputHandler(timeDiff) {
@@ -191,16 +148,16 @@ export class MySceneContext {
             + " y: "
             + this.controller.pointer.y.toPrecision(6)
             + "\n";
+
+        if (this.intersected != null && this.intersected.object.hasOwnProperty('dbg_name')){
+            text += "Intersected : " + this.intersected.object.dbg_name + "\n";
+        }
+
         this.infoPanel.innerText = text;
     }
 
     update(timeDiff) {
-
         this.inputHandler(timeDiff);
-
-        this.sphere.position.set(this.spherePos.x, this.spherePos.y, this.spherePos.z);
-        this.light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
-        this.lightSource.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
 
         /* Camera update */
         this.cam.UpdateCamera();
@@ -277,7 +234,7 @@ export class MySceneContext {
         });
 
         const lightSource = new THREE.Mesh(geometrylightSource, materiallightSource);
-        lightSource.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
+        lightSource.position.set(3, 15, 3);
         this.scene.add(lightSource);
         this.lightSource = lightSource;
 
@@ -286,7 +243,7 @@ export class MySceneContext {
         const USE_DIRECTIONAL_LIGHT = 1;
         if (USE_DIRECTIONAL_LIGHT) {
             let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
-            light.position.set(this.lightPos.x, this.lightPos.y, this.lightPos.z);
+            light.position.set(3, 15, 3);
             light.target.position.set(0, 0, 0);
             light.castShadow = true;
 
@@ -333,7 +290,7 @@ export class MySceneContext {
 
         const sphere = new THREE.Mesh(geometryS, materialS);
 
-        sphere.position.set(this.spherePos.x, this.spherePos.y, this.spherePos.z);
+        sphere.position.set(48, 18, 48);
         sphere.castShadow = true;
         sphere.dbg_name = 'Pink Circle';
         this.scene.add(sphere);
