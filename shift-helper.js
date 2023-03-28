@@ -36,6 +36,6 @@ export class ShiftHelper {
 
         let zArrowTo = this.targetPos.clone();
         zArrowTo.z += 8;
-        this.arrowZ = this.drawArrow('X_Arrow', 0x0000FF, zArrowTo);
+        this.arrowZ = this.drawArrow('Z_Arrow', 0x0000FF, zArrowTo);
     }
 }
