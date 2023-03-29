@@ -301,7 +301,7 @@ export class MySceneContext {
         sphere.meshName = 'Pink Circle';
         this.scene.add(sphere);
 
-        let shiftHelper = new ShiftHelper(this.scene, sphere);
+        let shiftHelper = new ShiftHelper(this.scene, this.cam.camera, sphere);
         this.sphere = sphere;
     }
 }

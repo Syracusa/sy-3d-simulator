@@ -19,6 +19,8 @@ export class Camera {
             -1 * this.ViewScale,
             -500, 1000);
         this.camera.position.set(this.CamPos.x, this.CamPos.y, this.CamPos.z);
+
+        this.camera.updateProjectionMatrix();
     }
 
     updateScreenRatio(screen_ratio){
