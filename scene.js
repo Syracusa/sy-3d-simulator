@@ -8,7 +8,6 @@ import { Vector3 } from 'three';
 
 export class MySceneContext {
     constructor() {
-
         let USE_WINDOW_SIZE = 1;
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0xeeeeee);
@@ -21,7 +20,6 @@ export class MySceneContext {
         this.sceneDomParent.appendChild(this.renderer.domElement);
 
         if (USE_WINDOW_SIZE) {
-
             this.renderer.setPixelRatio(window.devicePixelRatio);
             this.renderer.setSize(
                 window.innerWidth,
@@ -58,36 +56,50 @@ export class MySceneContext {
         cubes1.receiveShadow = true;
 
         cubes1.meshName = 'BoxMesh';
-        this.scene.add(cubes1);
 
+        this.scene.add(cubes1);
         this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
 
+        /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
         this.scene.add(axesHelper);
 
+        /* Mouse Event */
         this.intersected = null;
-
+        this.dragTarget = null;
         this.addMouseEventListener(this);
     }
 
     addMouseEventListener(ctx) {
         window.onmousedown = function (e) {
             if (ctx.intersected) {
+                ctx.dragTarget = ctx.intersected;
+                ctx.dragStartX = e.clientX;
+                ctx.dragStartY = e.clientY;
                 if (ctx.intersected.object.hasOwnProperty('onMouseDownHandler')) {
-                    ctx.intersected.object.onMouseDownHandler();
+                    ctx.intersected.object.onMouseDownHandler(e);
                 } else {
-                    console.log('no handler');
+                    console.log('No handler');
                 }
             } else {
-                console.log('no intersected');
+                console.log('No intersected');
             }
         }
 
         window.onmousemove = function (e) {
+            if (ctx.dragTarget){
+                if (ctx.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
+                    ctx.dragTarget.object.onMouseDragHandler(ctx.dragStartX, ctx.dragStartY, e.clientX, e.clientY);
+
+                } else {
+                    console.log('no drag handler');
+                }
+            }
             // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
         }
 
         window.onmouseup = function (e) {
+            ctx.dragTarget = null;
             // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
         }
 

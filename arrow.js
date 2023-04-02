@@ -50,6 +50,11 @@ export class ArrowShape {
         this.cylinder.onMouseDownHandler = func;
     }
 
+    setOnMouseDragHandler(func) {
+        this.cone.onMouseDragHandler = func;
+        this.cylinder.onMouseDragHandler = func;
+    }
+
     setOnMouseMoveHandler(func) {
         this.cone.onMouseMoveHandler = func;
         this.cylinder.onMouseMoveHandler = func;

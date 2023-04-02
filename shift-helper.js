@@ -1,11 +1,12 @@
 import * as THREE from 'three'
-import { Vector3, _SRGBAFormat } from 'three';
+import { Line3, Vector3, _SRGBAFormat } from 'three';
 import { ArrowShape } from './arrow.js';
 
 export class ShiftHelper {
     constructor(scene, cam, target) {
         this.scene = scene;
         this.cam = cam;
+        this.target = target;
         this.targetPos = target.position.clone();
         this.drawXYZArrows();
     }
@@ -21,34 +22,83 @@ export class ShiftHelper {
         arrow.setIntersectOutHandler(() => {
             arrow.setOriginalColor();
         });
-        arrow.setOnMouseDownHandler(() => {
+        arrow.setOnMouseDownHandler((e) => {
             console.log("Mouse down on " + name);
 
-            const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
-            const points = [];
+            if (0) {
+                const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+                const points = [];
 
-            let posStart = this.targetPos.clone().project(this.cam);
-            posStart.z = -0.9999;
-            posStart.unproject(this.cam);
+                let posStart = this.targetPos.clone().project(this.cam);
+                posStart.z = -1.0
+                posStart.unproject(this.cam);
 
-            let posEnd = arrow.to.clone().project(this.cam);
-            
-            posEnd.z = -0.9999;
-            posEnd.unproject(this.cam);
+                let posEnd = arrow.to.clone().project(this.cam);
+                posEnd.z = -1.0
+                posEnd.unproject(this.cam);
 
-            points.push(posStart);
-            points.push(posEnd);
+                points.push(posStart);
+                points.push(posEnd);
 
-            const geometry = new THREE.BufferGeometry().setFromPoints(points);
-            const line = new THREE.Line(geometry, material);
-            this.scene.add(line);
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const line = new THREE.Line(geometry, material);
+                this.scene.add(line);
+            }
         });
+
+        arrow.setOnMouseDragHandler((x1, y1, x2, y2) => {
+            console.log(' ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
+
+            let arrowStart = this.targetPos.clone().project(this.cam);
+            arrowStart.z = -1.0;
+            let arrowEnd = arrow.to.clone().project(this.cam);
+            arrowEnd.z = -1.0;
+
+            let arrowLine = new Line3(arrowStart, arrowEnd);
+
+            let ndcX1 = (x1 / window.innerWidth) * 2 - 1;
+            let ndcY1 = -1 * (y1 / window.innerHeight) * 2 + 1;
+            let dragStart = new Vector3();
+            arrowLine.closestPointToPoint(new Vector3(ndcX1, ndcY1, -1.0), false, dragStart);
+
+            let ndcX2 = (x2 / window.innerWidth) * 2 - 1;
+            let ndcY2 = -1 * (y2 / window.innerHeight) * 2 + 1;
+            let dragEnd = new Vector3();
+            arrowLine.closestPointToPoint(new Vector3(ndcX2, ndcY2, -1.0), false, dragEnd);
+
+            let dragDist = dragStart.distanceTo(dragEnd);
+            let arrowProjDist = arrowStart.distanceTo(arrowEnd);
+            console.log((dragDist / arrowProjDist) * 8.0);
+
+            let movedir = this.targetPos.clone().sub(arrow.to);
+            movedir.multiplyScalar(dragDist / arrowProjDist);
+            console.log(movedir);
+
+            let d1 = arrowStart.distanceTo(dragStart);
+            let d2 = arrowEnd.distanceTo(dragStart);
+            let d3 = arrowStart.distanceTo(dragEnd);
+            let d4 = arrowEnd.distanceTo(dragEnd);
+
+            if ((d1 - d2) < (d3 - d4)) {
+                movedir.multiplyScalar(-1.0);
+            }
+            this.move(movedir);
+        });
+
+        /* TODO : MouseUPHandler */
         return arrow;
     }
 
-    toWindowPos (pos) {
-        pos.x = Math.round( (   pos.x + 1 ) * window.innerWidth  / 2 ),
-        pos.y = Math.round( ( - pos.y + 1 ) * window.innerHeight / 2 );
+    move(movedir) {
+        this.arrowX.reposition(this.targetPos.clone().add(movedir), this.arrowX.to.clone().add(movedir));
+        this.arrowY.reposition(this.targetPos.clone().add(movedir), this.arrowY.to.clone().add(movedir));
+        this.arrowZ.reposition(this.targetPos.clone().add(movedir), this.arrowZ.to.clone().add(movedir));
+        this.target.position.set(this.targetPos.clone().add(movedir));
+    }
+
+    toWindowPos(pos) {
+        pos.x = Math.round((pos.x + 1) * window.innerWidth / 2),
+            pos.y = Math.round((- pos.y + 1) * window.innerHeight / 2);
         pos.z = 0;
     }
 
