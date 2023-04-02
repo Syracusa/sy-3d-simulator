@@ -12,7 +12,7 @@ let oldTime = Date.now();
 
 function onWindowResize() {
     ctx.cam.updateScreenRatio( window.innerWidth / window.innerHeight);
-    ctx.cam.camera.updateProjectionMatrix();
+    ctx.cam._camera.updateProjectionMatrix();
     ctx.renderer.setSize( window.innerWidth, window.innerHeight );
 }
 

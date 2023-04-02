@@ -135,9 +135,9 @@ export class MySceneContext {
         text += "Frame : " + this.randerNum + "\n";
         text += "View scale : " + this.cam.ViewScale.toPrecision(4) + "\n";
         text += "Cam Position : "
-            + this.cam.CamPos.x.toPrecision(6) + ", "
-            + this.cam.CamPos.y.toPrecision(6) + ", "
-            + this.cam.CamPos.z.toPrecision(6) + "\n";
+            + this.cam._camera.position.x.toPrecision(6) + ", "
+            + this.cam._camera.position.y.toPrecision(6) + ", "
+            + this.cam._camera.position.z.toPrecision(6) + "\n";
 
         text += "Cam Lookat : "
             + this.cam.CamLookat.x.toPrecision(6) + ", "
@@ -146,7 +146,7 @@ export class MySceneContext {
 
         text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
 
-        let ydiff = this.cam.CamPos.y - this.cam.CamLookat.y;
+        let ydiff = this.cam._camera.position.y - this.cam.CamLookat.y;
         text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
 
         text += "Mouse x: "
@@ -169,7 +169,7 @@ export class MySceneContext {
         this.cam.UpdateCamera();
 
         /* Raycaster */
-        this.raycaster.setFromCamera(this.controller.pointer, this.cam.camera);
+        this.raycaster.setFromCamera(this.controller.pointer, this.cam._camera);
         const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (0) {
             if (intersects.length > 0) {
@@ -225,7 +225,7 @@ export class MySceneContext {
         // }
 
         /* Randerer call */
-        this.renderer.render(this.scene, this.cam.camera);
+        this.renderer.render(this.scene, this.cam._camera);
 
         /* Update stat */
         this.randerNum++;
@@ -301,7 +301,7 @@ export class MySceneContext {
         sphere.meshName = 'Pink Circle';
         this.scene.add(sphere);
 
-        let shiftHelper = new ShiftHelper(this.scene, this.cam.camera, sphere);
+        let shiftHelper = new ShiftHelper(this.scene, this.cam._camera, sphere);
         this.sphere = sphere;
     }
 }
