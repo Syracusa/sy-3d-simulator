@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Vector3 } from 'three';
+import { Vector3, _SRGBAFormat } from 'three';
 import { ArrowShape } from './arrow.js';
 
 export class ShiftHelper {
@@ -12,6 +12,7 @@ export class ShiftHelper {
 
     drawArrow(name, color, to) {
         let arrow = new ArrowShape(this.scene, this.targetPos, to);
+        arrow.to = to.clone();
         arrow.setColor(color);
         arrow.setMeshName(name);
         arrow.setIntersectHandler(() => {
@@ -22,6 +23,54 @@ export class ShiftHelper {
         });
         arrow.setOnMouseDownHandler(() => {
             console.log("Mouse down on " + name);
+
+            const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+            const points = [];
+
+            let posStart = this.targetPos.clone().project(this.cam);
+            posStart.z = -0.9999;
+            posStart.unproject(this.cam);
+
+            let posEnd = arrow.to.clone().project(this.cam);
+            
+            posEnd.z = -0.9999;
+            posEnd.unproject(this.cam);
+
+            points.push(posStart);
+            points.push(posEnd);
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, material);
+            this.scene.add(line);
+
+            if (0){
+                const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+                const points = [];
+    
+                let xcPosStart = this.targetPos.clone().project(this.cam);
+                xcPosStart.z = -0.9999;
+                xcPosStart.unproject(this.cam);
+    
+                let xcPosEnd = this.xArrowTo.clone().project(this.cam);
+                
+                xcPosEnd.z = -0.9999;
+                xcPosEnd.unproject(this.cam);
+    
+                points.push(xcPosStart);
+                points.push(xcPosEnd);
+    
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const line = new THREE.Line(geometry, material);
+                this.scene.add(line);
+            }
+
+
+            // xcPosStart.z -= 0.0001;
+            // xcPosEnd.z -= 0.0001;
+            // console.log(xcPosStart);
+            // console.log(xcPosEnd);
+
+            // this.scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material));
 
             // console.log(this.cam.position);
             // console.log(this.targetPos);
