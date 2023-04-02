@@ -42,53 +42,6 @@ export class ShiftHelper {
             const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const line = new THREE.Line(geometry, material);
             this.scene.add(line);
-
-            if (0){
-                const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
-                const points = [];
-    
-                let xcPosStart = this.targetPos.clone().project(this.cam);
-                xcPosStart.z = -0.9999;
-                xcPosStart.unproject(this.cam);
-    
-                let xcPosEnd = this.xArrowTo.clone().project(this.cam);
-                
-                xcPosEnd.z = -0.9999;
-                xcPosEnd.unproject(this.cam);
-    
-                points.push(xcPosStart);
-                points.push(xcPosEnd);
-    
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(geometry, material);
-                this.scene.add(line);
-            }
-
-
-            // xcPosStart.z -= 0.0001;
-            // xcPosEnd.z -= 0.0001;
-            // console.log(xcPosStart);
-            // console.log(xcPosEnd);
-
-            // this.scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material));
-
-            // console.log(this.cam.position);
-            // console.log(this.targetPos);
-            // let cpworld = new Vector3();
-            // console.log(this.cam.getWorldPosition(cpworld));
-            // console.log(cpworld);
-    
-            // let xcPosStart = this.targetPos.clone().project(this.cam);
-            // let xcPosEnd = this.xArrowTo.clone().project(this.cam);
-    
-            // console.log(xcPosStart);
-            // console.log(xcPosEnd);
-
-            // let ycPosStart = this.targetPos.clone().project(this.cam);
-            // let ycPosEnd = this.yArrowTo.clone().project(this.cam);
-    
-            // console.log(ycPosStart);
-            // console.log(ycPosEnd);
         });
         return arrow;
     }
