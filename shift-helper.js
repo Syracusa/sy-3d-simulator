@@ -24,6 +24,8 @@ export class ShiftHelper {
         });
         arrow.setOnMouseDownHandler((e) => {
             console.log("Mouse down on " + name);
+            this.dragStartPos = this.targetPos.clone();
+            this.dragStartTo = arrow.to.clone();
 
             if (0) {
                 const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
@@ -49,10 +51,14 @@ export class ShiftHelper {
         arrow.setOnMouseDragHandler((x1, y1, x2, y2) => {
             console.log(' ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
 
-            let arrowStart = this.targetPos.clone().project(this.cam);
+
+            console.log(this.dragStartPos);
+            console.log(this.dragStartTo);
+            let arrowStart = this.dragStartPos.clone().project(this.cam);
             arrowStart.z = -1.0;
-            let arrowEnd = arrow.to.clone().project(this.cam);
+            let arrowEnd = this.dragStartTo.clone().project(this.cam);
             arrowEnd.z = -1.0;
+
 
             let arrowLine = new Line3(arrowStart, arrowEnd);
 
@@ -70,7 +76,7 @@ export class ShiftHelper {
             let arrowProjDist = arrowStart.distanceTo(arrowEnd);
             console.log((dragDist / arrowProjDist) * 8.0);
 
-            let movedir = this.targetPos.clone().sub(arrow.to);
+            let movedir = this.dragStartPos.clone().sub(this.dragStartTo);
             movedir.multiplyScalar(dragDist / arrowProjDist);
             console.log(movedir);
 
@@ -90,16 +96,25 @@ export class ShiftHelper {
     }
 
     move(movedir) {
-        this.arrowX.reposition(this.targetPos.clone().add(movedir), this.arrowX.to.clone().add(movedir));
-        this.arrowY.reposition(this.targetPos.clone().add(movedir), this.arrowY.to.clone().add(movedir));
-        this.arrowZ.reposition(this.targetPos.clone().add(movedir), this.arrowZ.to.clone().add(movedir));
-        this.target.position.set(this.targetPos.clone().add(movedir));
-    }
+        this.targetPos = this.dragStartPos.clone().add(movedir);
 
-    toWindowPos(pos) {
-        pos.x = Math.round((pos.x + 1) * window.innerWidth / 2),
-            pos.y = Math.round((- pos.y + 1) * window.innerHeight / 2);
-        pos.z = 0;
+        this.xArrowTo = this.targetPos.clone();
+        this.xArrowTo.x += 8;
+
+        this.yArrowTo = this.targetPos.clone();
+        this.yArrowTo.y += 8;
+        this.zArrowTo = this.targetPos.clone();
+        this.zArrowTo.z += 8;
+
+        this.arrowX.reposition(this.targetPos, this.xArrowTo);
+        this.arrowY.reposition(this.targetPos, this.yArrowTo);
+        this.arrowZ.reposition(this.targetPos, this.zArrowTo);
+
+        this.arrowX.to = this.xArrowTo;
+        this.arrowY.to = this.yArrowTo;
+        this.arrowZ.to = this.zArrowTo;
+
+        this.target.position.copy(this.targetPos);
     }
 
     drawXYZArrows() {
