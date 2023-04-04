@@ -40,14 +40,9 @@ export class Terrain {
         let blue = parseInt(intense * 0.01);
 
         let hcolor = (blue + green * 0x100 + red * 0x10000);
-        // hcolor = 0x999999;
-45
+
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.computeVertexNormals();
-
-        
-
-        // geometry.setAttribute('sNormal', new THREE.BufferAttribute(vertices, 3));
 
         let material;
         if (1){

@@ -40,6 +40,8 @@ export class MySceneContext {
         this.genLight();
         this.genSphere();
 
+        this.shiftHelper = new ShiftHelper(this.scene, this.cam._camera, this.sphere1);
+
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
 
@@ -222,20 +224,6 @@ export class MySceneContext {
 
         }
 
-
-        // console.log(intersects);
-        // if (intersects.length > 0) {
-        //     if (this.currIntersected){
-        //         if (this.currIntersected != intersects[0]){
-        //             this.currIntersected.object.material.color.set(0x110000);
-        //             intersects[0].object.material.color.set( 0xff0000 );
-        //             this.currIntersected = intersects[0];
-        //         }
-        //     } else {
-        //         this.currIntersected = intersects[0];
-        //     }
-        // }
-
         /* Randerer call */
         this.renderer.render(this.scene, this.cam._camera);
 
@@ -300,20 +288,30 @@ export class MySceneContext {
     }
 
     genSphere() {
-        const geometryS = new THREE.SphereGeometry(2, 32, 32);
+        const geometryS = new THREE.SphereGeometry(1, 32, 32);
         const materialS = new THREE.MeshPhongMaterial({
             color: 0xFFAACF,
             // wireframe: true,
         });
 
-        const sphere = new THREE.Mesh(geometryS, materialS);
+        const sphere1 = new THREE.Mesh(geometryS, materialS);
 
-        sphere.position.set(48, 18, 48);
-        sphere.castShadow = true;
-        sphere.meshName = 'Pink Circle';
-        this.scene.add(sphere);
+        sphere1.position.set(48, 18, 48);
+        sphere1.castShadow = true;
+        sphere1.meshName = 'Pink Circle1';
+        this.scene.add(sphere1);
+        sphere1.onMouseDownHandler = () => {this.shiftHelper.retarget(sphere1);}
 
-        let shiftHelper = new ShiftHelper(this.scene, this.cam._camera, sphere);
-        this.sphere = sphere;
+        const sphere2 = new THREE.Mesh(geometryS, materialS);
+
+        sphere2.position.set(56, 18, 48);
+        sphere2.castShadow = true;
+        sphere2.meshName = 'Pink Circle2';
+        this.scene.add(sphere2);
+
+        sphere2.onMouseDownHandler = () => {this.shiftHelper.retarget(sphere2);}
+
+        this.sphere1 = sphere1;
+        this.sphere2 = sphere2;
     }
 }

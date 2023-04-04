@@ -11,6 +11,27 @@ export class ShiftHelper {
         this.drawXYZArrows();
     }
 
+    retarget(target) {
+        this.target = target;
+        this.targetPos = target.position.clone();
+
+        this.xArrowTo = this.targetPos.clone();
+        this.xArrowTo.x += 8;
+        this.yArrowTo = this.targetPos.clone();
+        this.yArrowTo.y += 8;
+        this.zArrowTo = this.targetPos.clone();
+        this.zArrowTo.z += 8;
+
+        this.arrowX.reposition(this.targetPos, this.xArrowTo);
+        this.arrowY.reposition(this.targetPos, this.yArrowTo);
+        this.arrowZ.reposition(this.targetPos, this.zArrowTo);
+
+        this.arrowX.to = this.xArrowTo;
+        this.arrowY.to = this.yArrowTo;
+        this.arrowZ.to = this.zArrowTo;
+
+    }
+
     drawArrow(name, color, to) {
         let arrow = new ArrowShape(this.scene, this.targetPos, to);
         arrow.to = to.clone();
@@ -49,16 +70,10 @@ export class ShiftHelper {
         });
 
         arrow.setOnMouseDragHandler((x1, y1, x2, y2) => {
-            console.log(' ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
-
-
-            console.log(this.dragStartPos);
-            console.log(this.dragStartTo);
             let arrowStart = this.dragStartPos.clone().project(this.cam);
             arrowStart.z = -1.0;
             let arrowEnd = this.dragStartTo.clone().project(this.cam);
             arrowEnd.z = -1.0;
-
 
             let arrowLine = new Line3(arrowStart, arrowEnd);
 
@@ -74,11 +89,9 @@ export class ShiftHelper {
 
             let dragDist = dragStart.distanceTo(dragEnd);
             let arrowProjDist = arrowStart.distanceTo(arrowEnd);
-            console.log((dragDist / arrowProjDist) * 8.0);
 
             let movedir = this.dragStartPos.clone().sub(this.dragStartTo);
             movedir.multiplyScalar(dragDist / arrowProjDist);
-            console.log(movedir);
 
             let d1 = arrowStart.distanceTo(dragStart);
             let d2 = arrowEnd.distanceTo(dragStart);
