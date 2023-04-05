@@ -1,7 +1,7 @@
 
 import * as THREE from 'three';
-
 import { MySceneContext } from './scene.js';
+
 
 let ctx = new MySceneContext();
 

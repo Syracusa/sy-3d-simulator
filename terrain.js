@@ -5,6 +5,8 @@ https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_terrain_r
 */
 import * as THREE from 'three';
 
+import customShader from './custom-shader.js'
+
 export class Terrain {
     heights = [];
 
@@ -47,8 +49,9 @@ export class Terrain {
         let material;
         if (1){
             material = new THREE.ShaderMaterial({
-                vertexShader: document.getElementById('vertexShader').textContent,
-                fragmentShader: document.getElementById('fragmentShader').textContent
+                ...customShader,
+                // vertexShader: document.getElementById('vertexShader').textContent,
+                // fragmentShader: document.getElementById('fragmentShader').textContent,
             });
         } else {
 

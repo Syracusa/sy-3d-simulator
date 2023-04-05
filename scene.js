@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 
+
 import { Terrain } from './terrain.js';
 import { Camera } from './camera.js';
 import { Controller } from './controller.js';
 import { ShiftHelper } from './shift-helper.js';
-import { Vector3 } from 'three';
+import { Bulb } from './bulb.js'
 
 export class MySceneContext {
     constructor() {
@@ -15,6 +16,7 @@ export class MySceneContext {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFShadowMap;
+        
 
         this.sceneDomParent = document.getElementById("three_scene");
         this.sceneDomParent.appendChild(this.renderer.domElement);
@@ -47,19 +49,13 @@ export class MySceneContext {
 
         this.currIntersected = null;
 
-        const planeMaterial = new THREE.MeshPhongMaterial({ color: 0xffb851 });
-        const cubes1 = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), planeMaterial);
+        /* Bulb */
+        let bulb = new Bulb(this.scene, new THREE.Vector3(48, 20, 48));
+        bulb.bulbMesh.meshName = 'bulb';
+        bulb.bulbMesh.onMouseDownHandler = () => {this.shiftHelper.retarget(bulb.bulbMesh);}
+        this.bulb = bulb;
 
-        cubes1.position.y = 10;
-        cubes1.position.x = 25;
-        cubes1.position.z = 25;
-
-        cubes1.castShadow = true;
-        cubes1.receiveShadow = true;
-
-        cubes1.meshName = 'BoxMesh';
-
-        this.scene.add(cubes1);
+        /* Fog */
         this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
 
         /* Helper */
