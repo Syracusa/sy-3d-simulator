@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 export default {
 
-  uniforms: THREE.UniformsUtils.clone([
+  /* TODO : Check clone or merge */
+  lights: true,
+  fog: true,
+  transparent: true,
+  uniforms: THREE.UniformsUtils.merge([
+    THREE.UniformsLib.common,
     THREE.UniformsLib.lights,
     THREE.UniformsLib.fog,
   ]),
@@ -62,8 +67,10 @@ void main()	{
     #include <fog_fragment>
     #include <dithering_fragment>    
   }
-`
-
+`,
+  // lights: true,
+  // fog: true,
+  // transparent: true
   //   vertexShader: `
   //     #include <common>
   //     #include <fog_pars_vertex>
