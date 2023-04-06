@@ -61,7 +61,7 @@ export class Terrain {
 
         const mesh = new THREE.Mesh(geometry, material);
 
-        // mesh.receiveShadow = true;
+        mesh.receiveShadow = true;
         mesh.meshName = 'floor';
         this.scene.add(mesh);
     }

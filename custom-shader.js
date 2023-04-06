@@ -39,7 +39,6 @@ void main()	{
         vertexColor = vec4(dProd / 2.0,  (position.y / 20.0) * 0.5, (position.y / 20.0) * 0.1, 1.0);
         vertexColor3 = vec3(dProd / 2.0,  (position.y / 20.0) * 0.5, (position.y / 20.0) * 0.1);
     }
-
 }
   `,
   fragmentShader:
@@ -60,8 +59,8 @@ void main()	{
     float shadowPower = 0.5;
     //gl_FragColor = vertexColor;
     gl_FragColor = vec4( mix(vertexColor3, shadowColor, (1.0 - getShadowMask() ) * shadowPower), 1.0);
-           #include <fog_fragment>
-           #include <dithering_fragment>    
+    #include <fog_fragment>
+    #include <dithering_fragment>    
   }
 `
 
