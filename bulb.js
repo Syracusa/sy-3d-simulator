@@ -25,7 +25,7 @@ export class Bulb {
     }
 
     genPointLight() {
-        let light = new THREE.PointLight(0xffffff, 10, 1000);
+        let light = new THREE.PointLight(0xffffff, 2, 1000);
 
         light.castShadow = true;
         light.shadow.camera.near = 0;

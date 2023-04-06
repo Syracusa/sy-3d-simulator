@@ -27,43 +27,39 @@ export class Terrain {
             v[0], v[1], v[2]
         ]);
 
-        let avg = (v[1] + v[4] + v[7] + v[10]) / 4;
-
-        let intense = avg * 30 - 50;
-        if (intense > 255)
-            intense = 255;
-        if (intense < 10)
-            intense = 10;
-
-        // intense = parseInt(intense);
-
-        let red = parseInt(intense * 0.1);
-        let green = parseInt(intense * 1.0);
-        let blue = parseInt(intense * 0.01);
-
-        let hcolor = (blue + green * 0x100 + red * 0x10000);
-
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.computeVertexNormals();
 
-        let material;
-        if (1){
-            material = new THREE.ShaderMaterial({
-                ...customShader,
-                // vertexShader: document.getElementById('vertexShader').textContent,
-                // fragmentShader: document.getElementById('fragmentShader').textContent,
-            });
-        } else {
+        const count = geometry.attributes.position.count;
+        geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
 
-            // material = new THREE.MeshBasicMaterial({ color: hcolor });
-            material = new THREE.MeshLambertMaterial   ({ color: hcolor });
+        const color = new THREE.Color();
+        const positions = geometry.attributes.position;
+        const colors = geometry.attributes.color;
+
+        for (let i = 0; i < count; i++) {
+            let posY = positions.getY(i);
+            if (posY > 16.0) {
+                color.setRGB(1.0 / 2.0, (posY / 20.0), (posY / 20.0));
+                colors.setXYZ(i, color.r, color.g, color.b);
+            } else {
+                color.setRGB(1.0 / 2.0, (posY / 20.0) * 0.5, (posY / 20.0) * 0.1);
+                colors.setXYZ(i, color.r, color.g, color.b);
+            }
         }
+        let material = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            flatShading: true,
+            vertexColors: true,
+            shininess: 0
+        });
 
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
         mesh.meshName = 'floor';
         this.scene.add(mesh);
+
     }
 
     genNoplaneTerrain() {
@@ -226,27 +222,27 @@ export class Terrain {
         context.fillRect(0, 0, width, height);
 
         image = context.getImageData(0, 0, canvas.width, canvas.height);
-        imageData = image.data;              
+        imageData = image.data;
 
         for (let i = 0, j = 0, l = imageData.length; i < l; i += 4, j++) {
 
-            if (data[j] < 1.51 && data[j] > 1.49){
+            if (data[j] < 1.51 && data[j] > 1.49) {
                 imageData[i] = 0xFF;
                 imageData[i + 1] = 0xFF;
                 imageData[i + 2] = 0xFF;
-            }else {
+            } else {
                 vector3.x = data[j - 2] - data[j + 2];
                 vector3.y = 1;
                 vector3.z = data[j - width * 2] - data[j + width * 2];
                 vector3.normalize();
-    
+
                 shade = vector3.dot(sun);
                 console.log(shade);
-    
+
                 // imageData[i] = ( shade * 256 ) * (0.5 + data[j] * 0.007);
                 // imageData[i + 1] = (shade * 256) * (0.5 + data[j] * 0.007);
                 // imageData[i + 2] = ( shade * 256) * (0.5 + data[j] * 0.007);
-    
+
                 imageData[i] = (shade * 0xDA) * (0.5 + data[j] * 0.07);
                 imageData[i + 1] = (shade * 0xF7) * (0.5 + data[j] * 0.07);
                 imageData[i + 2] = (shade * 0x77) * (0.5 + data[j] * 0.07);
