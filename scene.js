@@ -39,7 +39,7 @@ export class MySceneContext {
         this.terrain = new Terrain(this.scene);
         this.controller = new Controller();
 
-        this.genLight();
+        // this.genLight();
         this.genSphere();
 
         this.shiftHelper = new ShiftHelper(this.scene, this.cam._camera, this.sphere1);
@@ -228,64 +228,64 @@ export class MySceneContext {
         this.updateInfoPanel();
     }
 
-    genLight() {
-        /* ========== LightSource ========= */
-        const geometrylightSource = new THREE.SphereGeometry(1, 8, 8);
-        const materiallightSource = new THREE.MeshStandardMaterial({
-            color: 0xffffff
-        });
+    // genLight() {
+    //     /* ========== LightSource ========= */
+    //     const geometrylightSource = new THREE.SphereGeometry(1, 8, 8);
+    //     const materiallightSource = new THREE.MeshStandardMaterial({
+    //         color: 0xffffff
+    //     });
 
-        const lightSource = new THREE.Mesh(geometrylightSource, materiallightSource);
-        lightSource.position.set(3, 15, 3);
-        this.scene.add(lightSource);
-        this.lightSource = lightSource;
+    //     const lightSource = new THREE.Mesh(geometrylightSource, materiallightSource);
+    //     lightSource.position.set(3, 15, 3);
+    //     this.scene.add(lightSource);
+    //     this.lightSource = lightSource;
 
-        /* ========== Light ========= */
+    //     /* ========== Light ========= */
 
-        const USE_DIRECTIONAL_LIGHT = 1;
-        if (USE_DIRECTIONAL_LIGHT) {
-            let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
-            light.position.set(3, 15, 3);
-            light.target.position.set(0, 0, 0);
-            light.castShadow = true;
+    //     const USE_DIRECTIONAL_LIGHT = 1;
+    //     if (USE_DIRECTIONAL_LIGHT) {
+    //         let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
+    //         light.position.set(3, 15, 3);
+    //         light.target.position.set(0, 0, 0);
+    //         light.castShadow = true;
 
-            light.shadow.mapSize.width = 10240;
-            light.shadow.mapSize.height = 10240;
-            light.shadow.camera.near = -20;
-            light.shadow.camera.far = 100;
-            light.shadow.camera.top = 10;
-            light.shadow.camera.right = 10;
-            light.shadow.camera.left = -10;
-            light.shadow.camera.bottom = -10;
-            this.scene.add(light);
+    //         light.shadow.mapSize.width = 10240;
+    //         light.shadow.mapSize.height = 10240;
+    //         light.shadow.camera.near = -20;
+    //         light.shadow.camera.far = 100;
+    //         light.shadow.camera.top = 10;
+    //         light.shadow.camera.right = 10;
+    //         light.shadow.camera.left = -10;
+    //         light.shadow.camera.bottom = -10;
+    //         this.scene.add(light);
 
-            this.light = light;
-        } else {
-            let light = new THREE.PointLight(0xffffff, 10, 1000);
-            light.position.set(10, 50, 10);
-            // light.target.position.set( 10, 25, 25 );
+    //         this.light = light;
+    //     } else {
+    //         let light = new THREE.PointLight(0xffffff, 10, 1000);
+    //         light.position.set(10, 50, 10);
+    //         // light.target.position.set( 10, 25, 25 );
 
-            light.castShadow = true;
-            light.shadow.camera.near = -1000;
-            light.shadow.camera.far = 2500;
-            light.shadow.bias = 0.0001;
+    //         light.castShadow = true;
+    //         light.shadow.camera.near = -1000;
+    //         light.shadow.camera.far = 2500;
+    //         light.shadow.bias = 0.0001;
 
-            light.shadow.mapSize.width = 2048;
-            light.shadow.mapSize.height = 1024;
-            this.scene.add(light);
+    //         light.shadow.mapSize.width = 2048;
+    //         light.shadow.mapSize.height = 1024;
+    //         this.scene.add(light);
 
-            this.light = light;
-        }
+    //         this.light = light;
+    //     }
 
 
-        /* ========== Ambient Light ========= */
-        const ambientLight = new THREE.AmbientLight(0x404040, 2);
-        this.scene.add(ambientLight);
-    }
+    //     /* ========== Ambient Light ========= */
+    //     const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    //     this.scene.add(ambientLight);
+    // }
 
     genSphere() {
         const geometryS = new THREE.SphereGeometry(1, 32, 32);
-        const materialS = new THREE.MeshPhongMaterial({
+        const materialS = new THREE.MeshStandardMaterial({
             color: 0xFFAACF,
             // wireframe: true,
         });
@@ -294,6 +294,7 @@ export class MySceneContext {
 
         sphere1.position.set(48, 18, 48);
         sphere1.castShadow = true;
+        sphere1.receiveShadow = true;
         sphere1.meshName = 'Pink Circle1';
         this.scene.add(sphere1);
         sphere1.onMouseDownHandler = () => {this.shiftHelper.retarget(sphere1);}
@@ -302,6 +303,7 @@ export class MySceneContext {
 
         sphere2.position.set(56, 18, 48);
         sphere2.castShadow = true;
+        sphere2.receiveShadow = true;
         sphere2.meshName = 'Pink Circle2';
         this.scene.add(sphere2);
 

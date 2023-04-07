@@ -28,9 +28,11 @@ export class Bulb {
         let light = new THREE.PointLight(0xffffff, 2, 1000);
 
         light.castShadow = true;
+        light.shadowCameraVisible = true;
+
         light.shadow.camera.near = 0;
         light.shadow.camera.far = 2500;
-        light.shadow.bias = 0.0001;
+        // light.shadow.bias = -0.0001;
 
         light.shadow.mapSize.width = 2048;
         light.shadow.mapSize.height = 2048;

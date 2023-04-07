@@ -47,16 +47,16 @@ export class Terrain {
                 colors.setXYZ(i, color.r, color.g, color.b);
             }
         }
-        let material = new THREE.MeshLambertMaterial({
+        let material = new THREE.MeshStandardMaterial({
             color: 0xffffff,
             flatShading: true,
-            vertexColors: true,
-            shininess: 0
+            vertexColors: true
         });
 
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
+        mesh.castShadow = false;
         mesh.meshName = 'floor';
         this.scene.add(mesh);
 
