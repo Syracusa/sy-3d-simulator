@@ -10,14 +10,15 @@ import { Bulb } from './bulb.js'
 export class MySceneContext {
     constructor() {
         let USE_WINDOW_SIZE = 1;
+
+        /* Scene */
         let scene = new THREE.Scene();
-        let renderer = new THREE.WebGLRenderer({ antialias: true });
-
-        this.renderer = renderer;
         this.scene = scene;
-
         scene.background = new THREE.Color(0xeeeeee);
 
+        /* Randerer */
+        let renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer = renderer;
 
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -39,30 +40,37 @@ export class MySceneContext {
 
             this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
         }
-        this.raycaster = new THREE.Raycaster();
+
+
+        /* Camera */
         this.cam = new Camera(window.innerWidth / window.innerHeight);
 
+        /* Terrain */
         this.terrain = new Terrain(scene);
-        this.controller = new Controller();
 
-        // this.genLight();
+        /* Controller */
+        this.controller = new Controller(this);
+
+        /* Sphere */
         this.genSphere();
 
+        /* ShiftHelper */
         this.shiftHelper = new ShiftHelper(scene, this.cam._camera, this.sphere1);
 
+        /* Panel */
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
 
         this.currIntersected = null;
 
         /* Ambient light */
-        const ambientLight = new THREE.AmbientLight(0x404040, 2);
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
         scene.add(ambientLight);
 
         /* Bulb */
         let bulb = new Bulb(scene, new THREE.Vector3(48, 25, 48));
         bulb.bulbMesh.meshName = 'bulb';
-        bulb.bulbMesh.onMouseDownHandler = () => {this.shiftHelper.retarget(bulb.bulbMesh);}
+        bulb.bulbMesh.onMouseDownHandler = () => { this.shiftHelper.retarget(bulb.bulbMesh); }
         this.bulb = bulb;
 
         /* Fog */
@@ -71,85 +79,6 @@ export class MySceneContext {
         /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(axesHelper);
-
-        /* Mouse Event */
-        this.intersected = null;
-        this.dragTarget = null;
-        this.addMouseEventListener(this);
-
-
-    }
-
-    addMouseEventListener(ctx) {
-        window.onmousedown = function (e) {
-            if (ctx.intersected) {
-                ctx.dragTarget = ctx.intersected;
-                ctx.dragStartX = e.clientX;
-                ctx.dragStartY = e.clientY;
-                if (ctx.intersected.object.hasOwnProperty('onMouseDownHandler')) {
-                    ctx.intersected.object.onMouseDownHandler(e);
-                } else {
-                    console.log('No handler');
-                }
-            } else {
-                console.log('No intersected');
-            }
-        }
-
-        window.onmousemove = function (e) {
-            if (ctx.dragTarget){
-                if (ctx.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
-                    ctx.dragTarget.object.onMouseDragHandler(ctx.dragStartX, ctx.dragStartY, e.clientX, e.clientY);
-
-                } else {
-                    console.log('no drag handler');
-                }
-            }
-            // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
-        }
-
-        window.onmouseup = function (e) {
-            ctx.dragTarget = null;
-            // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
-        }
-
-        window.onmouseout = function (e) {
-            // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
-        }
-    }
-
-    inputHandler(timeDiff) {
-        timeDiff *= 0.1;
-        if (this.controller.isKeyPressed('w')) {
-            this.cam.GoFront(timeDiff);
-        }
-        if (this.controller.isKeyPressed('s')) {
-            this.cam.GoBack(timeDiff);
-        }
-        if (this.controller.isKeyPressed('a')) {
-            this.cam.GoLeft(timeDiff);
-        }
-        if (this.controller.isKeyPressed('d')) {
-            this.cam.GoRight(timeDiff);
-        }
-        if (this.controller.isKeyPressed('q')) {
-            this.cam.LeftRotate(timeDiff);
-        }
-        if (this.controller.isKeyPressed('e')) {
-            this.cam.RightRotate(timeDiff);
-        }
-        if (this.controller.isKeyPressed('1')) {
-            this.cam.ViewUp(timeDiff);
-        }
-        if (this.controller.isKeyPressed('2')) {
-            this.cam.ViewBottom(timeDiff);
-        }
-        if (this.controller.isKeyPressed('3')) {
-            this.cam.GetClose(0.1 * timeDiff);
-        }
-        if (this.controller.isKeyPressed('4')) {
-            this.cam.GetClose(-0.1 * timeDiff);
-        }
     }
 
     updateInfoPanel() {
@@ -177,60 +106,20 @@ export class MySceneContext {
             + this.controller.pointer.y.toPrecision(6)
             + "\n";
 
-        if (this.intersected != null && this.intersected.object.hasOwnProperty('meshName')) {
-            text += "Intersected : " + this.intersected.object.meshName + "\n";
+        if (this.controller.intersected != null &&
+            this.controller.intersected.object.hasOwnProperty('meshName')) {
+
+            text += "Intersected : " + this.controller.intersected.object.meshName + "\n";
         }
 
         this.infoPanel.innerText = text;
     }
 
     update(timeDiff) {
-        this.inputHandler(timeDiff);
+        this.controller.update(timeDiff);
 
         /* Camera update */
         this.cam.UpdateCamera();
-
-        /* Raycaster */
-        this.raycaster.setFromCamera(this.controller.pointer, this.cam._camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children, false);
-        if (0) {
-            if (intersects.length > 0) {
-                for (let i = 0; i < intersects.length; i++) {
-                    if (intersects[i].object.hasOwnProperty('meshName')) {
-                        console.log(intersects[i].object.meshName);
-                    } else {
-                        console.log(intersects[i]);
-                    }
-                }
-            }
-        } else {
-            if (intersects.length > 0) {
-                const INTERSECT_VERBOSE = 0;
-                if (INTERSECT_VERBOSE) {
-                    if (intersects[0].object.hasOwnProperty('meshName')) {
-                        console.log(intersects[0].object.meshName);
-                    } else {
-                        console.log(intersects[0]);
-                    }
-                }
-
-                if (this.intersected == null
-                    || this.intersected.object.uuid != intersects[0].object.uuid) {
-                    if (this.intersected &&
-                        this.intersected.object.hasOwnProperty('intersectOutHandler')) {
-                        this.intersected.object.intersectOutHandler();
-                        console.log('out handler');
-                    }
-
-                    this.intersected = intersects[0];
-                    if (intersects[0].object.hasOwnProperty('intersectHandler')) {
-                        intersects[0].object.intersectHandler();
-                        console.log('in handler');
-                    }
-                }
-            }
-
-        }
 
         /* Randerer call */
         this.renderer.render(this.scene, this.cam._camera);
@@ -239,61 +128,6 @@ export class MySceneContext {
         this.randerNum++;
         this.updateInfoPanel();
     }
-
-    // genLight() {
-    //     /* ========== LightSource ========= */
-    //     const geometrylightSource = new THREE.SphereGeometry(1, 8, 8);
-    //     const materiallightSource = new THREE.MeshStandardMaterial({
-    //         color: 0xffffff
-    //     });
-
-    //     const lightSource = new THREE.Mesh(geometrylightSource, materiallightSource);
-    //     lightSource.position.set(3, 15, 3);
-    //     this.scene.add(lightSource);
-    //     this.lightSource = lightSource;
-
-    //     /* ========== Light ========= */
-
-    //     const USE_DIRECTIONAL_LIGHT = 1;
-    //     if (USE_DIRECTIONAL_LIGHT) {
-    //         let light = new THREE.DirectionalLight(0xa0a0a0, 1.0);
-    //         light.position.set(3, 15, 3);
-    //         light.target.position.set(0, 0, 0);
-    //         light.castShadow = true;
-
-    //         light.shadow.mapSize.width = 10240;
-    //         light.shadow.mapSize.height = 10240;
-    //         light.shadow.camera.near = -20;
-    //         light.shadow.camera.far = 100;
-    //         light.shadow.camera.top = 10;
-    //         light.shadow.camera.right = 10;
-    //         light.shadow.camera.left = -10;
-    //         light.shadow.camera.bottom = -10;
-    //         this.scene.add(light);
-
-    //         this.light = light;
-    //     } else {
-    //         let light = new THREE.PointLight(0xffffff, 10, 1000);
-    //         light.position.set(10, 50, 10);
-    //         // light.target.position.set( 10, 25, 25 );
-
-    //         light.castShadow = true;
-    //         light.shadow.camera.near = -1000;
-    //         light.shadow.camera.far = 2500;
-    //         light.shadow.bias = 0.0001;
-
-    //         light.shadow.mapSize.width = 2048;
-    //         light.shadow.mapSize.height = 1024;
-    //         this.scene.add(light);
-
-    //         this.light = light;
-    //     }
-
-
-    //     /* ========== Ambient Light ========= */
-    //     const ambientLight = new THREE.AmbientLight(0x404040, 2);
-    //     this.scene.add(ambientLight);
-    // }
 
     genSphere() {
         const geometryS = new THREE.SphereGeometry(1, 32, 32);
@@ -309,7 +143,7 @@ export class MySceneContext {
         sphere1.receiveShadow = true;
         sphere1.meshName = 'Pink Circle1';
         this.scene.add(sphere1);
-        sphere1.onMouseDownHandler = () => {this.shiftHelper.retarget(sphere1);}
+        sphere1.onMouseDownHandler = () => { this.shiftHelper.retarget(sphere1); }
 
         const sphere2 = new THREE.Mesh(geometryS, materialS);
 
@@ -319,11 +153,11 @@ export class MySceneContext {
         sphere2.meshName = 'Pink Circle2';
         this.scene.add(sphere2);
 
-        sphere2.onMouseDownHandler = () => {this.shiftHelper.retarget(sphere2);}
+        sphere2.onMouseDownHandler = () => { this.shiftHelper.retarget(sphere2); }
 
         this.sphere1 = sphere1;
         this.sphere2 = sphere2;
 
-        
+
     }
 }

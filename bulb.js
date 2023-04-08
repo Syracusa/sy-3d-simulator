@@ -7,21 +7,11 @@ export class Bulb {
 
         let pointLight = this.genPointLight();
         pointLight.position.set(0, -3, 0);
-        // pointLight.position.copy(pos);
         bulbMesh.add(pointLight);
-
         scene.add(bulbMesh);
-
-        scene.add(new THREE.PointLightHelper(pointLight));
-        let helper = new THREE.CameraHelper(pointLight.shadow.camera);
-        helper.visible = false;
-        scene.add(helper);
-
 
         this.bulbMesh = bulbMesh;
         this.scene = scene;
-
-
     }
 
     genBulbMesh() {
@@ -34,7 +24,7 @@ export class Bulb {
     }
 
     genPointLight() {
-        let light = new THREE.PointLight(0xffffff, 2, 100);
+        let light = new THREE.PointLight(0xffffff, 1, 100);
 
         light.castShadow = true;
 
@@ -46,5 +36,4 @@ export class Bulb {
 
         return light;
     }
-
 }
