@@ -16,7 +16,7 @@ export class MainScene {
         this.scene = scene;
         scene.background = new THREE.Color(0xeeeeee);
 
-        /* Randerer */
+        /* Renderer */
         let renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer = renderer;
 
