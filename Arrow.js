@@ -9,7 +9,6 @@ export class ArrowShape {
         this.reposition(vStart, vEnd);
     }
 
-
     test() {
         const geometry = new THREE.ConeGeometry(1, 4, 32);
         const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });

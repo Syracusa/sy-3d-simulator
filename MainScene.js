@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 
 
-import { Terrain } from './terrain.js';
-import { Camera } from './camera.js';
-import { Controller } from './controller.js';
-import { ShiftHelper } from './shift-helper.js';
-import { Bulb } from './bulb.js'
+import { Terrain } from './Terrain.js';
+import { FlyingCamera } from './FlyingCamera.js';
+import { Controller } from './Controller.js';
+import { ShiftHelper } from './ShiftHelper.js';
+import { Bulb } from './Bulb.js'
 
-export class MySceneContext {
+export class MainScene {
     constructor() {
         let USE_WINDOW_SIZE = 1;
 
@@ -43,7 +43,7 @@ export class MySceneContext {
 
 
         /* Camera */
-        this.cam = new Camera(window.innerWidth / window.innerHeight);
+        this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
 
         /* Terrain */
         this.terrain = new Terrain(scene);
@@ -55,7 +55,7 @@ export class MySceneContext {
         this.genSphere();
 
         /* ShiftHelper */
-        this.shiftHelper = new ShiftHelper(scene, this.cam._camera, this.sphere1);
+        this.shiftHelper = new ShiftHelper(scene, this.flyingCamera.orthographicCamera, this.sphere1);
 
         /* Panel */
         this.infoPanel = document.getElementById("info");
@@ -84,21 +84,21 @@ export class MySceneContext {
     updateInfoPanel() {
         let text = "";
         text += "Frame : " + this.randerNum + "\n";
-        text += "View scale : " + this.cam.ViewScale.toPrecision(4) + "\n";
+        text += "View scale : " + this.flyingCamera.ViewScale.toPrecision(4) + "\n";
         text += "Cam Position : "
-            + this.cam._camera.position.x.toPrecision(6) + ", "
-            + this.cam._camera.position.y.toPrecision(6) + ", "
-            + this.cam._camera.position.z.toPrecision(6) + "\n";
+            + this.flyingCamera.orthographicCamera.position.x.toPrecision(6) + ", "
+            + this.flyingCamera.orthographicCamera.position.y.toPrecision(6) + ", "
+            + this.flyingCamera.orthographicCamera.position.z.toPrecision(6) + "\n";
 
         text += "Cam Lookat : "
-            + this.cam.CamLookat.x.toPrecision(6) + ", "
-            + this.cam.CamLookat.y.toPrecision(6) + ", "
-            + this.cam.CamLookat.z.toPrecision(6) + "\n";
+            + this.flyingCamera.CamLookat.x.toPrecision(6) + ", "
+            + this.flyingCamera.CamLookat.y.toPrecision(6) + ", "
+            + this.flyingCamera.CamLookat.z.toPrecision(6) + "\n";
 
-        text += "Cam xz angle : " + (this.cam.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
+        text += "Cam xz angle : " + (this.flyingCamera.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
 
-        let ydiff = this.cam._camera.position.y - this.cam.CamLookat.y;
-        text += "Cam y angle : " + (Math.atan(ydiff / this.cam.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
+        let ydiff = this.flyingCamera.orthographicCamera.position.y - this.flyingCamera.CamLookat.y;
+        text += "Cam y angle : " + (Math.atan(ydiff / this.flyingCamera.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
 
         text += "Mouse x: "
             + this.controller.pointer.x.toPrecision(6)
@@ -119,10 +119,10 @@ export class MySceneContext {
         this.controller.update(timeDiff);
 
         /* Camera update */
-        this.cam.UpdateCamera();
+        this.flyingCamera.UpdateCamera();
 
         /* Randerer call */
-        this.renderer.render(this.scene, this.cam._camera);
+        this.renderer.render(this.scene, this.flyingCamera.orthographicCamera);
 
         /* Update stat */
         this.randerNum++;

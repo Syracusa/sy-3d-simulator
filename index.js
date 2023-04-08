@@ -1,18 +1,12 @@
+import { MainScene } from './MainScene.js';
 
-import * as THREE from 'three';
-import { MySceneContext } from './scene.js';
-
-
-let ctx = new MySceneContext();
-
+let ctx = new MainScene();
 let minIntervalMs = 10;
-
 let oldTime = Date.now();
 
-
 function onWindowResize() {
-    ctx.cam.updateScreenRatio( window.innerWidth / window.innerHeight);
-    ctx.cam._camera.updateProjectionMatrix();
+    ctx.flyingCamera.updateScreenRatio( window.innerWidth / window.innerHeight);
+    ctx.flyingCamera.orthographicCamera.updateProjectionMatrix();
     ctx.renderer.setSize( window.innerWidth, window.innerHeight );
 }
 

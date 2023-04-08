@@ -1,18 +1,11 @@
-
-/* 
-Some code snippets are copied from
-https://github.com/mrdoob/three.js/blob/master/examples/webgl_geometry_terrain_raycast.html 
-*/
 import * as THREE from 'three';
-
-import customShader from './custom-shader.js'
 
 export class Terrain {
     heights = [];
 
     constructor(scene) {
         this.scene = scene;
-        this.genRandomTerrain();
+        this.genTerrain();
     }
 
     drawSquare(v) {
@@ -60,7 +53,7 @@ export class Terrain {
         this.scene.add(mesh);
     }
 
-    genNoplaneTerrain() {
+    genTerrain() {
         const RANDER_BOTH_SIDE = 0;
         const RANDER_DIAGONAL_LINE = 0;
         const DRAW_LINE = 0;
@@ -142,7 +135,6 @@ export class Terrain {
                 this.scene.add(line);
             }
         }
-
     }
 
     genHeights(width, height) {
@@ -169,113 +161,4 @@ export class Terrain {
 
         return data;
     }
-
-    genRandomTerrain() {
-        const USE_PLANE = 0;
-        const segments = 100;
-
-        if (USE_PLANE) {
-            const geometry = new THREE.PlaneGeometry(100, 100, segments - 1, segments - 1);
-            geometry.rotateX(- Math.PI / 2);
-
-            const vertices = geometry.attributes.position.array;
-
-            const data = this.genHeights(segments, segments);
-
-            for (let i = 0, j = 0, l = vertices.length; i < l; i++, j += 3) {
-                // j + 1 because it is the y component that we modify
-                vertices[j + 1] = data[i];
-            }
-
-            const texture = new THREE.CanvasTexture(this.generateTexture(data, segments, segments));
-            texture.wrapS = THREE.ClampToEdgeWrapping;
-            texture.wrapT = THREE.ClampToEdgeWrapping;
-
-            const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: texture }));
-            this.scene.add(mesh);
-
-        } else {
-            this.genNoplaneTerrain();
-        }
-
-    }
-
-    generateTexture(data, width, height) {
-
-        // bake lighting into texture
-
-        let context, image, imageData, shade;
-
-        const vector3 = new THREE.Vector3(0, 0, 0);
-
-        const sun = new THREE.Vector3(1, 2, 1);
-        sun.normalize();
-
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-
-        context = canvas.getContext('2d');
-        context.fillStyle = '#000000';
-        context.fillRect(0, 0, width, height);
-
-        image = context.getImageData(0, 0, canvas.width, canvas.height);
-        imageData = image.data;
-
-        for (let i = 0, j = 0, l = imageData.length; i < l; i += 4, j++) {
-
-            if (data[j] < 1.51 && data[j] > 1.49) {
-                imageData[i] = 0xFF;
-                imageData[i + 1] = 0xFF;
-                imageData[i + 2] = 0xFF;
-            } else {
-                vector3.x = data[j - 2] - data[j + 2];
-                vector3.y = 1;
-                vector3.z = data[j - width * 2] - data[j + width * 2];
-                vector3.normalize();
-
-                shade = vector3.dot(sun);
-                console.log(shade);
-
-                // imageData[i] = ( shade * 256 ) * (0.5 + data[j] * 0.007);
-                // imageData[i + 1] = (shade * 256) * (0.5 + data[j] * 0.007);
-                // imageData[i + 2] = ( shade * 256) * (0.5 + data[j] * 0.007);
-
-                imageData[i] = (shade * 0xDA) * (0.5 + data[j] * 0.07);
-                imageData[i + 1] = (shade * 0xF7) * (0.5 + data[j] * 0.07);
-                imageData[i + 2] = (shade * 0x77) * (0.5 + data[j] * 0.07);
-            }
-        }
-
-        context.putImageData(image, 0, 0);
-
-        // Scaled 4x
-
-        const canvasScaled = document.createElement('canvas');
-        canvasScaled.width = width * 4;
-        canvasScaled.height = height * 4;
-
-        context = canvasScaled.getContext('2d');
-        context.scale(4, 4);
-        context.drawImage(canvas, 0, 0);
-
-        image = context.getImageData(0, 0, canvasScaled.width, canvasScaled.height);
-        imageData = image.data;
-
-        for (let i = 0, l = imageData.length; i < l; i += 4) {
-            // const v = ~ ~(Math.random() * 5);
-
-            // imageData[i] += v;
-            // imageData[i + 1] += v;
-            // imageData[i + 2] += v;
-
-        }
-
-        context.putImageData(image, 0, 0);
-
-        return canvasScaled;
-
-    }
-
-
 }

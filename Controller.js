@@ -89,7 +89,7 @@ export class Controller {
 
     raycastControl() {
         /* Raycaster */
-        this.raycaster.setFromCamera(this.pointer, this.ctx.cam._camera);
+        this.raycaster.setFromCamera(this.pointer, this.ctx.flyingCamera.orthographicCamera);
         const intersects = this.raycaster.intersectObjects(this.ctx.scene.children, false);
 
         if (intersects.length > 0) {
@@ -122,34 +122,34 @@ export class Controller {
     update(timeDiff) {
         timeDiff *= 0.1;
         if (this.isKeyPressed('w')) {
-            this.ctx.cam.GoFront(timeDiff);
+            this.ctx.flyingCamera.GoFront(timeDiff);
         }
         if (this.isKeyPressed('s')) {
-            this.ctx.cam.GoBack(timeDiff);
+            this.ctx.flyingCamera.GoBack(timeDiff);
         }
         if (this.isKeyPressed('a')) {
-            this.ctx.cam.GoLeft(timeDiff);
+            this.ctx.flyingCamera.GoLeft(timeDiff);
         }
         if (this.isKeyPressed('d')) {
-            this.ctx.cam.GoRight(timeDiff);
+            this.ctx.flyingCamera.GoRight(timeDiff);
         }
         if (this.isKeyPressed('q')) {
-            this.ctx.cam.LeftRotate(timeDiff);
+            this.ctx.flyingCamera.LeftRotate(timeDiff);
         }
         if (this.isKeyPressed('e')) {
-            this.ctx.cam.RightRotate(timeDiff);
+            this.ctx.flyingCamera.RightRotate(timeDiff);
         }
         if (this.isKeyPressed('1')) {
-            this.ctx.cam.ViewUp(timeDiff);
+            this.ctx.flyingCamera.ViewUp(timeDiff);
         }
         if (this.isKeyPressed('2')) {
-            this.ctx.cam.ViewBottom(timeDiff);
+            this.ctx.flyingCamera.ViewBottom(timeDiff);
         }
         if (this.isKeyPressed('3')) {
-            this.ctx.cam.GetClose(0.1 * timeDiff);
+            this.ctx.flyingCamera.GetClose(0.1 * timeDiff);
         }
         if (this.isKeyPressed('4')) {
-            this.ctx.cam.GetClose(-0.1 * timeDiff);
+            this.ctx.flyingCamera.GetClose(-0.1 * timeDiff);
         }
 
         this.raycastControl();
