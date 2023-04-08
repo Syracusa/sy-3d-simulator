@@ -28,9 +28,7 @@ export class Terrain {
         ]);
 
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.computeVertexNormals();
-        geometry.computeBoundingBox ();
-        geometry.computeBoundingSphere ();
+        geometry.computeVertexNormals(); /* For shadows */
 
         const count = geometry.attributes.position.count;
         geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
@@ -53,14 +51,13 @@ export class Terrain {
             color: 0xffffff,
             vertexColors: true
         });
-        material.shadowSide = THREE.DoubleSide;
+        
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
         mesh.castShadow = false;
         mesh.meshName = 'floor';
         this.scene.add(mesh);
-
     }
 
     genNoplaneTerrain() {

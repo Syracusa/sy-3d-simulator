@@ -5,17 +5,17 @@ export class Camera {
 
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
-        this.CamLookat = new Vector3(0, 40, 0);
+        this.CamLookat = new Vector3(0, 90, 0);
 
         this._camera = new THREE.OrthographicCamera();
         this._camera.near = 0;
         this._camera.far = 1000;
 
-        this._camera.position.set(34, 50, 76);
+        this._camera.position.set(8, 100, 117);
 
 
         this.CamdirAngle = Math.PI * 5 / 3;
-        this.CamdirDiameter = 20.0;
+        this.CamdirDiameter = 40.0;
 
         this.ViewScale = 16;
 

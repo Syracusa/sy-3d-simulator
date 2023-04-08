@@ -66,7 +66,7 @@ export class MySceneContext {
         this.bulb = bulb;
 
         /* Fog */
-        scene.fog = new THREE.Fog(0x59472b, 0, 156);
+        scene.fog = new THREE.Fog(0x59472b, 0, 500);
 
         /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
