@@ -26,4 +26,5 @@ body {
 	z-index: 100;
 	display:block;
     font-size: x-small;
+    user-select: none;
 }
