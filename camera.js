@@ -13,6 +13,7 @@ export class Camera {
 
         this._camera.position.set(34, 50, 76);
 
+
         this.CamdirAngle = Math.PI * 5 / 3;
         this.CamdirDiameter = 20.0;
 

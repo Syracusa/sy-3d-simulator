@@ -10,25 +10,30 @@ import { Bulb } from './bulb.js'
 export class MySceneContext {
     constructor() {
         let USE_WINDOW_SIZE = 1;
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xeeeeee);
+        let scene = new THREE.Scene();
+        let renderer = new THREE.WebGLRenderer({ antialias: true });
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFShadowMap;
-        
+        this.renderer = renderer;
+        this.scene = scene;
+
+        scene.background = new THREE.Color(0xeeeeee);
+
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+        renderer.shadowMap.renderSingleSided = false;
 
         this.sceneDomParent = document.getElementById("three_scene");
-        this.sceneDomParent.appendChild(this.renderer.domElement);
+        this.sceneDomParent.appendChild(renderer.domElement);
 
         if (USE_WINDOW_SIZE) {
-            this.renderer.setPixelRatio(window.devicePixelRatio);
-            this.renderer.setSize(
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(
                 window.innerWidth,
                 window.innerHeight);
             this.screenRatio = window.innerWidth / window.innerHeight;
         } else {
-            this.renderer.setSize(
+            renderer.setSize(
                 this.sceneDomParent.offsetWidth,
                 this.sceneDomParent.offsetHeight);
 
@@ -36,36 +41,43 @@ export class MySceneContext {
         }
         this.raycaster = new THREE.Raycaster();
         this.cam = new Camera(window.innerWidth / window.innerHeight);
-        this.terrain = new Terrain(this.scene);
+
+        this.terrain = new Terrain(scene);
         this.controller = new Controller();
 
         // this.genLight();
         this.genSphere();
 
-        this.shiftHelper = new ShiftHelper(this.scene, this.cam._camera, this.sphere1);
+        this.shiftHelper = new ShiftHelper(scene, this.cam._camera, this.sphere1);
 
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
 
         this.currIntersected = null;
 
+        /* Ambient light */
+        const ambientLight = new THREE.AmbientLight(0x404040, 2);
+        scene.add(ambientLight);
+
         /* Bulb */
-        let bulb = new Bulb(this.scene, new THREE.Vector3(48, 20, 48));
+        let bulb = new Bulb(scene, new THREE.Vector3(48, 25, 48));
         bulb.bulbMesh.meshName = 'bulb';
         bulb.bulbMesh.onMouseDownHandler = () => {this.shiftHelper.retarget(bulb.bulbMesh);}
         this.bulb = bulb;
 
         /* Fog */
-        this.scene.fog = new THREE.Fog(0x59472b, 0, 156);
+        scene.fog = new THREE.Fog(0x59472b, 0, 156);
 
         /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
-        this.scene.add(axesHelper);
+        scene.add(axesHelper);
 
         /* Mouse Event */
         this.intersected = null;
         this.dragTarget = null;
         this.addMouseEventListener(this);
+
+
     }
 
     addMouseEventListener(ctx) {
@@ -289,7 +301,7 @@ export class MySceneContext {
             color: 0xFFAACF,
             // wireframe: true,
         });
-
+        materialS.shadowSide = THREE.DoubleSide;
         const sphere1 = new THREE.Mesh(geometryS, materialS);
 
         sphere1.position.set(48, 18, 48);
@@ -311,5 +323,7 @@ export class MySceneContext {
 
         this.sphere1 = sphere1;
         this.sphere2 = sphere2;
+
+        
     }
 }

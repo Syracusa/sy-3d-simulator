@@ -29,6 +29,8 @@ export class Terrain {
 
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.computeVertexNormals();
+        geometry.computeBoundingBox ();
+        geometry.computeBoundingSphere ();
 
         const count = geometry.attributes.position.count;
         geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
@@ -49,10 +51,9 @@ export class Terrain {
         }
         let material = new THREE.MeshStandardMaterial({
             color: 0xffffff,
-            flatShading: true,
             vertexColors: true
         });
-
+        material.shadowSide = THREE.DoubleSide;
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
