@@ -1,4 +1,6 @@
 import { MainScene } from './MainScene.js';
+import { GUI } from 'dat.gui'
+
 
 let ctx = new MainScene();
 let minIntervalMs = 10;
@@ -12,6 +14,8 @@ function onWindowResize() {
 
 window.addEventListener( 'resize', onWindowResize );
 onWindowResize();
+
+
 
 function animate() {
     requestAnimationFrame(animate);

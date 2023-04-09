@@ -1,31 +1,31 @@
 * {
     margin: 0px;
-    user-select: none;
-}
-#control_panel {
-    height: 10%;
 }
 
 #three_scene {
     height: 95%;
 }
 
-.container {
-    height: 100vh;
+body {
+    overflow: hidden;
+    z-index: 5;
 }
 
-body {
-    overflow: hidden; 
+#gui {
+    position: absolute;
+    top: 2px;
+    right: 2px;
 }
+
 
 #info {
-	position: absolute;
-	top: 10px;
+    position: absolute;
+    top: 10px;
     left: 10px;
-	width: 100%;
-	text-align: left;
-	z-index: 100;
-	display:block;
+    width: 50%;
+    text-align: left;
+    z-index: 1;
+    display: block;
     font-size: x-small;
     user-select: none;
 }

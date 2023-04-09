@@ -4,7 +4,8 @@ import * as THREE from 'three'
 export class Controller {
     that = this;
 
-    constructor(ctx) {
+    constructor(mainScene) {
+        this.mainScene = mainScene;
         this.keystate = {};
 
         window.onkeydown = (e) => {
@@ -17,17 +18,35 @@ export class Controller {
         this.pointer = new THREE.Vector2(0, 0);
         console.log(this.pointer);
         console.log(this.pointer.x);
-        document.addEventListener('pointermove', this.onPointerMove.bind(this));
+
+        this.mainScene.renderer.domElement.addEventListener('pointermove', this.onPointerMove.bind(this));
 
         this.addMouseEventListener(this);
 
         /* Raycaster */
         this.raycaster = new THREE.Raycaster();
 
-        this.ctx = ctx;
-        this.gui = new GUI();
+
         this.intersected = null;
         this.dragTarget = null;
+
+        this.initDatGui();     
+    }
+
+    initDatGui() {
+
+        let test = {
+            'Create new node':function(){ console.log("Create new node") },
+            'Delete node':function(){ console.log("Delete node") }
+        }
+
+        const gui = new GUI()
+
+        const cubeFolder = gui.addFolder('Node')
+        cubeFolder.add(test, 'Create new node');
+        cubeFolder.add(test, 'Delete node');
+        cubeFolder.open()
+        
     }
 
     onPointerMove(event) {
@@ -48,7 +67,7 @@ export class Controller {
     }
 
     addMouseEventListener(controller) {
-        window.onmousedown = function (e) {
+        this.mainScene.renderer.domElement.onmousedown = function (e) {
             if (controller.intersected) {
                 controller.dragTarget = controller.intersected;
                 controller.dragStartX = e.clientX;
@@ -63,7 +82,7 @@ export class Controller {
             }
         }
 
-        window.onmousemove = function (e) {
+        this.mainScene.renderer.domElement.onmousemove = function (e) {
             if (controller.dragTarget) {
                 if (controller.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
                     controller.dragTarget.object.onMouseDragHandler(
@@ -77,20 +96,20 @@ export class Controller {
             // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
         }
 
-        window.onmouseup = function (e) {
+        this.mainScene.renderer.domElement.onmouseup = function (e) {
             controller.dragTarget = null;
             // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
         }
 
-        window.onmouseout = function (e) {
+        this.mainScene.renderer.domElement.onmouseout = function (e) {
             // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
         }
     }
 
     raycastControl() {
         /* Raycaster */
-        this.raycaster.setFromCamera(this.pointer, this.ctx.flyingCamera.orthographicCamera);
-        const intersects = this.raycaster.intersectObjects(this.ctx.scene.children, false);
+        this.raycaster.setFromCamera(this.pointer, this.mainScene.flyingCamera.orthographicCamera);
+        const intersects = this.raycaster.intersectObjects(this.mainScene.scene.children, false);
 
         if (intersects.length > 0) {
             const INTERSECT_VERBOSE = 0;
@@ -122,34 +141,34 @@ export class Controller {
     update(timeDiff) {
         timeDiff *= 0.1;
         if (this.isKeyPressed('w')) {
-            this.ctx.flyingCamera.GoFront(timeDiff);
+            this.mainScene.flyingCamera.GoFront(timeDiff);
         }
         if (this.isKeyPressed('s')) {
-            this.ctx.flyingCamera.GoBack(timeDiff);
+            this.mainScene.flyingCamera.GoBack(timeDiff);
         }
         if (this.isKeyPressed('a')) {
-            this.ctx.flyingCamera.GoLeft(timeDiff);
+            this.mainScene.flyingCamera.GoLeft(timeDiff);
         }
         if (this.isKeyPressed('d')) {
-            this.ctx.flyingCamera.GoRight(timeDiff);
+            this.mainScene.flyingCamera.GoRight(timeDiff);
         }
         if (this.isKeyPressed('q')) {
-            this.ctx.flyingCamera.LeftRotate(timeDiff);
+            this.mainScene.flyingCamera.LeftRotate(timeDiff);
         }
         if (this.isKeyPressed('e')) {
-            this.ctx.flyingCamera.RightRotate(timeDiff);
+            this.mainScene.flyingCamera.RightRotate(timeDiff);
         }
         if (this.isKeyPressed('1')) {
-            this.ctx.flyingCamera.ViewUp(timeDiff);
+            this.mainScene.flyingCamera.ViewUp(timeDiff);
         }
         if (this.isKeyPressed('2')) {
-            this.ctx.flyingCamera.ViewBottom(timeDiff);
+            this.mainScene.flyingCamera.ViewBottom(timeDiff);
         }
         if (this.isKeyPressed('3')) {
-            this.ctx.flyingCamera.GetClose(0.1 * timeDiff);
+            this.mainScene.flyingCamera.GetClose(0.1 * timeDiff);
         }
         if (this.isKeyPressed('4')) {
-            this.ctx.flyingCamera.GetClose(-0.1 * timeDiff);
+            this.mainScene.flyingCamera.GetClose(-0.1 * timeDiff);
         }
 
         this.raycastControl();

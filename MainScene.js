@@ -11,8 +11,6 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 export class MainScene {
     constructor() {
-        let USE_WINDOW_SIZE = 1;
-
         /* Scene */
         let scene = new THREE.Scene();
         this.scene = scene;
@@ -25,23 +23,12 @@ export class MainScene {
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.shadowMap.renderSingleSided = false;
-
-        this.sceneDomParent = document.getElementById("three_scene");
-        this.sceneDomParent.appendChild(renderer.domElement);
-
-        if (USE_WINDOW_SIZE) {
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setSize(
-                window.innerWidth,
-                window.innerHeight);
-            this.screenRatio = window.innerWidth / window.innerHeight;
-        } else {
-            renderer.setSize(
-                this.sceneDomParent.offsetWidth,
-                this.sceneDomParent.offsetHeight);
-
-            this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
-        }
+        document.body.appendChild( renderer.domElement );
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight);
+        this.screenRatio = window.innerWidth / window.innerHeight;
 
         /* Camera */
         this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
