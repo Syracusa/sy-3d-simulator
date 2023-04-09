@@ -29,7 +29,6 @@ export class ShiftHelper {
         this.arrowX.to = this.xArrowTo;
         this.arrowY.to = this.yArrowTo;
         this.arrowZ.to = this.zArrowTo;
-
     }
 
     drawArrow(name, color, to) {
@@ -103,8 +102,6 @@ export class ShiftHelper {
             }
             this.move(movedir);
         });
-
-        /* TODO : MouseUPHandler */
         return arrow;
     }
 

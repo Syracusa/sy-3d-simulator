@@ -6,6 +6,8 @@ import { FlyingCamera } from './FlyingCamera.js';
 import { Controller } from './Controller.js';
 import { ShiftHelper } from './ShiftHelper.js';
 import { Bulb } from './Bulb.js'
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 export class MainScene {
     constructor() {
@@ -16,7 +18,7 @@ export class MainScene {
         this.scene = scene;
         scene.background = new THREE.Color(0xeeeeee);
 
-        /* Randerer */
+        /* Renderer */
         let renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer = renderer;
 
@@ -61,8 +63,6 @@ export class MainScene {
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
 
-        this.currIntersected = null;
-
         /* Ambient light */
         const ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
         scene.add(ambientLight);
@@ -79,6 +79,46 @@ export class MainScene {
         /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(axesHelper);
+
+        this.loaderTest(this);
+    }
+
+    loaderTest(mainScene) {
+        // Instantiate a loader
+        const loader = new GLTFLoader();
+
+        // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
+        loader.setDRACOLoader(dracoLoader);
+
+        // Load a glTF resource
+        loader.load(
+            // resource URL
+            './static/Drone.glb',
+            // called when the resource is loaded
+            function (gltf) {
+                gltf.scene.position.set(56, 22, 53);
+                gltf.scene.scale.set(5.0, 5.0, 5.0);
+                gltf.scene.meshName = 'Drone';
+                console.log(gltf.scene);
+                mainScene.scene.add(gltf.scene);
+
+                gltf.animations; // Array<THREE.AnimationClip>
+                gltf.scene; // THREE.Group
+                gltf.scenes; // Array<THREE.Group>
+                gltf.cameras; // Array<THREE.Camera>
+                gltf.asset; // Object
+            },
+            // called while loading is progressing
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            // called when loading has errors
+            function (error) {
+                console.log('An error happened');
+            }
+        );
     }
 
     updateInfoPanel() {
@@ -106,10 +146,14 @@ export class MainScene {
             + this.controller.pointer.y.toPrecision(6)
             + "\n";
 
-        if (this.controller.intersected != null &&
-            this.controller.intersected.object.hasOwnProperty('meshName')) {
+        if (this.controller.intersected != null){
+            if (this.controller.intersected.object.hasOwnProperty('meshName')){
+                text += "Intersected : " + this.controller.intersected.object.meshName + "\n";
+            } else {
+                text += "Intersected : unknown\n";
+            }
 
-            text += "Intersected : " + this.controller.intersected.object.meshName + "\n";
+
         }
 
         this.infoPanel.innerText = text;
