@@ -43,7 +43,6 @@ export class MainScene {
             this.screenRatio = this.sceneDomParent.offsetWidth / this.sceneDomParent.offsetHeight;
         }
 
-
         /* Camera */
         this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
 
@@ -64,14 +63,41 @@ export class MainScene {
         this.randerNum = 0;
 
         /* Ambient light */
-        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
         scene.add(ambientLight);
 
+        /* Directional light */
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+
+        scene.add(directionalLight);
+        scene.add(directionalLight.target);
+        directionalLight.position.set(56, 1000, 53);
+        directionalLight.target.position.set(56, 0, 53);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.camera.near = 0.1;
+        directionalLight.shadow.camera.far = 2500;
+
+        directionalLight.shadow.camera.top = 100;
+        directionalLight.shadow.camera.bottom = -100;
+        directionalLight.shadow.camera.left = -100;
+        directionalLight.shadow.camera.right = 100;
+
+        directionalLight.shadow.bias = -0.001;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+
+        if (0) {
+            let helper = new THREE.CameraHelper(directionalLight.shadow.camera);
+            scene.add(helper);
+        }
+
         /* Bulb */
-        let bulb = new Bulb(scene, new THREE.Vector3(48, 25, 48));
-        bulb.bulbMesh.meshName = 'bulb';
-        bulb.bulbMesh.onMouseDownHandler = () => { this.shiftHelper.retarget(bulb.bulbMesh); }
-        this.bulb = bulb;
+        if (0) {
+            let bulb = new Bulb(scene, new THREE.Vector3(48, 25, 48));
+            bulb.bulbMesh.meshName = 'bulb';
+            bulb.bulbMesh.onMouseDownHandler = () => { this.shiftHelper.retarget(bulb.bulbMesh); }
+            this.bulb = bulb;
+        }
 
         /* Fog */
         scene.fog = new THREE.Fog(0x59472b, 0, 500);
@@ -84,37 +110,42 @@ export class MainScene {
     }
 
     loaderTest(mainScene) {
-        // Instantiate a loader
         const loader = new GLTFLoader();
 
-        // Optional: Provide a DRACOLoader instance to decode compressed mesh data
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
         loader.setDRACOLoader(dracoLoader);
 
-        // Load a glTF resource
         loader.load(
-            // resource URL
             './static/Drone.glb',
-            // called when the resource is loaded
             function (gltf) {
-                gltf.scene.position.set(56, 22, 53);
-                gltf.scene.scale.set(5.0, 5.0, 5.0);
-                gltf.scene.meshName = 'Drone';
-                console.log(gltf.scene);
-                mainScene.scene.add(gltf.scene);
+                const geometryS = new THREE.SphereGeometry(1, 8, 8);
+                const materialS = new THREE.MeshStandardMaterial({
+                    color: 0x000000,
+                    // wireframe: true,
+                });
+                materialS.transparent = true;
+                materialS.opacity = 0.0;
 
-                gltf.animations; // Array<THREE.AnimationClip>
-                gltf.scene; // THREE.Group
-                gltf.scenes; // Array<THREE.Group>
-                gltf.cameras; // Array<THREE.Camera>
-                gltf.asset; // Object
+                const sphere = new THREE.Mesh(geometryS, materialS);
+                sphere.position.set(56, 22, 53);
+                sphere.onMouseDownHandler = () => {
+                    mainScene.shiftHelper.retarget(sphere);
+                }
+
+                sphere.add(gltf.scene);
+                gltf.scene.scale.set(5.0, 5.0, 5.0);
+                gltf.scene.traverse(function (node) {
+                    if (node.isMesh) {
+                        node.castShadow = true;
+                    }
+                });
+
+                mainScene.scene.add(sphere);
             },
-            // called while loading is progressing
             function (xhr) {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
-            // called when loading has errors
             function (error) {
                 console.log('An error happened');
             }
@@ -146,8 +177,8 @@ export class MainScene {
             + this.controller.pointer.y.toPrecision(6)
             + "\n";
 
-        if (this.controller.intersected != null){
-            if (this.controller.intersected.object.hasOwnProperty('meshName')){
+        if (this.controller.intersected != null) {
+            if (this.controller.intersected.object.hasOwnProperty('meshName')) {
                 text += "Intersected : " + this.controller.intersected.object.meshName + "\n";
             } else {
                 text += "Intersected : unknown\n";
@@ -182,7 +213,7 @@ export class MainScene {
         materialS.shadowSide = THREE.DoubleSide;
         const sphere1 = new THREE.Mesh(geometryS, materialS);
 
-        sphere1.position.set(48, 18, 48);
+        sphere1.position.set(45, 18, 48);
         sphere1.castShadow = true;
         sphere1.receiveShadow = true;
         sphere1.meshName = 'Pink Circle1';
