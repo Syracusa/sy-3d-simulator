@@ -17,7 +17,7 @@ export class FlyingCamera {
         this.CamdirAngle = Math.PI * 5 / 3;
         this.CamdirDiameter = 40.0;
 
-        this.ViewScale = 16;
+        this.ViewScale = 25;
 
         this.GetClose(0.01);
         this.ViewBottom(0.01);

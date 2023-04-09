@@ -106,7 +106,7 @@ export class ArrowShape {
     }
 
     createCylinder(scale) {
-        const geometry = new THREE.CylinderGeometry(0.2, 0.2, scale, 32);
+        const geometry = new THREE.CylinderGeometry(0.15, 0.15, scale, 32);
         const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
         this.cylinder = new THREE.Mesh(geometry, material);
 
