@@ -30,14 +30,16 @@ export class Controller {
         this.intersected = null;
         this.dragTarget = null;
 
-        this.initDatGui();     
+        this.initDatGui(this);
     }
 
-    initDatGui() {
-
+    initDatGui(controller) {
         let test = {
-            'Create new node':function(){ console.log("Create new node") },
-            'Delete node':function(){ console.log("Delete node") }
+            'Create new node': function () {
+                console.log("Create new node");
+                controller.mainScene.droneModel.generateDrone();
+            },
+            'Delete node': function () { console.log("Delete node") }
         }
 
         const gui = new GUI()
@@ -46,7 +48,7 @@ export class Controller {
         cubeFolder.add(test, 'Create new node');
         cubeFolder.add(test, 'Delete node');
         cubeFolder.open()
-        
+
     }
 
     onPointerMove(event) {

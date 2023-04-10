@@ -8,6 +8,7 @@ import { ShiftHelper } from './ShiftHelper.js';
 import { Bulb } from './Bulb.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { DroneModel } from './DroneModel.js';
 
 export class MainScene {
     constructor() {
@@ -93,7 +94,11 @@ export class MainScene {
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(axesHelper);
 
-        this.loaderTest(this);
+        /* Drone */
+        this.droneModel = new DroneModel(this);
+
+
+        // this.loaderTest(this);
     }
 
     loaderTest(mainScene) {
