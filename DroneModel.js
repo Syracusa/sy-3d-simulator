@@ -29,13 +29,10 @@ export class DroneModel {
         sphere.onMouseDownHandler = () => {
             this.mainScene.shiftHelper.retarget(sphere);
         }
+        sphere.meshName = 'Drone';
 
         sphere.add(this.droneModel.clone());
         this.mainScene.scene.add(sphere);
-    }
-
-    removeDrone() {
-        /* TODO */
     }
 
     loadDroneModel(that) {

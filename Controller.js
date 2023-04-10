@@ -26,9 +26,9 @@ export class Controller {
         /* Raycaster */
         this.raycaster = new THREE.Raycaster();
 
-
         this.intersected = null;
         this.dragTarget = null;
+        this.selectedTarget = null;
 
         this.initDatGui(this);
     }
@@ -39,7 +39,11 @@ export class Controller {
                 console.log("Create new node");
                 controller.mainScene.droneModel.generateDrone();
             },
-            'Delete node': function () { console.log("Delete node") }
+            'Delete node': function () { 
+                console.log("Delete node");
+                console.log(controller.selectedTarget);
+                controller.selectedTarget.object.removeFromParent();
+            }
         }
 
         const gui = new GUI()
@@ -48,7 +52,6 @@ export class Controller {
         cubeFolder.add(test, 'Create new node');
         cubeFolder.add(test, 'Delete node');
         cubeFolder.open()
-
     }
 
     onPointerMove(event) {
@@ -71,6 +74,7 @@ export class Controller {
     addMouseEventListener(controller) {
         this.mainScene.renderer.domElement.onmousedown = function (e) {
             if (controller.intersected) {
+                controller.selectedTarget = controller.intersected;
                 controller.dragTarget = controller.intersected;
                 controller.dragStartX = e.clientX;
                 controller.dragStartY = e.clientY;
@@ -175,7 +179,4 @@ export class Controller {
 
         this.raycastControl();
     }
-
-
-
 }
