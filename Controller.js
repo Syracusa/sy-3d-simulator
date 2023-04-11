@@ -19,7 +19,9 @@ export class Controller {
         console.log(this.pointer);
         console.log(this.pointer.x);
 
-        this.mainScene.renderer.domElement.addEventListener('pointermove', this.onPointerMove.bind(this));
+        this.mainScene.renderer.domElement.addEventListener(
+            'pointermove',
+            this.onPointerMove.bind(this));
 
         this.addMouseEventListener(this);
 
@@ -37,21 +39,33 @@ export class Controller {
         let test = {
             'Create new node': function () {
                 console.log("Create new node");
-                controller.mainScene.droneModel.generateDrone();
+                let node = controller.mainScene.droneModel.generateDrone();
+                controller.mainScene.droneList.push(node);
             },
-            'Delete node': function () { 
-                console.log("Delete node");
+            'Remove node': function () {
+                console.log("Remove node");
                 console.log(controller.selectedTarget);
                 controller.selectedTarget.object.removeFromParent();
-            }
+            },
+            'Remove all node': function () {
+                console.log("Remove all node");
+                let droneList = controller.mainScene.droneList;
+                console.log(droneList);
+                for (let i = 0; i < droneList.length; i++){
+                    console.log(droneList[i]);
+                    droneList[i].removeFromParent();
+                }
+                controller.mainScene.droneList = [];
+            },
         }
 
         const gui = new GUI()
 
-        const cubeFolder = gui.addFolder('Node')
-        cubeFolder.add(test, 'Create new node');
-        cubeFolder.add(test, 'Delete node');
-        cubeFolder.open()
+        const nodeFolder = gui.addFolder('Node')
+        nodeFolder.add(test, 'Create new node');
+        nodeFolder.add(test, 'Remove node');
+        nodeFolder.add(test, 'Remove all node');
+        nodeFolder.open()
     }
 
     onPointerMove(event) {

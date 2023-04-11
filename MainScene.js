@@ -96,7 +96,7 @@ export class MainScene {
 
         /* Drone */
         this.droneModel = new DroneModel(this);
-
+        this.droneList = [];
 
         // this.loaderTest(this);
     }

@@ -33,6 +33,8 @@ export class DroneModel {
 
         sphere.add(this.droneModel.clone());
         this.mainScene.scene.add(sphere);
+
+        return sphere;
     }
 
     loadDroneModel(that) {
