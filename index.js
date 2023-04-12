@@ -1,4 +1,4 @@
-import { MainScene } from './MainScene.js';
+import { MainScene } from './src/MainScene.js';
 
 let ctx = new MainScene();
 let minIntervalMs = 10;

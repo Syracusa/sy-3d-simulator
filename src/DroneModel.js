@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 export class DroneModel {
  
@@ -31,7 +32,10 @@ export class DroneModel {
         }
         sphere.meshName = 'Drone';
 
-        sphere.add(this.droneModel.clone());
+        let droneModel = SkeletonUtils.clone(this.droneModel)
+        droneModel.receiveShadow = true;
+    
+        sphere.add(droneModel);
         this.mainScene.scene.add(sphere);
 
         return sphere;
@@ -52,6 +56,7 @@ export class DroneModel {
                 gltf.scene.traverse(function (node) {
                     if (node.isMesh) {
                         node.castShadow = true;
+                        node.receiveShadow = true;
                     }
                 });
 

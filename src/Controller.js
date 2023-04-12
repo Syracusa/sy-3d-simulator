@@ -87,15 +87,16 @@ export class Controller {
 
     addMouseEventListener(controller) {
         this.mainScene.renderer.domElement.onmousedown = function (e) {
+            controller.dragStartX = e.clientX;
+            controller.dragStartY = e.clientY;
             if (controller.intersected) {
                 controller.selectedTarget = controller.intersected;
                 controller.dragTarget = controller.intersected;
-                controller.dragStartX = e.clientX;
-                controller.dragStartY = e.clientY;
                 if (controller.intersected.object.hasOwnProperty('onMouseDownHandler')) {
                     controller.intersected.object.onMouseDownHandler(e);
                 } else {
                     console.log('No handler');
+                    controller.mainScene.shiftHelperTargetToDummy();
                 }
             } else {
                 console.log('No intersected');
@@ -112,6 +113,9 @@ export class Controller {
                 } else {
                     console.log('no drag handler');
                 }
+            } else {
+                /* Draw drag square */
+                
             }
             // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
         }
@@ -132,26 +136,38 @@ export class Controller {
         const intersects = this.raycaster.intersectObjects(this.mainScene.scene.children, false);
 
         if (intersects.length > 0) {
+            let firstIntersect = null;
+            for (let i = 0; i < intersects.length; i++){
+                if (intersects[i].object.hasOwnProperty('ignoreIntersect')){
+                    if (intersects[i].object.ignoreIntersect == true){
+                        continue;
+                    }
+                }
+                firstIntersect = intersects[i];
+                break;
+            }
+
+
             const INTERSECT_VERBOSE = 0;
             if (INTERSECT_VERBOSE) {
-                if (intersects[0].object.hasOwnProperty('meshName')) {
-                    console.log(intersects[0].object.meshName);
+                if (firstIntersect.object.hasOwnProperty('meshName')) {
+                    console.log(firstIntersect.object.meshName);
                 } else {
-                    console.log(intersects[0]);
+                    console.log(firstIntersect);
                 }
             }
 
             if (this.intersected == null
-                || this.intersected.object.uuid != intersects[0].object.uuid) {
+                || this.intersected.object.uuid != firstIntersect.object.uuid) {
                 if (this.intersected &&
                     this.intersected.object.hasOwnProperty('intersectOutHandler')) {
                     this.intersected.object.intersectOutHandler();
                     console.log('out handler');
                 }
 
-                this.intersected = intersects[0];
-                if (intersects[0].object.hasOwnProperty('intersectHandler')) {
-                    intersects[0].object.intersectHandler();
+                this.intersected = firstIntersect;
+                if (firstIntersect.object.hasOwnProperty('intersectHandler')) {
+                    firstIntersect.object.intersectHandler();
                     console.log('in handler');
                 }
             }
