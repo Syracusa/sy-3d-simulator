@@ -4,7 +4,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
 export class DroneModel {
- 
+
     constructor(mainScene) {
         this.mainScene = mainScene;
         this.modelLoaded = false;
@@ -13,7 +13,7 @@ export class DroneModel {
     }
 
     generateDrone() {
-        if (!this.modelLoaded){
+        if (!this.modelLoaded) {
             console.log('Model not loaded');
             return;
         }
@@ -34,8 +34,17 @@ export class DroneModel {
 
         let droneModel = SkeletonUtils.clone(this.droneModel)
         droneModel.receiveShadow = true;
-    
+
         sphere.add(droneModel);
+
+        let materialL = new THREE.LineBasicMaterial({ color: 0x555555 });
+        const points =
+            [new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, -100, 0)];
+        const geometryL = new THREE.BufferGeometry().setFromPoints(points);
+        const line = new THREE.Line(geometryL, materialL);
+        line.ignoreIntersect = true;
+        sphere.add(line);
         this.mainScene.scene.add(sphere);
 
         return sphere;
@@ -74,6 +83,6 @@ export class DroneModel {
                 console.log('An error happened');
             }
         );
-        
+
     }
 }

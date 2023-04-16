@@ -19,11 +19,6 @@ export class FlyingPerspectiveCamera {
 
         this.UpdateCameraPositionByLookAt();
         this.camera.updateProjectionMatrix();
-
-        // this.GetClose(0.01);
-        // this.ViewBottom(0.01);
-        // this.camera.updateProjectionMatrix();
-        // this.UpdateLookat();
     }
 
     updateScreenRatio(screen_ratio) {
@@ -82,47 +77,22 @@ export class FlyingPerspectiveCamera {
 
     ViewUp(scalar) {
         this.CamYAngle += 0.01 * scalar;
-        // this.camLookat.y += 0.1 * scalar;
-        // if (this.camLookat.y > this.camera.position.y + 18)
-        //     this.camLookat.y = this.camera.position.y + 18;
-
-        // this.CamdirDiameter = 20.0 - Math.abs(this.camera.position.y - this.camLookat.y);
-
-        // this.UpdateLookat();
     }
 
     ViewBottom(scalar) {
         this.CamYAngle -= 0.01 * scalar;
-        // this.camLookat.y -= 0.1 * scalar;
-        // if (this.camLookat.y < this.camera.position.y - 18)
-        //     this.camLookat.y = this.camera.position.y - 18;
-
-        // this.CamdirDiameter = 20.0 - Math.abs(this.camera.position.y - this.camLookat.y);
-        // this.UpdateLookat();
     }
 
     GetClose(scalar) {
-        this.camLookat.y -= 1 * scalar;
+        this.CamdirDiameter -= 2.0 * scalar;
     }
 
     RightRotate(scalar) {
         this.CamXzAngle += 0.01 * scalar;
-        // this.CamXzAngle += 0.005 * scalar;
-        // if (this.CamXzAngle > 2 * Math.PI) {
-        //     this.CamXzAngle -= 2 * Math.PI;
-        // }
-        // this.camLookat.x = this.camera.position.x + this.CamdirDiameter * Math.cos(this.CamXzAngle);
-        // this.camLookat.z = this.camera.position.z + this.CamdirDiameter * Math.sin(this.CamXzAngle);
     }
 
     LeftRotate(scalar) {
         this.CamXzAngle -= 0.01 * scalar;
-        // this.CamXzAngle -= 0.005 * scalar;
-        // if (this.CamXzAngle < 0) {
-        //     this.CamXzAngle += 2 * Math.PI;
-        // }
-        // this.camLookat.x = this.camera.position.x + this.CamdirDiameter * Math.cos(this.CamXzAngle);
-        // this.camLookat.z = this.camera.position.z + this.CamdirDiameter * Math.sin(this.CamXzAngle);
     }
 
     UpdateCamera() {
