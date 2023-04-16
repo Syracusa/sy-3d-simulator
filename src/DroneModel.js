@@ -49,10 +49,10 @@ export class DroneModel {
         loader.setDRACOLoader(dracoLoader);
 
         loader.load(
-            './static/Drone.glb',
+            './static/Drone2.glb',
             function (gltf) {
 
-                gltf.scene.scale.set(5.0, 5.0, 5.0);
+                gltf.scene.scale.set(0.5, 0.5, 0.5);
                 gltf.scene.traverse(function (node) {
                     if (node.isMesh) {
                         node.castShadow = true;
