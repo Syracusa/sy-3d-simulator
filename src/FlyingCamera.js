@@ -5,13 +5,13 @@ export class FlyingCamera {
 
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
-        this.CamLookat = new Vector3(0, 90, 0);
+        this.camLookat = new Vector3(0, 90, 0);
 
-        this.orthographicCamera = new THREE.OrthographicCamera();
-        this.orthographicCamera.near = 0;
-        this.orthographicCamera.far = 1000;
+        this.camera = new THREE.camera();
+        this.camera.near = 0;
+        this.camera.far = 1000;
 
-        this.orthographicCamera.position.set(8, 100, 117);
+        this.camera.position.set(8, 100, 117);
 
 
         this.CamdirAngle = Math.PI * 5 / 3;
@@ -21,26 +21,26 @@ export class FlyingCamera {
 
         this.GetClose(0.01);
         this.ViewBottom(0.01);
-        this.orthographicCamera.updateProjectionMatrix();
+        this.camera.updateProjectionMatrix();
         this.UpdateLookat();
     }
 
     updateScreenRatio(screen_ratio) {
         this.screenRatio = screen_ratio;
 
-        this.orthographicCamera.left = -1 * this.ViewScale * this.screenRatio;
-        this.orthographicCamera.right = this.ViewScale * this.screenRatio;
-        this.orthographicCamera.updateProjectionMatrix();
+        this.camera.left = -1 * this.ViewScale * this.screenRatio;
+        this.camera.right = this.ViewScale * this.screenRatio;
+        this.camera.updateProjectionMatrix();
     }
 
     UpdateLookat() { 
-        this.CamLookat.x = this.orthographicCamera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
-        this.CamLookat.z = this.orthographicCamera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
+        this.camLookat.x = this.camera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
+        this.camLookat.z = this.camera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
     }
 
     GoAngle(angle, scalar) {
-        this.orthographicCamera.position.x += 0.1 * Math.cos(angle) * scalar * this.ViewScale / 5;
-        this.orthographicCamera.position.z += 0.1 * Math.sin(angle) * scalar * this.ViewScale / 5;
+        this.camera.position.x += 0.1 * Math.cos(angle) * scalar * this.ViewScale / 5;
+        this.camera.position.z += 0.1 * Math.sin(angle) * scalar * this.ViewScale / 5;
         this.UpdateLookat();
     }
 
@@ -61,15 +61,15 @@ export class FlyingCamera {
     }
 
     GoUp(scalar) {
-        this.orthographicCamera.position.y += 0.1 * scalar;
-        if (this.orthographicCamera.position.y > 100)
-            this.orthographicCamera.position.y = 100;
+        this.camera.position.y += 0.1 * scalar;
+        if (this.camera.position.y > 100)
+            this.camera.position.y = 100;
     }
 
     GoDown(scalar) {
-        this.orthographicCamera.position.y -= 0.1 * scalar;
-        if (this.orthographicCamera.position.y < this.ViewScale)
-            this.orthographicCamera.position.y = this.ViewScale;
+        this.camera.position.y -= 0.1 * scalar;
+        if (this.camera.position.y < this.ViewScale)
+            this.camera.position.y = this.ViewScale;
     }
 
     ViewFar(scalar) {
@@ -87,21 +87,21 @@ export class FlyingCamera {
     }
 
     ViewUp(scalar) {
-        this.CamLookat.y += 0.1 * scalar;
-        if (this.CamLookat.y > this.orthographicCamera.position.y + 18)
-            this.CamLookat.y = this.orthographicCamera.position.y + 18;
+        this.camLookat.y += 0.1 * scalar;
+        if (this.camLookat.y > this.camera.position.y + 18)
+            this.camLookat.y = this.camera.position.y + 18;
 
-        this.CamdirDiameter = 20.0 - Math.abs(this.orthographicCamera.position.y - this.CamLookat.y);
+        this.CamdirDiameter = 20.0 - Math.abs(this.camera.position.y - this.camLookat.y);
 
         this.UpdateLookat();
     }
 
     ViewBottom(scalar) {
-        this.CamLookat.y -= 0.1 * scalar;
-        if (this.CamLookat.y < this.orthographicCamera.position.y - 18)
-            this.CamLookat.y = this.orthographicCamera.position.y - 18;
+        this.camLookat.y -= 0.1 * scalar;
+        if (this.camLookat.y < this.camera.position.y - 18)
+            this.camLookat.y = this.camera.position.y - 18;
 
-        this.CamdirDiameter = 20.0 - Math.abs(this.orthographicCamera.position.y - this.CamLookat.y);
+        this.CamdirDiameter = 20.0 - Math.abs(this.camera.position.y - this.camLookat.y);
         this.UpdateLookat();
     }
 
@@ -110,11 +110,11 @@ export class FlyingCamera {
         if (this.ViewScale < 2)
             this.ViewScale = 2;
 
-        this.orthographicCamera.top = this.ViewScale;
-        this.orthographicCamera.bottom = this.ViewScale * -1;
-        this.orthographicCamera.left = this.ViewScale * -1 * this.screenRatio;
-        this.orthographicCamera.right = this.ViewScale * this.screenRatio;
-        this.orthographicCamera.updateProjectionMatrix();
+        this.camera.top = this.ViewScale;
+        this.camera.bottom = this.ViewScale * -1;
+        this.camera.left = this.ViewScale * -1 * this.screenRatio;
+        this.camera.right = this.ViewScale * this.screenRatio;
+        this.camera.updateProjectionMatrix();
     }
 
     RightRotate(scalar) {
@@ -122,8 +122,8 @@ export class FlyingCamera {
         if (this.CamdirAngle > 2 * Math.PI) {
             this.CamdirAngle -= 2 * Math.PI;
         }
-        this.CamLookat.x = this.orthographicCamera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
-        this.CamLookat.z = this.orthographicCamera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
+        this.camLookat.x = this.camera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
+        this.camLookat.z = this.camera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
     }
 
     LeftRotate(scalar) {
@@ -131,12 +131,12 @@ export class FlyingCamera {
         if (this.CamdirAngle < 0) {
             this.CamdirAngle += 2 * Math.PI;
         }
-        this.CamLookat.x = this.orthographicCamera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
-        this.CamLookat.z = this.orthographicCamera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
+        this.camLookat.x = this.camera.position.x + this.CamdirDiameter * Math.cos(this.CamdirAngle);
+        this.camLookat.z = this.camera.position.z + this.CamdirDiameter * Math.sin(this.CamdirAngle);
     }
 
     UpdateCamera() {
-        this.orthographicCamera.lookAt(this.CamLookat);
-        this.orthographicCamera.updateProjectionMatrix();
+        this.camera.lookAt(this.camLookat);
+        this.camera.updateProjectionMatrix();
     }
 }

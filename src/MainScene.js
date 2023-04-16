@@ -8,6 +8,7 @@ import { ShiftHelper } from './ShiftHelper.js';
 import { Bulb } from './Bulb.js'
 import { DroneModel } from './DroneModel.js';
 import { LinkManager } from './LinkManager.js';
+import { FlyingPerspectiveCamera } from './FlyingPerspectiveCamera.js';
 
 export class MainScene {
     constructor() {
@@ -20,7 +21,8 @@ export class MainScene {
         this.generateRenderer();
 
         /* Camera */
-        this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
+        // this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
+        this.flyingCamera = new FlyingPerspectiveCamera(window.innerWidth / window.innerHeight);
 
         /* Terrain */
         this.terrain = new Terrain(scene);
@@ -33,7 +35,7 @@ export class MainScene {
 
         /* ShiftHelper */
         this.shiftHelper = new ShiftHelper(scene,
-            this.flyingCamera.orthographicCamera,
+            this.flyingCamera.camera,
             this.dummyTarget);
 
         /* Panel */
@@ -61,7 +63,7 @@ export class MainScene {
         }
 
         /* Fog */
-        scene.fog = new THREE.Fog(0x59472b, 0, 500);
+        scene.fog = new THREE.Fog(0x59472b, 0, 5000);
 
         /* Helper */
         const axesHelper = new THREE.AxesHelper(5);
@@ -120,18 +122,18 @@ export class MainScene {
         text += "Frame : " + this.randerNum + "\n";
         text += "View scale : " + this.flyingCamera.ViewScale.toPrecision(4) + "\n";
         text += "Cam Position : "
-            + this.flyingCamera.orthographicCamera.position.x.toPrecision(6) + ", "
-            + this.flyingCamera.orthographicCamera.position.y.toPrecision(6) + ", "
-            + this.flyingCamera.orthographicCamera.position.z.toPrecision(6) + "\n";
+            + this.flyingCamera.camera.position.x.toPrecision(6) + ", "
+            + this.flyingCamera.camera.position.y.toPrecision(6) + ", "
+            + this.flyingCamera.camera.position.z.toPrecision(6) + "\n";
 
         text += "Cam Lookat : "
-            + this.flyingCamera.CamLookat.x.toPrecision(6) + ", "
-            + this.flyingCamera.CamLookat.y.toPrecision(6) + ", "
-            + this.flyingCamera.CamLookat.z.toPrecision(6) + "\n";
+            + this.flyingCamera.camLookat.x.toPrecision(6) + ", "
+            + this.flyingCamera.camLookat.y.toPrecision(6) + ", "
+            + this.flyingCamera.camLookat.z.toPrecision(6) + "\n";
 
         text += "Cam xz angle : " + (this.flyingCamera.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
 
-        let ydiff = this.flyingCamera.orthographicCamera.position.y - this.flyingCamera.CamLookat.y;
+        let ydiff = this.flyingCamera.camera.position.y - this.flyingCamera.camLookat.y;
         text += "Cam y angle : " + (Math.atan(ydiff / this.flyingCamera.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
 
         text += "Mouse x: "
@@ -179,7 +181,7 @@ export class MainScene {
         this.flyingCamera.UpdateCamera();
 
         /* Randerer call */
-        this.renderer.render(this.scene, this.flyingCamera.orthographicCamera);
+        this.renderer.render(this.scene, this.flyingCamera.camera);
 
         /* Update stat */
         this.randerNum++;

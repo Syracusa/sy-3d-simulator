@@ -143,7 +143,7 @@ export class Controller {
 
     raycastControl() {
         /* Raycaster */
-        this.raycaster.setFromCamera(this.pointer, this.mainScene.flyingCamera.orthographicCamera);
+        this.raycaster.setFromCamera(this.pointer, this.mainScene.flyingCamera.camera);
         const intersects = this.raycaster.intersectObjects(this.mainScene.scene.children, false);
 
         if (intersects.length > 0) {

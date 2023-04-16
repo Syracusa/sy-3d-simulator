@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export class DragHelper {
     constructor(mainScene) {
-        this.camera = mainScene.flyingCamera.orthographicCamera;
+        this.camera = mainScene.flyingCamera.camera;
         this.mainScene = mainScene;
 
         this.dragSquare = null;
