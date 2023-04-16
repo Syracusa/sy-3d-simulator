@@ -45,6 +45,25 @@ export class DroneModel {
         const line = new THREE.Line(geometryL, materialL);
         line.ignoreIntersect = true;
         sphere.add(line);
+
+        const materialC = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const geometryC = new THREE.CircleGeometry(1.2, 16);
+
+        const itemSize = 3;
+        geometryC.setAttribute('position',
+            new THREE.BufferAttribute(
+                geometryC.attributes.position.array.slice(itemSize,
+                    geometryC.attributes.position.array.length - itemSize
+                ), itemSize
+            )
+        );
+        geometryC.index = null;
+        geometryC.rotateX(Math.PI / 2);
+        const circle = new THREE.LineLoop(geometryC, materialC);
+        circle.position.set(0, -0.3, 0);
+        circle.ignoreIntersect = true;
+        sphere.add(circle);
+
         this.mainScene.scene.add(sphere);
 
         return sphere;
