@@ -1,5 +1,6 @@
 import { GUI } from 'dat.gui'
 import * as THREE from 'three'
+import { DragHelper } from './DragHelper.js';
 
 export class Controller {
     that = this;
@@ -33,6 +34,8 @@ export class Controller {
         this.selectedTarget = null;
 
         this.initDatGui(this);
+
+        this.dragHelper = new DragHelper(mainScene);
     }
 
     initDatGui(controller) {
@@ -51,7 +54,7 @@ export class Controller {
                 console.log("Remove all node");
                 let droneList = controller.mainScene.droneList;
                 console.log(droneList);
-                for (let i = 0; i < droneList.length; i++){
+                for (let i = 0; i < droneList.length; i++) {
                     console.log(droneList[i]);
                     droneList[i].removeFromParent();
                 }
@@ -97,6 +100,7 @@ export class Controller {
                 } else {
                     console.log('No handler');
                     controller.mainScene.shiftHelperTargetToDummy();
+
                 }
             } else {
                 console.log('No intersected');
@@ -111,17 +115,24 @@ export class Controller {
                         e.clientX, e.clientY);
 
                 } else {
-                    console.log('no drag handler');
+                    controller.dragHelper.setVisible(true);
+                    controller.dragHelper.updateDraw(
+                        (controller.dragStartX / window.innerWidth) * 2 - 1,
+                        -1 * (controller.dragStartY / window.innerHeight) * 2 + 1,
+                        controller.pointer.x,
+                        controller.pointer.y
+                    );
                 }
             } else {
                 /* Draw drag square */
-                
+
             }
             // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
         }
 
         this.mainScene.renderer.domElement.onmouseup = function (e) {
             controller.dragTarget = null;
+            controller.dragHelper.setVisible(false);
             // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
         }
 
@@ -137,9 +148,9 @@ export class Controller {
 
         if (intersects.length > 0) {
             let firstIntersect = null;
-            for (let i = 0; i < intersects.length; i++){
-                if (intersects[i].object.hasOwnProperty('ignoreIntersect')){
-                    if (intersects[i].object.ignoreIntersect == true){
+            for (let i = 0; i < intersects.length; i++) {
+                if (intersects[i].object.hasOwnProperty('ignoreIntersect')) {
+                    if (intersects[i].object.ignoreIntersect == true) {
                         continue;
                     }
                 }
@@ -208,5 +219,6 @@ export class Controller {
         }
 
         this.raycastControl();
+        // this.dragHelper.updateDraw(-0.3, -0.3, 0.3, 0.3);
     }
 }
