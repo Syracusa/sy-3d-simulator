@@ -5,18 +5,17 @@ export class FlyingPerspectiveCamera {
 
     constructor(screen_ratio) {
         this.screenRatio = screen_ratio;
-        this.camLookat = new Vector3(40, 10, 40);
+        this.camLookat = new Vector3(63, 22, 33);
 
         this.camera = new THREE.PerspectiveCamera();
         this.camera.near = 0.1;
         this.camera.far = 2000;
 
-        this.CamXzAngle = Math.PI * 5 / 3;
-        this.CamYAngle = Math.PI * 5 / 3;
+        this.CamXzAngle = Math.PI * 5.3 / 3;
+        this.CamYAngle = Math.PI * 6.7 / 4;
         this.CamdirDiameter = 40.0;
 
         this.ViewScale = 25;
-
         this.UpdateCameraPositionByLookAt();
         this.camera.updateProjectionMatrix();
     }

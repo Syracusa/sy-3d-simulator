@@ -93,6 +93,13 @@ export class Controller {
             controller.dragStartX = e.clientX;
             controller.dragStartY = e.clientY;
             if (controller.intersected) {
+                /* Target out handler */
+                if (controller.intersected.object.hasOwnProperty('outTargetHandler')) {
+                    console.log("out target");
+                    controller.intersected.object.outTargetHandler(e);
+                }
+
+                /* Update Target */
                 controller.selectedTarget = controller.intersected;
                 controller.dragTarget = controller.intersected;
                 if (controller.intersected.object.hasOwnProperty('onMouseDownHandler')) {
@@ -100,8 +107,12 @@ export class Controller {
                 } else {
                     console.log('No handler');
                     controller.mainScene.shiftHelperTargetToDummy();
-
                 }
+
+                if (controller.intersected.object.hasOwnProperty('onTargetHandler')) {
+                    controller.intersected.object.onTargetHandler(e);
+                }
+
             } else {
                 console.log('No intersected');
             }

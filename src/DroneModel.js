@@ -26,10 +26,11 @@ export class DroneModel {
         materialS.opacity = 0.0;
 
         const sphere = new THREE.Mesh(geometryS, materialS);
-        sphere.position.set(56, 22, 53);
+        sphere.position.set(63, 22, 33);
         sphere.onMouseDownHandler = () => {
             this.mainScene.shiftHelper.retarget(sphere);
         }
+
         sphere.meshName = 'Drone';
 
         let droneModel = SkeletonUtils.clone(this.droneModel)
@@ -48,6 +49,8 @@ export class DroneModel {
 
         const materialC = new THREE.LineBasicMaterial({ color: 0x00ff00 });
         const geometryC = new THREE.CircleGeometry(1.2, 16);
+        materialC.transparent = true;
+        materialC.opacity = 0.0;
 
         const itemSize = 3;
         geometryC.setAttribute('position',
@@ -62,6 +65,17 @@ export class DroneModel {
         const circle = new THREE.LineLoop(geometryC, materialC);
         circle.position.set(0, -0.3, 0);
         circle.ignoreIntersect = true;
+
+        sphere.onTargetHandler = () => {
+            // materialC.transparent = false;
+            materialC.opacity = 1.0;
+        }
+        sphere.outTargetHandler = () => {
+            // materialC.transparent = true;
+            materialC.opacity = 0.0;
+            console.log("out target handle");
+        }
+
         sphere.add(circle);
 
         this.mainScene.scene.add(sphere);
