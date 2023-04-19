@@ -18,10 +18,10 @@ export class DragHelper {
 
         /* Draw new one */
         let camera = this.camera;
-        let v1 = new THREE.Vector3(x1, y1, -1.0).unproject(camera);
-        let v2 = new THREE.Vector3(x1, y2, -1.0).unproject(camera);
-        let v3 = new THREE.Vector3(x2, y1, -1.0).unproject(camera);
-        let v4 = new THREE.Vector3(x2, y2, -1.0).unproject(camera);
+        let v1 = new THREE.Vector3(x1, y1, -0.9).unproject(camera);
+        let v2 = new THREE.Vector3(x1, y2, -0.9).unproject(camera);
+        let v3 = new THREE.Vector3(x2, y1, -0.9).unproject(camera);
+        let v4 = new THREE.Vector3(x2, y2, -0.9).unproject(camera);
 
         const geometry = new THREE.BufferGeometry();
         const vertices = new Float32Array([

@@ -8,6 +8,7 @@ export class FlyingPerspectiveCamera {
         this.camLookat = new Vector3(63, 22, 33);
 
         this.camera = new THREE.PerspectiveCamera();
+        this.camera.aspect = screen_ratio;
         this.camera.near = 0.1;
         this.camera.far = 2000;
 
@@ -23,8 +24,7 @@ export class FlyingPerspectiveCamera {
     updateScreenRatio(screen_ratio) {
         this.screenRatio = screen_ratio;
 
-        this.camera.left = -1 * this.ViewScale * this.screenRatio;
-        this.camera.right = this.ViewScale * this.screenRatio;
+        this.camera.aspect = screen_ratio;
         this.camera.updateProjectionMatrix();
     }
 
