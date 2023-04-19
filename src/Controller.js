@@ -94,9 +94,10 @@ export class Controller {
             controller.dragStartY = e.clientY;
             if (controller.intersected) {
                 /* Target out handler */
-                if (controller.intersected.object.hasOwnProperty('outTargetHandler')) {
-                    console.log("out target");
-                    controller.intersected.object.outTargetHandler(e);
+                if (controller.selectedTarget) {
+                    if (controller.selectedTarget.object.hasOwnProperty('outTargetHandler')) {
+                        controller.selectedTarget.object.outTargetHandler(e);
+                    }
                 }
 
                 /* Update Target */

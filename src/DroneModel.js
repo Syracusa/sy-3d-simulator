@@ -52,6 +52,13 @@ export class DroneModel {
         materialC.transparent = true;
         materialC.opacity = 0.0;
 
+        sphere.onTargetHandler = () => {
+            materialC.opacity = 1.0;
+        };
+        sphere.outTargetHandler = () => {
+            materialC.opacity = 0.0;
+        };
+
         const itemSize = 3;
         geometryC.setAttribute('position',
             new THREE.BufferAttribute(
@@ -65,16 +72,6 @@ export class DroneModel {
         const circle = new THREE.LineLoop(geometryC, materialC);
         circle.position.set(0, -0.3, 0);
         circle.ignoreIntersect = true;
-
-        sphere.onTargetHandler = () => {
-            // materialC.transparent = false;
-            materialC.opacity = 1.0;
-        }
-        sphere.outTargetHandler = () => {
-            // materialC.transparent = true;
-            materialC.opacity = 0.0;
-            console.log("out target handle");
-        }
 
         sphere.add(circle);
 
