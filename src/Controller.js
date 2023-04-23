@@ -122,6 +122,7 @@ export class Controller {
     addMouseEventListener(controller) {
         /* On mouse down */
         this.mainScene.renderer.domElement.onmousedown = function (e) {
+            /* Warning : this != Controller */
             controller.dragStartX = e.clientX;
             controller.dragStartY = e.clientY;
             if (controller.intersected) {
@@ -134,6 +135,7 @@ export class Controller {
 
         /* On mouse move */
         this.mainScene.renderer.domElement.onmousemove = function (e) {
+            /* Warning : this != Controller */
             if (controller.dragTarget) {
                 if (controller.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
                     controller.dragTarget.object.onMouseDragHandler(
@@ -153,6 +155,7 @@ export class Controller {
 
         /* On mouse up */
         this.mainScene.renderer.domElement.onmouseup = function (e) {
+            /* Warning : this != Controller */
             controller.dragTarget = null;
 
             controller.selectedTargetList = controller.dragHelper.getDragIntersects();
@@ -167,16 +170,16 @@ export class Controller {
 
                 /* Retarget shifthelper to dummy target */
 
-                this.dummyTargetSync = true;
+                controller.dummyTargetSync = true;
 
-                /* */
+                /* TODO */
             }
             controller.dragHelper.removeSquare();
         }
 
         /* On mouse out */
         this.mainScene.renderer.domElement.onmouseout = function (e) {
-            // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
+            /* Warning : this != Controller */
         }
     }
 
