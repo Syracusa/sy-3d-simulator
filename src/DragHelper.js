@@ -9,6 +9,21 @@ export class DragHelper {
     }
 
     updateDraw(x1, y1, x2, y2) {
+        if (x1 > x2){
+            let tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
+        if (y1 > y2){
+            let tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+        }
+        this.x1 = x1;
+        this.x2 = x2;
+        this.y1 = y1;
+        this.y2 = y2;
+
         /* Dispose current square */
         if (this.dragSquare) {
             this.dragSquare.removeFromParent();
@@ -46,9 +61,30 @@ export class DragHelper {
         this.mainScene.scene.add(this.dragSquare);
     }
 
-    setVisible(b) {
+    removeSquare(b) {
         if (this.dragSquare) {
-            this.dragSquare.visible = b;
+            this.dragSquare.removeFromParent();
+            this.dragSquare.geometry.dispose();
+            this.dragSquare.material.dispose();
         }
+        this.x1 = 0;
+        this.x2 = 0;
+        this.y1 = 0;
+        this.y2 = 0;
+    }
+
+    getDragIntersects() {
+        let intersectedList = [];
+        let droneList = this.mainScene.droneList;
+        for (let i = 0; i < droneList.length; i++) {
+
+            let droneNdc = droneList[i].position.clone().project(this.camera);
+
+            if (this.x1 < droneNdc.x && droneNdc.x < this.x2 &&
+                this.y1 < droneNdc.y && droneNdc.y < this.y2) {
+                intersectedList.push(droneList[i]);
+            }
+        }
+        return intersectedList;
     }
 }

@@ -32,6 +32,7 @@ export class Controller {
         this.intersected = null;
         this.dragTarget = null;
         this.selectedTarget = null;
+        this.selectedTargetList = [];
 
         this.initDatGui(this);
 
@@ -88,37 +89,50 @@ export class Controller {
         }
     }
 
+    outCurrentTarget(e) {
+        /* Target out handler */
+        if (this.selectedTarget) {
+            if (this.selectedTarget.object.hasOwnProperty('outTargetHandler')) {
+                this.selectedTarget.object.outTargetHandler(e);
+            }
+        }
+        for (let i = 0; i < this.selectedTargetList.length; i++) {
+            if (this.selectedTargetList[i].hasOwnProperty('outTargetHandler')) {
+                this.selectedTargetList[i].outTargetHandler(e);
+            }
+        }
+    }
+
+    inNewTarget(e) {
+        /* Update Target */
+        this.selectedTarget = this.intersected;
+        this.dragTarget = this.intersected;
+        if (this.intersected.object.hasOwnProperty('onMouseDownHandler')) {
+            this.intersected.object.onMouseDownHandler(e);
+        } else {
+            console.log('No handler');
+            this.mainScene.shiftHelperTargetToDummy();
+        }
+
+        if (this.intersected.object.hasOwnProperty('onTargetHandler')) {
+            this.intersected.object.onTargetHandler(e);
+        }
+    }
+
     addMouseEventListener(controller) {
+        /* On mouse down */
         this.mainScene.renderer.domElement.onmousedown = function (e) {
             controller.dragStartX = e.clientX;
             controller.dragStartY = e.clientY;
             if (controller.intersected) {
-                /* Target out handler */
-                if (controller.selectedTarget) {
-                    if (controller.selectedTarget.object.hasOwnProperty('outTargetHandler')) {
-                        controller.selectedTarget.object.outTargetHandler(e);
-                    }
-                }
-
-                /* Update Target */
-                controller.selectedTarget = controller.intersected;
-                controller.dragTarget = controller.intersected;
-                if (controller.intersected.object.hasOwnProperty('onMouseDownHandler')) {
-                    controller.intersected.object.onMouseDownHandler(e);
-                } else {
-                    console.log('No handler');
-                    controller.mainScene.shiftHelperTargetToDummy();
-                }
-
-                if (controller.intersected.object.hasOwnProperty('onTargetHandler')) {
-                    controller.intersected.object.onTargetHandler(e);
-                }
-
+                controller.outCurrentTarget(e);
+                controller.inNewTarget(e);
             } else {
                 console.log('No intersected');
             }
         }
 
+        /* On mouse move */
         this.mainScene.renderer.domElement.onmousemove = function (e) {
             if (controller.dragTarget) {
                 if (controller.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
@@ -127,7 +141,6 @@ export class Controller {
                         e.clientX, e.clientY);
 
                 } else {
-                    controller.dragHelper.setVisible(true);
                     controller.dragHelper.updateDraw(
                         (controller.dragStartX / window.innerWidth) * 2 - 1,
                         -1 * (controller.dragStartY / window.innerHeight) * 2 + 1,
@@ -135,19 +148,33 @@ export class Controller {
                         controller.pointer.y
                     );
                 }
-            } else {
-                /* Draw drag square */
-
             }
-            // console.log("Mouse move pos : " + e.clientX + ", " + e.clientY + "");
         }
 
+        /* On mouse up */
         this.mainScene.renderer.domElement.onmouseup = function (e) {
             controller.dragTarget = null;
-            controller.dragHelper.setVisible(false);
-            // console.log("Mouse up pos :  " + e.clientX + ", " + e.clientY + "");
+
+            controller.selectedTargetList = controller.dragHelper.getDragIntersects();
+            for (let i = 0; i < controller.selectedTargetList.length; i++) {
+                if (controller.selectedTargetList[i].hasOwnProperty('onTargetHandler')) {
+                    controller.selectedTargetList[i].onTargetHandler(e);
+                }
+            }
+
+            if (controller.selectedTargetList.length > 0) {
+                /* Make dummy target */
+
+                /* Retarget shifthelper to dummy target */
+
+                this.dummyTargetSync = true;
+
+                /* */
+            }
+            controller.dragHelper.removeSquare();
         }
 
+        /* On mouse out */
         this.mainScene.renderer.domElement.onmouseout = function (e) {
             // console.log("Mouse out pos : " + e.clientX + ", " + e.clientY + "");
         }
@@ -232,5 +259,9 @@ export class Controller {
 
         this.raycastControl();
         // this.dragHelper.updateDraw(-0.3, -0.3, 0.3, 0.3);
+
+        if (this.dummyTargetSync == true) {
+            /* TODO */
+        }
     }
 }

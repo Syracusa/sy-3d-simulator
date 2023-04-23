@@ -131,7 +131,7 @@ export class MainScene {
             + this.flyingCamera.camLookat.y.toPrecision(6) + ", "
             + this.flyingCamera.camLookat.z.toPrecision(6) + "\n";
 
-        text += "Cam xz angle : " + (this.flyingCamera.CamdirAngle / Math.PI * 180).toPrecision(4) + "\n";
+        text += "Cam xz angle : " + (this.flyingCamera.CamXzAngle / Math.PI * 180).toPrecision(4) + "\n";
 
         let ydiff = this.flyingCamera.camera.position.y - this.flyingCamera.camLookat.y;
         text += "Cam y angle : " + (Math.atan(ydiff / this.flyingCamera.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
