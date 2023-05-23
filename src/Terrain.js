@@ -5,7 +5,7 @@ export class Terrain {
 
     constructor(scene) {
         this.scene = scene;
-        this.genTerrain();
+        this.genTerrain(10);
     }
 
     drawSquare(v) {
@@ -53,7 +53,7 @@ export class Terrain {
         this.scene.add(mesh);
     }
 
-    genTerrain() {
+    genTerrain(bumpyness) {
         const RANDER_BOTH_SIDE = 0;
         const RANDER_DIAGONAL_LINE = 0;
         const DRAW_LINE = 0;
@@ -61,7 +61,7 @@ export class Terrain {
         for (let i = 0; i < mapsize + 1; i++) {
             let xarr = [];
             for (let j = 0; j < mapsize + 1; j++) {
-                xarr[j] = Math.random() * 30;
+                xarr[j] = Math.random() * bumpyness + 10;
             }
             this.heights[i] = xarr;
         }
