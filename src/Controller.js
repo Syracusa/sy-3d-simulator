@@ -37,6 +37,8 @@ export class Controller {
         this.initDatGui(this);
 
         this.dragHelper = new DragHelper(mainScene);
+
+        this.dummyTargetSync = false;
     }
 
     initDatGui(controller) {
@@ -166,11 +168,21 @@ export class Controller {
             }
 
             if (controller.selectedTargetList.length > 0) {
-                /* Make dummy target */
+                /* Keep original position of targets */
+                // TODO
 
-                /* Retarget shifthelper to dummy target */
+                /* Calc Max x, y, z and Min x, y, z */
+                targetCenterPos = new THREE.Vector3(0,0,0 /*TODO*/);
+
+                /* Move dummy target to center of targets */
+                controller.dummyTargetOriginalpos = targetCenterPos.clone();
+
+                /* Shifthelper retarget to dummy target */
+                controller.mainScene.shiftHelperTargetToDummy();
 
                 controller.dummyTargetSync = true;
+
+                
 
                 /* TODO */
             }
@@ -265,6 +277,9 @@ export class Controller {
 
         if (this.dummyTargetSync == true) {
             /* TODO */
+            // Calc diff from this.dummyTargetOriginalpos
+
+            /* */
         }
     }
 }
