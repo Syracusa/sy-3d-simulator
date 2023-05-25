@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 
-
 import { Terrain } from './Terrain.js';
-import { FlyingCamera } from './FlyingCamera.js';
 import { Controller } from './Controller.js';
 import { ShiftHelper } from './ShiftHelper.js';
 import { Bulb } from './Bulb.js'
@@ -30,14 +28,6 @@ export class MainScene {
         /* Controller */
         this.controller = new Controller(this);
 
-        /* Dummy target for shifthelper */
-        this.genDummy();
-
-        /* ShiftHelper */
-        this.shiftHelper = new ShiftHelper(scene,
-            this.flyingCamera.camera,
-            this.dummyTarget);
-
         /* Panel */
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
@@ -58,7 +48,7 @@ export class MainScene {
         if (0) {
             let bulb = new Bulb(scene, new THREE.Vector3(48, 25, 48));
             bulb.bulbMesh.meshName = 'bulb';
-            bulb.bulbMesh.onMouseDownHandler = () => { this.shiftHelper.retarget(bulb.bulbMesh); }
+            // bulb.bulbMesh.onMouseDownHandler = () => { this.shiftHelper.retarget(bulb.bulbMesh); }
             this.bulb = bulb;
         }
 
@@ -75,10 +65,6 @@ export class MainScene {
 
         /* LinkManager */
         this.linkManager = new LinkManager(this);
-    }
-
-    shiftHelperTargetToDummy() {
-        this.shiftHelper.retarget(this.dummyTarget);
     }
 
     generateRenderer() {
@@ -154,23 +140,6 @@ export class MainScene {
 
         this.infoPanel.innerText = text;
     }
-
-    genDummy() {
-        const geometryS = new THREE.SphereGeometry(1, 32, 32);
-        const materialS = new THREE.MeshStandardMaterial({
-            color: 0xFFAACF,
-            // wireframe: true,
-        });
-
-        const sphere1 = new THREE.Mesh(geometryS, materialS);
-
-        sphere1.position.set(45, 100, 48);
-        sphere1.meshName = 'Dummy';
-        this.scene.add(sphere1);
-
-        this.dummyTarget = sphere1;
-    }
-
 
     update(timeDiff) {
         this.controller.update(timeDiff);

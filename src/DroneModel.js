@@ -28,7 +28,7 @@ export class DroneModel {
         const sphere = new THREE.Mesh(geometryS, materialS);
         sphere.position.set(63, 22, 33);
         sphere.onMouseDownHandler = () => {
-            this.mainScene.shiftHelper.retarget(sphere);
+            this.mainScene.controller.shiftHelper.retarget(sphere);
         }
 
         sphere.meshName = 'Drone';

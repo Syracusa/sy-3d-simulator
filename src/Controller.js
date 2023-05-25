@@ -1,6 +1,7 @@
 import { GUI } from 'dat.gui'
 import * as THREE from 'three'
 import { DragHelper } from './DragHelper.js';
+import { ShiftHelper } from './ShiftHelper.js';
 
 export class Controller {
     that = this;
@@ -39,6 +40,14 @@ export class Controller {
         this.dragHelper = new DragHelper(mainScene);
 
         this.dummyTargetSync = false;
+
+        /* Dummy target for shifthelper */
+        this.genDummy();
+
+        /* ShiftHelper */
+        this.shiftHelper = new ShiftHelper(scene,
+            this.flyingCamera.camera,
+            this.dummyTarget);
     }
 
     initDatGui(controller) {
@@ -73,6 +82,23 @@ export class Controller {
         nodeFolder.add(test, 'Remove all node');
         nodeFolder.open()
     }
+
+    genDummy() {
+        const geometryS = new THREE.SphereGeometry(1, 32, 32);
+        const materialS = new THREE.MeshStandardMaterial({
+            color: 0xFFAACF,
+            // wireframe: true,
+        });
+
+        const sphere1 = new THREE.Mesh(geometryS, materialS);
+
+        sphere1.position.set(45, 100, 48);
+        sphere1.meshName = 'Dummy';
+        this.mainScene.add(sphere1);
+
+        this.dummyTarget = sphere1;
+    }
+
 
     onPointerMove(event) {
         this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -113,7 +139,7 @@ export class Controller {
             this.intersected.object.onMouseDownHandler(e);
         } else {
             console.log('No handler');
-            this.mainScene.shiftHelperTargetToDummy();
+            this.shiftHelper.retarget(this.dummyTarget);
         }
 
         if (this.intersected.object.hasOwnProperty('onTargetHandler')) {
@@ -161,30 +187,50 @@ export class Controller {
             controller.dragTarget = null;
 
             controller.selectedTargetList = controller.dragHelper.getDragIntersects();
+            controller.selectdTargetOrigPos = [];
+
+            let maxX = -99999.9;
+            let minX = 99999.9;
+            let maxY = -99999.9;
+            let minY = 99999.9;
+            let maxZ = -99999.9;
+            let minZ = 99999.9;
+            
             for (let i = 0; i < controller.selectedTargetList.length; i++) {
-                if (controller.selectedTargetList[i].hasOwnProperty('onTargetHandler')) {
-                    controller.selectedTargetList[i].onTargetHandler(e);
+                let selTarget = controller.selectdTargetList[i];
+                
+                if (selTarget.hasOwnProperty('onTargetHandler')) {
+                    selTarget.onTargetHandler(e);
                 }
+                controller.selectdTargetOrigPos[i] = selTarget.position.clone();
+
+                if (selTarget.position.x > maxX)
+                    maxX = selTarget.position.x;
+                if (selTarget.position.x < minX)
+                    minX = selTarget.position.x;
+                if (selTarget.position.y > maxY)
+                    maxY = selTarget.position.y;
+                if (selTarget.position.y < minY)
+                    minY = selTarget.position.y;
+                if (selTarget.position.z > maxZ)
+                    maxZ = selTarget.position.z;
+                if (selTarget.position.z < minZ)
+                    minZ = selTarget.position.z;
             }
 
             if (controller.selectedTargetList.length > 0) {
-                /* Keep original position of targets */
-                // TODO
-
                 /* Calc Max x, y, z and Min x, y, z */
-                targetCenterPos = new THREE.Vector3(0,0,0 /*TODO*/);
+                targetCenterPos = new THREE.Vector3((minX + maxX) / 2,
+                                                    (minY + maxY) / 2, 
+                                                    (minZ + maxZ) / 2);
 
                 /* Move dummy target to center of targets */
                 controller.dummyTargetOriginalpos = targetCenterPos.clone();
 
                 /* Shifthelper retarget to dummy target */
-                controller.mainScene.shiftHelperTargetToDummy();
+                controller.shiftHelper.retarget(this.dummyTarget);
 
                 controller.dummyTargetSync = true;
-
-                
-
-                /* TODO */
             }
             controller.dragHelper.removeSquare();
         }
@@ -277,9 +323,14 @@ export class Controller {
 
         if (this.dummyTargetSync == true) {
             /* TODO */
-            // Calc diff from this.dummyTargetOriginalpos
+            let diffPos = this.dummyTarget.position.clone.sub(this.dummyTargetOriginalpos);
 
-            /* */
+            for (let i = 0; i < controller.selectdTargetList.length; i++){
+                let elem = this.selectdTargetList[i];
+                let origPos = this.selectdTargetOrigPos[i];
+
+                elem.position = origPos.clone().sub(diffPos);   
+            }
         }
     }
 }
