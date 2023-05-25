@@ -160,6 +160,8 @@ export class Terrain {
                 }
             }
         }
+
+        this.drawTerrainFromHeights();
     }
 
     disposeTerrain() {
