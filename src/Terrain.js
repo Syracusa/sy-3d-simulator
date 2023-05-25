@@ -2,10 +2,14 @@ import * as THREE from 'three';
 
 export class Terrain {
     heights = [];
+    terrainMeshs = [];
+    mapsize = 100;
 
     constructor(scene) {
         this.scene = scene;
-        this.genTerrain(10);
+        this.initHeights(10);
+        this.flatifyHeights();
+        this.drawTerrainFromHeights();
     }
 
     drawSquare(v) {
@@ -51,35 +55,17 @@ export class Terrain {
         mesh.castShadow = false;
         mesh.meshName = 'floor';
         this.scene.add(mesh);
+        this.terrainMeshs.push(mesh);
     }
 
-    genTerrain(bumpyness) {
+    drawTerrainFromHeights() {
         const RANDER_BOTH_SIDE = 0;
         const RANDER_DIAGONAL_LINE = 0;
         const DRAW_LINE = 0;
-        let mapsize = 100;
-        for (let i = 0; i < mapsize + 1; i++) {
-            let xarr = [];
-            for (let j = 0; j < mapsize + 1; j++) {
-                xarr[j] = Math.random() * bumpyness + 10;
-            }
-            this.heights[i] = xarr;
-        }
 
-        for (let i = 1; i < mapsize; i++) {
-            for (let j = 1; j < mapsize; j++) {
-                this.heights[i][j] = (this.heights[i - 1][j - 1] + this.heights[i - 1][j] + this.heights[i][j - 1] + this.heights[i][j]) / 4;
-            }
-        }
-
-        for (let i = 1; i < mapsize; i++) {
-            for (let j = 1; j < mapsize; j++) {
-                this.heights[i][j] = (this.heights[i - 1][j - 1] + this.heights[i - 1][j] + this.heights[i][j - 1] + this.heights[i][j]) / 4;
-            }
-        }
-
-        for (let i = 1; i < mapsize - 1; i++) {
-            for (let j = 1; j < mapsize - 1; j++) {
+        this.disposeTerrain();
+        for (let i = 1; i < this.mapsize - 1; i++) {
+            for (let j = 1; j < this.mapsize - 1; j++) {
                 let v = [
                     i, this.heights[i][j + 1], j + 1,
                     i + 1, this.heights[i + 1][j + 1], j + 1,
@@ -108,6 +94,7 @@ export class Terrain {
                     const geometry = new THREE.BufferGeometry().setFromPoints(points);
                     const line = new THREE.Line(geometry, material);
                     this.scene.add(line);
+                    this.terrainMeshs.push(line);
                 }
             }
         }
@@ -115,50 +102,74 @@ export class Terrain {
         if (DRAW_LINE) {
             const material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
 
-            for (let i = 0; i < mapsize; i++) {
+            for (let i = 0; i < this.mapsize; i++) {
                 const points = [];
-                for (let j = 0; j < mapsize; j++) {
+                for (let j = 0; j < this.mapsize; j++) {
                     points.push(new THREE.Vector3(i, this.heights[i][j] + 0.02, j));
                 }
                 const geometry = new THREE.BufferGeometry().setFromPoints(points);
                 const line = new THREE.Line(geometry, material);
                 this.scene.add(line);
+                this.terrainMeshs.push(line);
             }
 
-            for (let j = 0; j < mapsize; j++) {
+            for (let j = 0; j < this.mapsize; j++) {
                 const points = [];
-                for (let i = 0; i < mapsize; i++) {
+                for (let i = 0; i < this.mapsize; i++) {
                     points.push(new THREE.Vector3(i, this.heights[i][j] + 0.02, j));
                 }
                 const geometry = new THREE.BufferGeometry().setFromPoints(points);
                 const line = new THREE.Line(geometry, material);
                 this.scene.add(line);
+                this.terrainMeshs.push(line);
             }
         }
     }
 
-    genHeights(width, height) {
-        const size = width * height;
-        const data = new Uint8Array(size);
-
-
-        for (let i = 0; i < size; i++) {
-            data[i] += Math.random() * 10;
-        }
-
-        for (let i = 1; i < width - 1; i++) {
-            for (let j = 1; j < height - 1; j++) {
-                data[i * width + j] =
-                    (data[(i - 1) * width + j] + data[(i - 1) * width + j - 1] + data[i * width + j - 1] + data[i * width + j]) / 4;
+    initHeights(bumpyness) {
+        for (let i = 0; i < this.mapsize + 1; i++) {
+            let xarr = [];
+            for (let j = 0; j < this.mapsize + 1; j++) {
+                xarr[j] = Math.random() * bumpyness + 10;
             }
+            this.heights[i] = xarr;
         }
-        for (let i = 1; i < width - 1; i++) {
-            for (let j = 1; j < height - 1; j++) {
-                data[i * width + j] =
-                    (data[(i - 1) * width + j] + data[(i - 1) * width + j - 1] + data[i * width + j - 1] + data[i * width + j]) / 4;
+    }
+
+    flatifyHeights() {
+        for (let i = 1; i < this.mapsize; i++) {
+            for (let j = 1; j < this.mapsize; j++) {
+                this.heights[i][j] = (this.heights[i - 1][j - 1] + this.heights[i - 1][j] + this.heights[i][j - 1] + this.heights[i][j]) / 4;
             }
         }
 
-        return data;
+        for (let i = 1; i < this.mapsize; i++) {
+            for (let j = 1; j < this.mapsize; j++) {
+                this.heights[i][j] = (this.heights[i - 1][j - 1] + this.heights[i - 1][j] + this.heights[i][j - 1] + this.heights[i][j]) / 4;
+            }
+        }
+    }
+
+    raiseHeightPoint(xPos, yPos, intensity){
+        for (let i = xPos - 4; i < xPos + 4; i++){
+            for (let j = yPos - 4; j < yPos + 4; j++) {
+                if (i > -1 && i < this.mapsize &&
+                    j > -1 && j < this.mapsize){
+                    
+                    this.heights[i][j] += intensity;
+                }
+            }
+        }
+    }
+
+    disposeTerrain() {
+        for (let i = 0; i < this.terrainMeshs.length; i++){
+            let mesh = this.terrainMeshs[i];
+
+            mesh.removeFromParent();
+            mesh.material.dispose();
+            mesh.geometry.dispose();
+        }
+        this.terrainMeshs = [];
     }
 }
