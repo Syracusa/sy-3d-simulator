@@ -61,7 +61,7 @@ export class DragHelper {
         this.mainScene.scene.add(this.dragSquare);
     }
 
-    removeSquare(b) {
+    removeSquare() {
         if (this.dragSquare) {
             this.dragSquare.removeFromParent();
             this.dragSquare.geometry.dispose();
