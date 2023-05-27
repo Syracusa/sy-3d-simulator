@@ -56,6 +56,8 @@ export class Terrain {
         mesh.meshName = 'floor';
         this.scene.add(mesh);
         this.terrainMeshs.push(mesh);
+
+        return mesh;
     }
 
     drawTerrainFromHeights() {
@@ -64,8 +66,8 @@ export class Terrain {
         const DRAW_LINE = 0;
 
         this.disposeTerrain();
-        for (let i = 1; i < this.mapsize - 1; i++) {
-            for (let j = 1; j < this.mapsize - 1; j++) {
+        for (let i = 0; i < this.mapsize - 1; i++) {
+            for (let j = 0; j < this.mapsize - 1; j++) {
                 let v = [
                     i, this.heights[i][j + 1], j + 1,
                     i + 1, this.heights[i + 1][j + 1], j + 1,
@@ -81,7 +83,8 @@ export class Terrain {
                         i + 1, this.heights[i + 1][j + 1], j + 1,
                         i, this.heights[i][j + 1], j + 1,
                     ];
-                    this.drawSquare(v);
+                    const mesh = this.drawSquare(v);
+                    mesh.xIdx = i;
                 }
 
                 if (RANDER_DIAGONAL_LINE && DRAW_LINE) {

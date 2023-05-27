@@ -3,6 +3,10 @@ import * as THREE from 'three'
 import { DragHelper } from './DragHelper.js';
 import { ShiftHelper } from './ShiftHelper.js';
 
+const MOUSE_STATE_DEFAULT = 0;
+const MOUSE_STATE_RAISE_TERRAIN = 1;
+const MOUSE_STATE_DROP_TERRAIN = 2;
+
 export class Controller {
     that = this;
 
@@ -51,7 +55,7 @@ export class Controller {
     }
 
     initDatGui(controller) {
-        let test = {
+        let callbacks = {
             'Create new node': function () {
                 console.log("Create new node");
                 let node = controller.mainScene.droneModel.generateDrone();
@@ -72,15 +76,44 @@ export class Controller {
                 }
                 controller.mainScene.droneList = [];
             },
+            'Raise terrain test': function () {
+                console.log('Terrain raise test');
+                controller.mainScene.terrain.raiseHeighPoint(50, 50, 10);
+            },
+            'Drop terrain test': function () {
+                console.log('Terrain raise test');
+                controller.mainScene.terrain.raiseHeighPoint(50, 50, -10);
+            },
+            'Raise Terrain': function () {
+                controller.mouseMode = MOUSE_STATE_RAISE_TERRAIN;
+            },
+            'Drop Terrain': function () {
+                controller.mouseMode = MOUSE_STATE_DROP_TERRAIN;
+            },
+            'Default Mode': function () {
+                controller.mouseMode = MOUSE_STATE_DEFAULT;
+            }
         }
 
         const gui = new GUI()
 
-        const nodeFolder = gui.addFolder('Node')
-        nodeFolder.add(test, 'Create new node');
-        nodeFolder.add(test, 'Remove node');
-        nodeFolder.add(test, 'Remove all node');
-        nodeFolder.open()
+        const nodeFolder = gui.addFolder('Node');
+        nodeFolder.add(callbacks, 'Create new node');
+        nodeFolder.add(callbacks, 'Remove node');
+        nodeFolder.add(callbacks, 'Remove all node');
+    
+        nodeFolder.open();
+    
+        const terrainFolder = gui.addFolder('Terrain');
+        terrainFolder.add(callbacks, 'Raise terrain test');
+        terrainFolder.add(callbacks, 'Drop terrain test');
+
+        terrainFolder.open();
+
+        const mouseModeFolder = gui.addFolder('MouseMode');
+        mouseModeFolder.add(callbacks, 'Raise Terrain');
+        mouseModeFolder.add(callbacks, 'Drop Terrain');
+        mouseModeFolder.add(callbacks, 'Default Mode');
     }
 
     genDummy() {
