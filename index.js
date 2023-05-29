@@ -6,8 +6,8 @@ let oldTime = Date.now();
 
 function onWindowResize() {
     ctx.flyingCamera.updateScreenRatio( window.innerWidth / window.innerHeight);
-    // ctx.flyingCamera.camera.updateProjectionMatrix();
     ctx.renderer.setSize( window.innerWidth, window.innerHeight );
+    ctx.labelRenderer.setSize( window.innerWidth, window.innerHeight );
 }
 
 window.addEventListener( 'resize', onWindowResize );
