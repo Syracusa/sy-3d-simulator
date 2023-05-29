@@ -20,7 +20,6 @@ export class MainScene {
         this.generateRenderer();
 
         /* Camera */
-        // this.flyingCamera = new FlyingCamera(window.innerWidth / window.innerHeight);
         this.flyingCamera = new FlyingPerspectiveCamera(window.innerWidth / window.innerHeight);
 
         /* Terrain */

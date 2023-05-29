@@ -186,8 +186,6 @@ export class Controller {
         /* On mouse down */
 
         window.addEventListener("pointerdown", (e) => {
-            console.log('down');
-            console.log(e);
             controller.dragStartX = e.x;
             controller.dragStartY = e.y;
 
@@ -202,8 +200,6 @@ export class Controller {
         });
 
         window.addEventListener("pointermove", (e) => {
-            console.log('move');
-
             controller.pointer.x = (e.x / window.innerWidth) * 2 - 1;
             controller.pointer.y = -1 * (e.y / window.innerHeight) * 2 + 1;
 
@@ -227,7 +223,6 @@ export class Controller {
 
         window.addEventListener("pointerup", (e) => {
             /* Warning : this != Controller */
-            console.log('up');
             if (controller.dragTarget
                 && controller.dragTarget.object.hasOwnProperty('keepTargetListFlag')) {
                 /* Keep target */
