@@ -33,7 +33,7 @@ export class Controller {
         this.selectedTarget = null;
         this.selectedTargetList = [];
 
-        this.initDatGui(this);
+        this.initLilGui(this);
 
         this.dragHelper = new DragHelper(mainScene);
 
@@ -48,7 +48,7 @@ export class Controller {
             this.dummyTarget);
     }
 
-    initDatGui(controller) {
+    initLilGui(controller) {
         let callbacks = {
             'Create new node': function () {
                 console.log("Create new node");
