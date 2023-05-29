@@ -49,6 +49,8 @@ export class LinkManager {
                 material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
             } else {
                 material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+                material.transparent = true;
+                material.opacity = 1 - (distance - this.param.goodLinkDist) / (this.param.linkDist - this.param.goodLinkDist);
             }
         }
 
