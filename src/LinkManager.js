@@ -41,7 +41,9 @@ export class LinkManager {
             return;
 
         if (!this.checkLos(pos1, pos2)) {
-            material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
+            material = new THREE.LineBasicMaterial({ color: 0xdddddd });
+            material.transparent = true;
+            material.opacity = 0.5;
         } else {
             if (distance < this.param.goodLinkDist) {
                 material = new THREE.LineBasicMaterial({ color: 0x00ff00 });

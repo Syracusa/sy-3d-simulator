@@ -7,6 +7,7 @@ import { Bulb } from './Bulb.js'
 import { DroneModel } from './DroneModel.js';
 import { LinkManager } from './LinkManager.js';
 import { FlyingPerspectiveCamera } from './FlyingPerspectiveCamera.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export class MainScene {
     constructor() {
@@ -80,6 +81,13 @@ export class MainScene {
             window.innerWidth,
             window.innerHeight);
         this.screenRatio = window.innerWidth / window.innerHeight;
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        document.body.appendChild( labelRenderer.domElement );
+        this.labelRenderer = labelRenderer; 
     }
 
     generateDirectionalLight(){
@@ -149,7 +157,8 @@ export class MainScene {
 
         /* Randerer call */
         this.renderer.render(this.scene, this.flyingCamera.camera);
-
+		this.labelRenderer.render(this.scene, this.flyingCamera.camera);
+        
         /* Update stat */
         this.randerNum++;
         this.updateInfoPanel();

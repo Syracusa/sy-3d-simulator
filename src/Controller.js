@@ -23,10 +23,6 @@ export class Controller {
 
         this.pointer = new THREE.Vector2(0, 0);
 
-        this.mainScene.renderer.domElement.addEventListener(
-            'pointermove',
-            this.onPointerMove.bind(this));
-
         this.addMouseEventListener(this);
 
         /* Raycaster */
@@ -121,12 +117,6 @@ export class Controller {
         this.dummyTarget = sphere1;
     }
 
-
-    onPointerMove(event) {
-        this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-        this.pointer.y = -1 * (event.clientY / window.innerHeight) * 2 + 1;
-    }
-
     isKeyPressed(key) {
         if (key in this.keystate) {
             if (this.keystate[key] == 1) {
@@ -194,10 +184,12 @@ export class Controller {
 
     addMouseEventListener(controller) {
         /* On mouse down */
-        this.mainScene.renderer.domElement.onmousedown = function (e) {
-            /* Warning : this != Controller */
-            controller.dragStartX = e.clientX;
-            controller.dragStartY = e.clientY;
+
+        window.addEventListener("pointerdown", (e) => {
+            console.log('down');
+            console.log(e);
+            controller.dragStartX = e.x;
+            controller.dragStartY = e.y;
 
             controller.outCurrentTarget(e);
             if (controller.intersected) {
@@ -206,16 +198,21 @@ export class Controller {
                 }
                 controller.inNewTarget(e);
             }
-        }
 
-        /* On mouse move */
-        this.mainScene.renderer.domElement.onmousemove = function (e) {
+        });
+
+        window.addEventListener("pointermove", (e) => {
+            console.log('move');
+
+            controller.pointer.x = (e.x / window.innerWidth) * 2 - 1;
+            controller.pointer.y = -1 * (e.y / window.innerHeight) * 2 + 1;
+
             /* Warning : this != Controller */
             if (controller.dragTarget) {
                 if (controller.dragTarget.object.hasOwnProperty('onMouseDragHandler')) {
                     controller.dragTarget.object.onMouseDragHandler(
                         controller.dragStartX, controller.dragStartY,
-                        e.clientX, e.clientY);
+                        e.x, e.y);
 
                 } else {
                     controller.dragHelper.updateDraw(
@@ -226,12 +223,11 @@ export class Controller {
                     );
                 }
             }
-        }
+        });
 
-        /* On mouse up */
-        this.mainScene.renderer.domElement.onmouseup = function (e) {
+        window.addEventListener("pointerup", (e) => {
             /* Warning : this != Controller */
-
+            console.log('up');
             if (controller.dragTarget
                 && controller.dragTarget.object.hasOwnProperty('keepTargetListFlag')) {
                 /* Keep target */
@@ -240,7 +236,7 @@ export class Controller {
                 controller.onDragMouseUp(e);
             }
             controller.dragTarget = null;
-        }
+        });
 
         /* On mouse out */
         controller.mainScene.renderer.domElement.onmouseout = function (e) {

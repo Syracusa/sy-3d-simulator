@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
-
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 export class DroneModel {
 
     constructor(mainScene) {
@@ -10,6 +10,7 @@ export class DroneModel {
         this.modelLoaded = false;
 
         this.loadDroneModel(this);
+        this.nodeidx = 0;
     }
 
     generateDrone() {
@@ -25,18 +26,18 @@ export class DroneModel {
         materialS.transparent = true;
         materialS.opacity = 0.0;
 
-        const sphere = new THREE.Mesh(geometryS, materialS);
-        sphere.position.set(55 + Math.random() * 15, 22 + Math.random() * 5, 26 + Math.random() * 15);
-        sphere.onMouseDownHandler = () => {
-            this.mainScene.controller.shiftHelper.retarget(sphere);
+        const node = new THREE.Mesh(geometryS, materialS);
+        node.position.set(55 + Math.random() * 15, 22 + Math.random() * 5, 26 + Math.random() * 15);
+        node.onMouseDownHandler = () => {
+            this.mainScene.controller.shiftHelper.retarget(node);
         }
 
-        sphere.meshName = 'Drone';
+        node.meshName = 'Drone';
 
         let droneModel = SkeletonUtils.clone(this.droneModel)
         // droneModel.receiveShadow = true;
 
-        sphere.add(droneModel);
+        node.add(droneModel);
 
         let materialL = new THREE.LineBasicMaterial({ color: 0x555555 });
         const points =
@@ -45,21 +46,21 @@ export class DroneModel {
         const geometryL = new THREE.BufferGeometry().setFromPoints(points);
         const line = new THREE.Line(geometryL, materialL);
         line.ignoreIntersect = true;
-        sphere.add(line);
+        node.add(line);
 
         const materialC = new THREE.LineBasicMaterial({ color: 0x00ff00 });
         const geometryC = new THREE.CircleGeometry(1.2, 16);
         materialC.transparent = true;
         materialC.opacity = 0.0;
 
-        sphere.onTargetHandler = () => {
+        node.onTargetHandler = () => {
             materialC.opacity = 1.0;
-            sphere.matrixAutoUpdate = true;
+            node.matrixAutoUpdate = true;
         };
-        sphere.outTargetHandler = () => {
+        node.outTargetHandler = () => {
             materialC.opacity = 0.0;
-            sphere.matrixAutoUpdate = false;
-            sphere.updateMatrix();
+            node.matrixAutoUpdate = false;
+            node.updateMatrix();
         };
 
         const itemSize = 3;
@@ -76,14 +77,24 @@ export class DroneModel {
         circle.position.set(0, -0.3, 0);
         circle.ignoreIntersect = true;
 
-        sphere.add(circle);
+        node.add(circle);
 
-        this.mainScene.scene.add(sphere);
-        sphere.matrixAutoUpdate = false;
-        sphere.updateMatrix();
+		const nodeLabelDiv = document.createElement("div");
+		nodeLabelDiv.className = "label";
+		nodeLabelDiv.innerHTML  = "Node " + this.nodeidx++;
+		const nodeLabel = new CSS2DObject(nodeLabelDiv);
+		nodeLabel.position.set(0, 2, 0);
 
-        sphere.isTarget = true;
-        return sphere;
+        // nodeLabel.center.set( 0, 1 );
+		node.add(nodeLabel);
+        nodeLabel.layers.set( 0 );
+
+        this.mainScene.scene.add(node);
+        node.matrixAutoUpdate = false;
+        node.updateMatrix();
+
+        node.isTarget = true;
+        return node;
     }
 
     loadDroneModel(that) {
