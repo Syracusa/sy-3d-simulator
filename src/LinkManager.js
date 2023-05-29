@@ -17,7 +17,7 @@ export class LinkManager {
     checkLos(pos1, pos2) {
         this.raycaster.set(pos1, pos2.clone().sub(pos1).normalize());
         let distance = pos1.distanceTo(pos2);
-        // console.log(distance);
+
         this.raycaster.near = 0;
         this.raycaster.far = distance;
 

@@ -2,12 +2,11 @@ import * as THREE from 'three';
 
 import { Terrain } from './Terrain.js';
 import { Controller } from './Controller.js';
-import { ShiftHelper } from './ShiftHelper.js';
 import { Bulb } from './Bulb.js'
 import { DroneModel } from './DroneModel.js';
 import { LinkManager } from './LinkManager.js';
 import { FlyingPerspectiveCamera } from './FlyingPerspectiveCamera.js';
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export class MainScene {
     constructor() {

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Line3, Vector3, _SRGBAFormat } from 'three';
+import { Line3, Vector3 } from 'three';
 import { ArrowShape } from './Arrow.js';
 
 export class ShiftHelper {
