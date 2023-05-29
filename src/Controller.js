@@ -317,7 +317,6 @@ export class Controller {
                 break;
             }
 
-
             const INTERSECT_VERBOSE = 0;
             if (INTERSECT_VERBOSE) {
                 if (firstIntersect.object.hasOwnProperty('meshName')) {

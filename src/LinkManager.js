@@ -30,7 +30,6 @@ export class LinkManager {
                 }
             }
         }
-
         return true;
     }
 
@@ -41,13 +40,14 @@ export class LinkManager {
         if (distance > this.param.linkDist)
             return;
 
-        if (!this.checkLos(pos1, pos2))
-            return;
-
-        if (distance < this.param.goodLinkDist) {
-            material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        if (!this.checkLos(pos1, pos2)) {
+            material = new THREE.LineBasicMaterial({ color: 0xaaaaaa });
         } else {
-            material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            if (distance < this.param.goodLinkDist) {
+                material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+            } else {
+                material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            }
         }
 
         const points = [pos1, pos2];
@@ -58,8 +58,6 @@ export class LinkManager {
         this.lineList.push(line);
 
         this.mainScene.scene.add(line);
-
-
     }
 
     drawLink() {
