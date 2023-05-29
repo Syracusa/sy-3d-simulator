@@ -74,8 +74,10 @@ export class Terrain {
                     i + 1, this.heights[i + 1][j], j,
                     i, this.heights[i][j], j,
                 ];
-                this.drawSquare(v);
-
+                const mesh = this.drawSquare(v);
+                mesh.terrainX = i;
+                mesh.terrainY = j;
+                mesh.isTerrain = true;
                 if (RANDER_BOTH_SIDE) {
                     v = [
                         i, this.heights[i][j], j,
@@ -84,7 +86,9 @@ export class Terrain {
                         i, this.heights[i][j + 1], j + 1,
                     ];
                     const mesh = this.drawSquare(v);
-                    mesh.xIdx = i;
+                    mesh.terrainX = i;
+                    mesh.terrainY = j;
+                    mesh.isTerrain = true;
                 }
 
                 if (RANDER_DIAGONAL_LINE && DRAW_LINE) {
@@ -159,7 +163,12 @@ export class Terrain {
                 if (i > -1 && i < this.mapsize &&
                     j > -1 && j < this.mapsize){
                     
-                    this.heights[i][j] += intensity;
+                    let xdiff = Math.abs(xPos - i);
+                    let ydiff = Math.abs(yPos - j);
+                    
+                    let diff = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+
+                    this.heights[i][j] += intensity * (4 - diff);
                 }
             }
         }

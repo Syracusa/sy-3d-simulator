@@ -74,22 +74,19 @@ export class Controller {
                 }
                 controller.mainScene.droneList = [];
             },
-            'Raise terrain test': function () {
-                console.log('Terrain raise test');
-                controller.mainScene.terrain.raiseHeighPoint(50, 50, 10);
-            },
-            'Drop terrain test': function () {
-                console.log('Terrain raise test');
-                controller.mainScene.terrain.raiseHeighPoint(50, 50, -10);
-            },
             'Raise Terrain': function () {
                 controller.mouseMode = MOUSE_STATE_RAISE_TERRAIN;
+                
+                console.log(document.body.style)
+                document.body.style.cursor = 'zoom-in';
             },
             'Drop Terrain': function () {
                 controller.mouseMode = MOUSE_STATE_DROP_TERRAIN;
+                document.body.style.cursor = 'zoom-out';
             },
             'Default Mode': function () {
                 controller.mouseMode = MOUSE_STATE_DEFAULT;
+                document.body.style.cursor = 'default';
             }
         }
 
@@ -102,16 +99,12 @@ export class Controller {
 
         nodeFolder.open();
 
-        const terrainFolder = gui.addFolder('Terrain');
-        terrainFolder.add(callbacks, 'Raise terrain test');
-        terrainFolder.add(callbacks, 'Drop terrain test');
-
-        terrainFolder.open();
-
         const mouseModeFolder = gui.addFolder('MouseMode');
         mouseModeFolder.add(callbacks, 'Raise Terrain');
         mouseModeFolder.add(callbacks, 'Drop Terrain');
         mouseModeFolder.add(callbacks, 'Default Mode');
+
+        mouseModeFolder.open();
     }
 
     genDummy() {
@@ -190,6 +183,17 @@ export class Controller {
         }
     }
 
+    terrainEventHandler(terrainMesh) {
+        let x = terrainMesh.object.terrainX;
+        let y = terrainMesh.object.terrainY;
+        console.log(x + ' ' + y);
+        if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN){
+            this.mainScene.terrain.raiseHeightPoint(x, y, 1);
+        } else if (this.mouseMode == MOUSE_STATE_DROP_TERRAIN){
+            this.mainScene.terrain.raiseHeightPoint(x, y, -1);
+        }
+    }
+
     addMouseEventListener(controller) {
         /* On mouse down */
         this.mainScene.renderer.domElement.onmousedown = function (e) {
@@ -199,6 +203,9 @@ export class Controller {
 
             controller.outCurrentTarget(e);
             if (controller.intersected) {
+                if (controller.intersected.object.hasOwnProperty('isTerrain')){
+                    controller.terrainEventHandler(controller.intersected);
+                }
                 controller.inNewTarget(e);
             }
         }
