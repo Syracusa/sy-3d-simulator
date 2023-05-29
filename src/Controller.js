@@ -76,8 +76,6 @@ export class Controller {
             },
             'Raise Terrain': function () {
                 controller.mouseMode = MOUSE_STATE_RAISE_TERRAIN;
-                
-                console.log(document.body.style)
                 document.body.style.cursor = 'zoom-in';
             },
             'Drop Terrain': function () {
@@ -186,7 +184,7 @@ export class Controller {
     terrainEventHandler(terrainMesh) {
         let x = terrainMesh.object.terrainX;
         let y = terrainMesh.object.terrainY;
-        console.log(x + ' ' + y);
+
         if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN){
             this.mainScene.terrain.raiseHeightPoint(x, y, 1);
         } else if (this.mouseMode == MOUSE_STATE_DROP_TERRAIN){
