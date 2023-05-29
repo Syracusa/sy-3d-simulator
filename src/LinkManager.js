@@ -3,7 +3,6 @@ import * as THREE from 'three'
 export class LinkManager {
     constructor(mainScene) {
         this.mainScene = mainScene;
-        this.droneList = mainScene.droneList;
 
         this.param = {
             linkDist: 20,
@@ -44,11 +43,11 @@ export class LinkManager {
         }
         this.lineList = [];
 
-        for (let i = 0; i < this.droneList.length; i++) {
-            for (let j = i + 1; j < this.droneList.length; j++) {
+        for (let i = 0; i < this.mainScene.droneList.length; i++) {
+            for (let j = i + 1; j < this.mainScene.droneList.length; j++) {
                 this.drawLinkLine(
-                    this.droneList[i].position.clone(),
-                    this.droneList[j].position.clone()
+                    this.mainScene.droneList[i].position.clone(),
+                    this.mainScene.droneList[j].position.clone()
                     );
             }
         }
