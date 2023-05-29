@@ -113,7 +113,6 @@ export class MainScene {
     updateInfoPanel() {
         let text = "";
         text += "Frame : " + this.randerNum + "\n";
-        text += "View scale : " + this.flyingCamera.ViewScale.toPrecision(4) + "\n";
         text += "Cam Position : "
             + this.flyingCamera.camera.position.x.toPrecision(6) + ", "
             + this.flyingCamera.camera.position.y.toPrecision(6) + ", "
@@ -124,10 +123,10 @@ export class MainScene {
             + this.flyingCamera.camLookat.y.toPrecision(6) + ", "
             + this.flyingCamera.camLookat.z.toPrecision(6) + "\n";
 
-        text += "Cam xz angle : " + (this.flyingCamera.CamXzAngle / Math.PI * 180).toPrecision(4) + "\n";
+        text += "Cam xz angle : " + (this.flyingCamera.CamXzAngle / Math.PI * 180 % 360).toPrecision(4) + "\n";
 
         let ydiff = this.flyingCamera.camera.position.y - this.flyingCamera.camLookat.y;
-        text += "Cam y angle : " + (Math.atan(ydiff / this.flyingCamera.CamdirDiameter) / Math.PI * 180).toPrecision(4) + "\n";
+        text += "Cam y angle : " + (Math.atan(ydiff / this.flyingCamera.CamdirDiameter) / Math.PI * 360).toPrecision(4) + "\n";
 
         text += "Mouse x: "
             + this.controller.pointer.x.toPrecision(6)
