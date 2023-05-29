@@ -34,7 +34,7 @@ export class DroneModel {
         sphere.meshName = 'Drone';
 
         let droneModel = SkeletonUtils.clone(this.droneModel)
-        droneModel.receiveShadow = true;
+        // droneModel.receiveShadow = true;
 
         sphere.add(droneModel);
 
@@ -54,9 +54,12 @@ export class DroneModel {
 
         sphere.onTargetHandler = () => {
             materialC.opacity = 1.0;
+            sphere.matrixAutoUpdate = true;
         };
         sphere.outTargetHandler = () => {
             materialC.opacity = 0.0;
+            sphere.matrixAutoUpdate = false;
+            sphere.updateMatrix();
         };
 
         const itemSize = 3;
@@ -76,7 +79,10 @@ export class DroneModel {
         sphere.add(circle);
 
         this.mainScene.scene.add(sphere);
+        sphere.matrixAutoUpdate = false;
+        sphere.updateMatrix();
 
+        sphere.isTarget = true;
         return sphere;
     }
 
@@ -87,32 +93,57 @@ export class DroneModel {
         dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
         loader.setDRACOLoader(dracoLoader);
 
-        loader.load(
-            './static/Drone2.glb',
-            function (gltf) {
-
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
-                gltf.scene.traverse(function (node) {
-                    if (node.isMesh) {
-                        node.castShadow = true;
-                        node.receiveShadow = true;
-                    }
-                });
-
-                console.log(gltf.scene);
-                console.log(gltf.scene.clone());
-                that.droneModel = gltf.scene.clone();
-
-                that.modelLoaded = true;
-
-            },
-            function (xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            function (error) {
-                console.log('An error happened');
-            }
-        );
+        if (0){
+            loader.load(
+                './static/Drone.glb',
+                function (gltf) {
+    
+                    gltf.scene.scale.set(2.0, 2.0, 2.0);
+                    gltf.scene.traverse(function (node) {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                            
+                        } 
+                    });
+                    that.droneModel = gltf.scene.clone();
+    
+                    that.modelLoaded = true;
+    
+                },
+                function (xhr) {
+                    // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                function (error) {
+                    console.log('An error happened');
+                }
+            );
+        } else {
+            loader.load(
+                './static/Drone2.glb',
+                function (gltf) {
+    
+                    gltf.scene.scale.set(0.5, 0.5, 0.5);
+                    gltf.scene.traverse(function (node) {
+                        if (node.isMesh) {
+                            node.castShadow = true;
+                            node.receiveShadow = true;
+                        } 
+                    });
+                    that.droneModel = gltf.scene.clone();
+    
+                    that.modelLoaded = true;
+    
+                },
+                function (xhr) {
+                    // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                function (error) {
+                    console.log('An error happened');
+                }
+            );
+    
+        }
 
     }
 }

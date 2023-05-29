@@ -43,7 +43,7 @@ export class ShiftHelper {
             arrow.setOriginalColor();
         });
         arrow.setOnMouseDownHandler((e) => {
-            console.log("Mouse down on " + name);
+            // console.log("Mouse down on " + name);
             this.dragStartPos = this.targetPos.clone();
             this.dragStartTo = arrow.to.clone();
 

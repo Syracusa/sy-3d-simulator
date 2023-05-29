@@ -56,7 +56,7 @@ export class Terrain {
         mesh.meshName = 'floor';
         this.scene.add(mesh);
         this.terrainMeshs.push(mesh);
-
+        mesh.matrixAutoUpdate = false;
         return mesh;
     }
 

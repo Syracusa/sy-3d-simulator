@@ -97,6 +97,6 @@ export class FlyingPerspectiveCamera {
     UpdateCamera() {
         this.UpdateCameraPositionByLookAt();
         this.camera.lookAt(this.camLookat);
-        this.camera.updateProjectionMatrix();
+        // this.camera.updateProjectionMatrix();
     }
 }
