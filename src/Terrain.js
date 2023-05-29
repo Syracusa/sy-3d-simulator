@@ -48,7 +48,7 @@ export class Terrain {
             color: 0xffffff,
             vertexColors: true
         });
-        
+
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.receiveShadow = true;
@@ -157,18 +157,23 @@ export class Terrain {
         }
     }
 
-    raiseHeightPoint(xPos, yPos, intensity){
-        for (let i = xPos - 4; i < xPos + 4; i++){
-            for (let j = yPos - 4; j < yPos + 4; j++) {
+    sigmoid(z) {
+        return 1 / (1 + Math.exp(-z));
+    }
+
+    raiseHeightPoint(xPos, yPos, intensity) {
+        let range = 10;
+        for (let i = xPos - range; i < xPos + range; i++) {
+            for (let j = yPos - range; j < yPos + range; j++) {
                 if (i > -1 && i < this.mapsize &&
-                    j > -1 && j < this.mapsize){
-                    
+                    j > -1 && j < this.mapsize) {
+
                     let xdiff = Math.abs(xPos - i);
                     let ydiff = Math.abs(yPos - j);
-                    
+
                     let diff = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
 
-                    this.heights[i][j] += intensity * (4 - diff);
+                    this.heights[i][j] += intensity * (this.sigmoid(diff * -1 + 3)) * 2;
                 }
             }
         }
@@ -177,7 +182,7 @@ export class Terrain {
     }
 
     disposeTerrain() {
-        for (let i = 0; i < this.terrainMeshs.length; i++){
+        for (let i = 0; i < this.terrainMeshs.length; i++) {
             let mesh = this.terrainMeshs[i];
 
             mesh.removeFromParent();
