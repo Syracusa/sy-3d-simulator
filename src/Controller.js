@@ -5,7 +5,7 @@ import { ShiftHelper } from './ShiftHelper.js';
 
 const MOUSE_STATE_DEFAULT = 0;
 const MOUSE_STATE_RAISE_TERRAIN = 1;
-const MOUSE_STATE_DROP_TERRAIN = 2;
+const MOUSE_STATE_DIG_TERRAIN = 2;
 
 export class Controller {
     that = this;
@@ -74,8 +74,8 @@ export class Controller {
                 controller.mouseMode = MOUSE_STATE_RAISE_TERRAIN;
                 document.body.style.cursor = 'zoom-in';
             },
-            'Drop Terrain': function () {
-                controller.mouseMode = MOUSE_STATE_DROP_TERRAIN;
+            'Dig Terrain': function () {
+                controller.mouseMode = MOUSE_STATE_DIG_TERRAIN;
                 document.body.style.cursor = 'zoom-out';
             },
             'Default Mode': function () {
@@ -95,7 +95,7 @@ export class Controller {
 
         const mouseModeFolder = gui.addFolder('MouseMode');
         mouseModeFolder.add(callbacks, 'Raise Terrain');
-        mouseModeFolder.add(callbacks, 'Drop Terrain');
+        mouseModeFolder.add(callbacks, 'Dig Terrain');
         mouseModeFolder.add(callbacks, 'Default Mode');
 
         mouseModeFolder.open();
@@ -177,7 +177,7 @@ export class Controller {
 
         if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN){
             this.mainScene.terrain.raiseHeightPoint(x, y, 1);
-        } else if (this.mouseMode == MOUSE_STATE_DROP_TERRAIN){
+        } else if (this.mouseMode == MOUSE_STATE_DIG_TERRAIN){
             this.mainScene.terrain.raiseHeightPoint(x, y, -1);
         }
     }
