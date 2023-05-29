@@ -28,6 +28,9 @@ export class ArrowShape {
     setMeshName(name) {
         this.cone.meshName = name;
         this.cylinder.meshName = name;
+        
+        this.cone.keepTargetListFlag = true;
+        this.cylinder.keepTargetListFlag = true;
     }
 
     setOriginalColor() {

@@ -134,8 +134,6 @@ export class MainScene {
             } else {
                 text += "Intersected : unknown\n";
             }
-
-
         }
 
         this.infoPanel.innerText = text;

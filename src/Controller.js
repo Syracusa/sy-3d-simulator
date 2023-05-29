@@ -49,8 +49,8 @@ export class Controller {
         this.genDummy();
 
         /* ShiftHelper */
-        this.shiftHelper = new ShiftHelper(scene,
-            this.flyingCamera.camera,
+        this.shiftHelper = new ShiftHelper(mainScene.scene,
+            this.mainScene.flyingCamera.camera,
             this.dummyTarget);
     }
 
@@ -101,9 +101,9 @@ export class Controller {
         nodeFolder.add(callbacks, 'Create new node');
         nodeFolder.add(callbacks, 'Remove node');
         nodeFolder.add(callbacks, 'Remove all node');
-    
+
         nodeFolder.open();
-    
+
         const terrainFolder = gui.addFolder('Terrain');
         terrainFolder.add(callbacks, 'Raise terrain test');
         terrainFolder.add(callbacks, 'Drop terrain test');
@@ -117,7 +117,7 @@ export class Controller {
     }
 
     genDummy() {
-        const geometryS = new THREE.SphereGeometry(1, 32, 32);
+        const geometryS = new THREE.SphereGeometry(0.1, 32, 32);
         const materialS = new THREE.MeshStandardMaterial({
             color: 0xFFAACF,
             // wireframe: true,
@@ -127,7 +127,7 @@ export class Controller {
 
         sphere1.position.set(45, 100, 48);
         sphere1.meshName = 'Dummy';
-        this.mainScene.add(sphere1);
+        this.mainScene.scene.add(sphere1);
 
         this.dummyTarget = sphere1;
     }
@@ -157,10 +157,17 @@ export class Controller {
                 this.selectedTarget.object.outTargetHandler(e);
             }
         }
-        for (let i = 0; i < this.selectedTargetList.length; i++) {
-            if (this.selectedTargetList[i].hasOwnProperty('outTargetHandler')) {
-                this.selectedTargetList[i].outTargetHandler(e);
+        if (this.intersected.object.hasOwnProperty('keepTargetListFlag')) {
+            /* Keep target */
+            // console.log('Keep target');
+        } else {
+            for (let i = 0; i < this.selectedTargetList.length; i++) {
+                if (this.selectedTargetList[i].hasOwnProperty('outTargetHandler')) {
+                    this.selectedTargetList[i].outTargetHandler(e);
+                }
             }
+            this.selectedTargetList = [];
+            this.dummyTarget.position.y = -50;
         }
     }
 
@@ -217,61 +224,74 @@ export class Controller {
         /* On mouse up */
         this.mainScene.renderer.domElement.onmouseup = function (e) {
             /* Warning : this != Controller */
+
+            if (controller.dragTarget
+                && controller.dragTarget.object.hasOwnProperty('keepTargetListFlag')) {
+                /* Keep target */
+                // console.log("Keep target!")
+            } else {
+                controller.onDragMouseUp(e);
+            }
             controller.dragTarget = null;
-
-            controller.selectedTargetList = controller.dragHelper.getDragIntersects();
-            controller.selectdTargetOrigPos = [];
-
-            let maxX = -99999.9;
-            let minX = 99999.9;
-            let maxY = -99999.9;
-            let minY = 99999.9;
-            let maxZ = -99999.9;
-            let minZ = 99999.9;
-            
-            for (let i = 0; i < controller.selectedTargetList.length; i++) {
-                let selTarget = controller.selectdTargetList[i];
-                
-                if (selTarget.hasOwnProperty('onTargetHandler')) {
-                    selTarget.onTargetHandler(e);
-                }
-                controller.selectdTargetOrigPos[i] = selTarget.position.clone();
-
-                if (selTarget.position.x > maxX)
-                    maxX = selTarget.position.x;
-                if (selTarget.position.x < minX)
-                    minX = selTarget.position.x;
-                if (selTarget.position.y > maxY)
-                    maxY = selTarget.position.y;
-                if (selTarget.position.y < minY)
-                    minY = selTarget.position.y;
-                if (selTarget.position.z > maxZ)
-                    maxZ = selTarget.position.z;
-                if (selTarget.position.z < minZ)
-                    minZ = selTarget.position.z;
-            }
-
-            if (controller.selectedTargetList.length > 0) {
-                /* Calc Max x, y, z and Min x, y, z */
-                targetCenterPos = new THREE.Vector3((minX + maxX) / 2,
-                                                    (minY + maxY) / 2, 
-                                                    (minZ + maxZ) / 2);
-
-                /* Move dummy target to center of targets */
-                controller.dummyTargetOriginalpos = targetCenterPos.clone();
-
-                /* Shifthelper retarget to dummy target */
-                controller.shiftHelper.retarget(this.dummyTarget);
-
-                controller.dummyTargetSync = true;
-            }
-            controller.dragHelper.removeSquare();
         }
 
         /* On mouse out */
-        this.mainScene.renderer.domElement.onmouseout = function (e) {
+        controller.mainScene.renderer.domElement.onmouseout = function (e) {
             /* Warning : this != Controller */
         }
+    }
+
+    onDragMouseUp(e) {
+
+        this.selectedTargetList = this.dragHelper.getDragIntersects();
+        this.selectdTargetOrigPos = [];
+
+        let maxX = -99999.9;
+        let minX = 99999.9;
+        let maxY = -99999.9;
+        let minY = 99999.9;
+        let maxZ = -99999.9;
+        let minZ = 99999.9;
+
+        for (let i = 0; i < this.selectedTargetList.length; i++) {
+            let selTarget = this.selectedTargetList[i];
+
+            if (selTarget.hasOwnProperty('onTargetHandler')) {
+                selTarget.onTargetHandler(e);
+            }
+            this.selectdTargetOrigPos[i] = selTarget.position.clone();
+
+            if (selTarget.position.x > maxX)
+                maxX = selTarget.position.x;
+            if (selTarget.position.x < minX)
+                minX = selTarget.position.x;
+            if (selTarget.position.y > maxY)
+                maxY = selTarget.position.y;
+            if (selTarget.position.y < minY)
+                minY = selTarget.position.y;
+            if (selTarget.position.z > maxZ)
+                maxZ = selTarget.position.z;
+            if (selTarget.position.z < minZ)
+                minZ = selTarget.position.z;
+        }
+
+        if (this.selectedTargetList.length > 0) {
+            /* Calc Max x, y, z and Min x, y, z */
+            let targetCenterPos = new THREE.Vector3((minX + maxX) / 2,
+                (minY + maxY) / 2,
+                (minZ + maxZ) / 2);
+
+            this.dummyTarget.position.copy(targetCenterPos);
+            /* Move dummy target to center of targets */
+            this.dummyTargetOriginalpos = targetCenterPos.clone();
+
+            /* Shifthelper retarget to dummy target */
+            console.log(this.dummyTarget);
+            this.shiftHelper.retarget(this.dummyTarget);
+
+            this.dummyTargetSync = true;
+        }
+        this.dragHelper.removeSquare();
     }
 
     raycastControl() {
@@ -301,7 +321,7 @@ export class Controller {
                 }
             }
 
-            if (this.intersected == null
+            if (this.intersected == null || firstIntersect == null
                 || this.intersected.object.uuid != firstIntersect.object.uuid) {
                 if (this.intersected &&
                     this.intersected.object.hasOwnProperty('intersectOutHandler')) {
@@ -309,10 +329,12 @@ export class Controller {
                     console.log('out handler');
                 }
 
-                this.intersected = firstIntersect;
-                if (firstIntersect.object.hasOwnProperty('intersectHandler')) {
-                    firstIntersect.object.intersectHandler();
-                    console.log('in handler');
+                if (firstIntersect) {
+                    this.intersected = firstIntersect;
+                    if (firstIntersect.object.hasOwnProperty('intersectHandler')) {
+                        firstIntersect.object.intersectHandler();
+                        console.log('in handler');
+                    }
                 }
             }
         }
@@ -356,13 +378,13 @@ export class Controller {
 
         if (this.dummyTargetSync == true) {
             /* TODO */
-            let diffPos = this.dummyTarget.position.clone.sub(this.dummyTargetOriginalpos);
-
-            for (let i = 0; i < controller.selectdTargetList.length; i++){
-                let elem = this.selectdTargetList[i];
+            let diffPos = this.dummyTargetOriginalpos.clone().sub(this.dummyTarget.position);
+            console.log(this.selectedTargetList.length);
+            for (let i = 0; i < this.selectedTargetList.length; i++) {
+                let elem = this.selectedTargetList[i];
                 let origPos = this.selectdTargetOrigPos[i];
 
-                elem.position = origPos.clone().sub(diffPos);   
+                elem.position.copy(origPos.clone().sub(diffPos));
             }
         }
     }

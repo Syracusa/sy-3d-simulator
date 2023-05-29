@@ -26,7 +26,7 @@ export class DroneModel {
         materialS.opacity = 0.0;
 
         const sphere = new THREE.Mesh(geometryS, materialS);
-        sphere.position.set(63, 22, 33);
+        sphere.position.set(55 + Math.random() * 15, 22 + Math.random() * 5, 26 + Math.random() * 15);
         sphere.onMouseDownHandler = () => {
             this.mainScene.controller.shiftHelper.retarget(sphere);
         }
