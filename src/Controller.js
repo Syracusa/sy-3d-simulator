@@ -1,4 +1,4 @@
-import { GUI } from 'dat.gui'
+import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import * as THREE from 'three'
 import { DragHelper } from './DragHelper.js';
 import { ShiftHelper } from './ShiftHelper.js';
