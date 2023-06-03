@@ -31,6 +31,8 @@ export class MainScene {
         this.infoPanel = document.getElementById("info");
         this.randerNum = 0;
 
+        this.nodeInfoPanel = document.getElementById("node-info");
+
         /* Ambient light */
         const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
         scene.add(ambientLight);
@@ -109,7 +111,23 @@ export class MainScene {
         directionalLight.shadow.mapSize.height = 2048;
     }
 
-    updateInfoPanel() {
+    update(timeDiff) {
+        this.controller.update(timeDiff);
+
+        this.linkManager.drawLink();
+
+        /* Camera update */
+        this.flyingCamera.UpdateCamera();
+
+        /* Randerer call */
+        this.renderer.render(this.scene, this.flyingCamera.camera);
+		this.labelRenderer.render(this.scene, this.flyingCamera.camera);
+        
+        /* Update stat */
+        this.randerNum++;
+    }
+
+    updateDebugPanel() {
         let text = "";
         text += "Frame : " + this.randerNum + "\n";
         text += "Cam Position : "
@@ -144,21 +162,15 @@ export class MainScene {
         this.infoPanel.innerText = text;
     }
 
-    update(timeDiff) {
-        this.controller.update(timeDiff);
+    updateNodePanel() {
+        /*  */
+        this.nodeInfoPanel.innerText = "Test node info";
+    }
 
-        this.linkManager.drawLink();
-
-        /* Camera update */
-        this.flyingCamera.UpdateCamera();
-
-        /* Randerer call */
-        this.renderer.render(this.scene, this.flyingCamera.camera);
-		this.labelRenderer.render(this.scene, this.flyingCamera.camera);
-        
-        /* Update stat */
-        this.randerNum++;
-        this.updateInfoPanel();
+    updatePanelInfo() {
+        console.log('Update panelinfo')
+        this.updateDebugPanel();
+        this.updateNodePanel();
     }
 
 }

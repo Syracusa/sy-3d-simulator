@@ -46,6 +46,8 @@ export class Controller {
         this.shiftHelper = new ShiftHelper(mainScene.scene,
             this.mainScene.flyingCamera.camera,
             this.dummyTarget);
+
+        
     }
 
     initLilGui(controller) {

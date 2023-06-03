@@ -82,6 +82,15 @@ export class DroneModel {
 		const nodeLabelDiv = document.createElement("div");
 		nodeLabelDiv.className = "label";
 		nodeLabelDiv.innerHTML  = "Node " + this.nodeidx++;
+
+        if(0){
+            const nodeInfoDiv = document.createElement("div");
+            nodeInfoDiv.style = "background-color:yellow; font-size:x-small;"
+            nodeInfoDiv.innerHTML = "testdiv";
+            
+            nodeLabelDiv.appendChild(nodeInfoDiv);
+        }
+
 		const nodeLabel = new CSS2DObject(nodeLabelDiv);
 		nodeLabel.position.set(0, 2, 0);
 

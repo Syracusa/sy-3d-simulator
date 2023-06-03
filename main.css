@@ -29,3 +29,15 @@ body {
     font-size: x-small;
     user-select: none;
 }
+
+#node-info {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: 30%;
+    text-align: left;
+    z-index: 1;
+    display: block;
+    font-size: x-small;
+    user-select: none;
+}

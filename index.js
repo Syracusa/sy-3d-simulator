@@ -3,6 +3,8 @@ import { MainScene } from './src/MainScene.js';
 let ctx = new MainScene();
 let minIntervalMs = 10;
 let oldTime = Date.now();
+let lastPanelUpdate = Date.now();
+let panelUpdateTimeMs = 500;
 
 function onWindowResize() {
     ctx.flyingCamera.updateScreenRatio( window.innerWidth / window.innerHeight);
@@ -21,6 +23,12 @@ function animate() {
     if (timeDiff >= minIntervalMs){
         oldTime = currtime;
         ctx.update(timeDiff);
+    }
+
+    let panelUpdateTimeDiff = currtime - lastPanelUpdate;
+    if (panelUpdateTimeDiff >= panelUpdateTimeMs){
+        lastPanelUpdate = currtime;
+        ctx.updatePanelInfo();
     }
 };
 
