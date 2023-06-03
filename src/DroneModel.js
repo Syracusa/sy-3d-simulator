@@ -79,27 +79,28 @@ export class DroneModel {
 
         node.add(circle);
 
-		const nodeLabelDiv = document.createElement("div");
-		nodeLabelDiv.className = "label";
-		nodeLabelDiv.innerHTML  = "Node " + this.nodeidx;
+        const nodeLabelDiv = document.createElement("div");
+        nodeLabelDiv.className = "label";
+        nodeLabelDiv.innerHTML = "Node " + this.nodeidx;
 
         node.nodeName = "Node " + this.nodeidx;
         this.nodeidx++;
 
-        if(0){
-            const nodeInfoDiv = document.createElement("div");
-            nodeInfoDiv.style = "background-color:yellow; font-size:x-small;"
-            nodeInfoDiv.innerHTML = "testdiv";
-            
-            nodeLabelDiv.appendChild(nodeInfoDiv);
-        }
+        const nodeInfoDiv = document.createElement("div");
+        nodeInfoDiv.style = "background-color:yellow; font-size:x-small;"
 
-		const nodeLabel = new CSS2DObject(nodeLabelDiv);
-		nodeLabel.position.set(0, 2, 0);
+        nodeLabelDiv.appendChild(nodeInfoDiv);
+
+        node.infoElem = nodeInfoDiv;
+        node.bubbleInfoList = [];
+        node.bubbleInfoAddTimeList = [];
+
+        const nodeLabel = new CSS2DObject(nodeLabelDiv);
+        nodeLabel.position.set(0, 2, 0);
 
         // nodeLabel.center.set( 0, 1 );
-		node.add(nodeLabel);
-        nodeLabel.layers.set( 0 );
+        node.add(nodeLabel);
+        nodeLabel.layers.set(0);
 
         this.mainScene.scene.add(node);
         node.matrixAutoUpdate = false;
@@ -116,23 +117,23 @@ export class DroneModel {
         dracoLoader.setDecoderPath('/examples/jsm/libs/draco/');
         loader.setDRACOLoader(dracoLoader);
 
-        if (0){
+        if (0) {
             loader.load(
                 './static/Drone.glb',
                 function (gltf) {
-    
+
                     gltf.scene.scale.set(2.0, 2.0, 2.0);
                     gltf.scene.traverse(function (node) {
                         if (node.isMesh) {
                             node.castShadow = true;
                             node.receiveShadow = true;
-                            
-                        } 
+
+                        }
                     });
                     that.droneModel = gltf.scene.clone();
-    
+
                     that.modelLoaded = true;
-    
+
                 },
                 function (xhr) {
                     // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -145,18 +146,18 @@ export class DroneModel {
             loader.load(
                 './static/Drone2.glb',
                 function (gltf) {
-    
+
                     gltf.scene.scale.set(0.5, 0.5, 0.5);
                     gltf.scene.traverse(function (node) {
                         if (node.isMesh) {
                             node.castShadow = true;
                             node.receiveShadow = true;
-                        } 
+                        }
                     });
                     that.droneModel = gltf.scene.clone();
-    
+
                     that.modelLoaded = true;
-    
+
                 },
                 function (xhr) {
                     // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -165,7 +166,7 @@ export class DroneModel {
                     console.log('An error happened');
                 }
             );
-    
+
         }
 
     }

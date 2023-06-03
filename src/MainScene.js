@@ -163,14 +163,33 @@ export class MainScene {
     }
 
     updateNodePanel() {
-        /*  */
-
         let node = null;
         if (this.controller.selectedNode)
             node = this.controller.selectedNode.object;
 
         let infoText = '';
         if (node) {
+            let currtime = Date.now();
+
+            if (0){
+                node.bubbleInfoList.push("test !!" + currtime + "\n");
+                node.bubbleInfoAddTimeList.push(currtime);
+            }
+
+            let bubbleText = '';
+
+            for (let i = 0; i < node.bubbleInfoList.length; i++) {
+                let addedTime = node.bubbleInfoAddTimeList[i];
+                if (currtime - addedTime > 1000){
+                    node.bubbleInfoAddTimeList.shift();
+                    node.bubbleInfoList.shift();
+                    i--;
+                    continue;
+                }
+                bubbleText += node.bubbleInfoList[i];
+            }
+            node.infoElem.innerText = bubbleText;
+
             infoText = node.nodeName + '\n';
             infoText +=
                 'X : ' + node.position.x.toPrecision(4)
