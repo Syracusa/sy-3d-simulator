@@ -31,7 +31,9 @@ export class Controller {
         this.intersected = null;
         this.dragTarget = null;
         this.selectedTarget = null;
-        this.selectedTargetList = [];
+        this.selectedNodeList = [];
+
+        this.selectedNode = null;
 
         this.initLilGui(this);
 
@@ -145,12 +147,12 @@ export class Controller {
                 }
             }
 
-            for (let i = 0; i < this.selectedTargetList.length; i++) {
-                if (this.selectedTargetList[i].hasOwnProperty('outTargetHandler')) {
-                    this.selectedTargetList[i].outTargetHandler(e);
+            for (let i = 0; i < this.selectedNodeList.length; i++) {
+                if (this.selectedNodeList[i].hasOwnProperty('outTargetHandler')) {
+                    this.selectedNodeList[i].outTargetHandler(e);
                 }
             }
-            this.selectedTargetList = [];
+            this.selectedNodeList = [];
             this.dummyTarget.position.y = -50;
         }
     }
@@ -195,6 +197,9 @@ export class Controller {
             if (controller.intersected) {
                 if (controller.intersected.object.hasOwnProperty('isTerrain')){
                     controller.terrainEventHandler(controller.intersected);
+                }
+                if (controller.intersected.object.hasOwnProperty('nodeName')){
+                    controller.selectedNode = controller.intersected;
                 }
                 controller.inNewTarget(e);
             }
@@ -243,7 +248,7 @@ export class Controller {
 
     onDragMouseUp(e) {
 
-        this.selectedTargetList = this.dragHelper.getDragIntersects();
+        this.selectedNodeList = this.dragHelper.getDragIntersects();
         this.selectdTargetOrigPos = [];
 
         let maxX = -99999.9;
@@ -253,8 +258,8 @@ export class Controller {
         let maxZ = -99999.9;
         let minZ = 99999.9;
 
-        for (let i = 0; i < this.selectedTargetList.length; i++) {
-            let selTarget = this.selectedTargetList[i];
+        for (let i = 0; i < this.selectedNodeList.length; i++) {
+            let selTarget = this.selectedNodeList[i];
 
             if (selTarget.hasOwnProperty('onTargetHandler')) {
                 selTarget.onTargetHandler(e);
@@ -275,7 +280,7 @@ export class Controller {
                 minZ = selTarget.position.z;
         }
 
-        if (this.selectedTargetList.length > 0) {
+        if (this.selectedNodeList.length > 0) {
             /* Calc Max x, y, z and Min x, y, z */
             let targetCenterPos = new THREE.Vector3((minX + maxX) / 2,
                 (minY + maxY) / 2,
@@ -373,8 +378,8 @@ export class Controller {
 
         if (this.dummyTargetSync == true) {
             let diffPos = this.dummyTargetOriginalpos.clone().sub(this.dummyTarget.position);
-            for (let i = 0; i < this.selectedTargetList.length; i++) {
-                let elem = this.selectedTargetList[i];
+            for (let i = 0; i < this.selectedNodeList.length; i++) {
+                let elem = this.selectedNodeList[i];
                 let origPos = this.selectdTargetOrigPos[i];
 
                 elem.position.copy(origPos.clone().sub(diffPos));

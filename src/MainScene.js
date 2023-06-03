@@ -83,14 +83,14 @@ export class MainScene {
         this.screenRatio = window.innerWidth / window.innerHeight;
 
         const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
         labelRenderer.domElement.style.position = 'absolute';
         labelRenderer.domElement.style.top = '0px';
-        document.body.appendChild( labelRenderer.domElement );
-        this.labelRenderer = labelRenderer; 
+        document.body.appendChild(labelRenderer.domElement);
+        this.labelRenderer = labelRenderer;
     }
 
-    generateDirectionalLight(){
+    generateDirectionalLight() {
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
 
         this.scene.add(directionalLight);
@@ -121,8 +121,8 @@ export class MainScene {
 
         /* Randerer call */
         this.renderer.render(this.scene, this.flyingCamera.camera);
-		this.labelRenderer.render(this.scene, this.flyingCamera.camera);
-        
+        this.labelRenderer.render(this.scene, this.flyingCamera.camera);
+
         /* Update stat */
         this.randerNum++;
     }
@@ -164,11 +164,27 @@ export class MainScene {
 
     updateNodePanel() {
         /*  */
-        this.nodeInfoPanel.innerText = "Test node info";
+
+        let node = null;
+        if (this.controller.selectedNode)
+            node = this.controller.selectedNode.object;
+
+        let infoText = '';
+        if (node) {
+            infoText = node.nodeName + '\n';
+            infoText +=
+                'X : ' + node.position.x.toPrecision(4)
+                + '\xa0\xa0 Y : ' + node.position.y.toPrecision(4)
+                + '\xa0\xa0 Z : ' + node.position.z.toPrecision(4)
+                + '\n';
+
+        } else {
+            infoText = 'No node selected';
+        }
+        this.nodeInfoPanel.innerText = infoText;
     }
 
     updatePanelInfo() {
-        console.log('Update panelinfo')
         this.updateDebugPanel();
         this.updateNodePanel();
     }

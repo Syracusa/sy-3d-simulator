@@ -81,7 +81,10 @@ export class DroneModel {
 
 		const nodeLabelDiv = document.createElement("div");
 		nodeLabelDiv.className = "label";
-		nodeLabelDiv.innerHTML  = "Node " + this.nodeidx++;
+		nodeLabelDiv.innerHTML  = "Node " + this.nodeidx;
+
+        node.nodeName = "Node " + this.nodeidx;
+        this.nodeidx++;
 
         if(0){
             const nodeInfoDiv = document.createElement("div");
