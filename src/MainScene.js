@@ -7,6 +7,7 @@ import { DroneModel } from './DroneModel.js';
 import { LinkManager } from './LinkManager.js';
 import { FlyingPerspectiveCamera } from './FlyingPerspectiveCamera.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { Scenario } from './Scenario.js';
 
 export class MainScene {
     constructor() {
@@ -20,10 +21,13 @@ export class MainScene {
 
         /* Camera */
         this.flyingCamera = new FlyingPerspectiveCamera(window.innerWidth / window.innerHeight);
-
+        
         /* Terrain */
         this.terrain = new Terrain(scene);
-
+        
+        /* Scenario */
+        this.scenario = new Scenario();
+        
         /* Controller */
         this.controller = new Controller(this);
 
@@ -66,6 +70,7 @@ export class MainScene {
 
         /* LinkManager */
         this.linkManager = new LinkManager(this);
+
     }
 
     generateRenderer() {
@@ -171,7 +176,7 @@ export class MainScene {
         if (node) {
             let currtime = Date.now();
 
-            if (0){
+            if (0) {
                 node.bubbleInfoList.push("test !!" + currtime + "\n");
                 node.bubbleInfoAddTimeList.push(currtime);
             }
@@ -180,7 +185,7 @@ export class MainScene {
 
             for (let i = 0; i < node.bubbleInfoList.length; i++) {
                 let addedTime = node.bubbleInfoAddTimeList[i];
-                if (currtime - addedTime > 1000){
+                if (currtime - addedTime > 1000) {
                     node.bubbleInfoAddTimeList.shift();
                     node.bubbleInfoList.shift();
                     i--;

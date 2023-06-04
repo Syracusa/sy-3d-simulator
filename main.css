@@ -41,6 +41,18 @@ body {
     user-select: none;
 }
 
+#scenario-info {
+    position: absolute;
+    right: 10px;
+    bottom: 30px;
+    width: 30%;
+    text-align: right;
+    z-index: 1;
+    display: block;
+    font-size: x-small;
+    user-select: none;
+}
+
 .slider {
     position: absolute;
     width: 100%; /* Full-width */

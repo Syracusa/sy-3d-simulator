@@ -49,7 +49,7 @@ export class Controller {
             this.mainScene.flyingCamera.camera,
             this.dummyTarget);
 
-        
+
     }
 
     initLilGui(controller) {
@@ -85,7 +85,20 @@ export class Controller {
             'Default Mode': function () {
                 controller.mouseMode = MOUSE_STATE_DEFAULT;
                 document.body.style.cursor = 'default';
+            },
+            'Add KeyFrame': function () {
+                console.log('Add Keyframe!');
+            },
+            'Start simulation': function () {
+                console.log('Start scenario...');
+            },
+            'Stop simulation': function () {
+                console.log('Stop scenario...');
             }
+        }
+
+        let params = {
+            'Scenario Duration': 100
         }
 
         const gui = new GUI()
@@ -96,6 +109,15 @@ export class Controller {
         nodeFolder.add(callbacks, 'Remove all node');
 
         nodeFolder.open();
+
+        const scenarioFolder = gui.addFolder('Scenario');
+        scenarioFolder.add(callbacks, 'Add KeyFrame');
+        scenarioFolder.add(params, 'Scenario Duration').onChange((value) => {
+            this.mainScene.scenario.slider.max = value;
+        });
+        scenarioFolder.add(callbacks, 'Start simulation');
+        scenarioFolder.add(callbacks, 'Stop simulation');
+        scenarioFolder.open();
 
         const mouseModeFolder = gui.addFolder('MouseMode');
         mouseModeFolder.add(callbacks, 'Raise Terrain');
@@ -159,7 +181,7 @@ export class Controller {
 
     inNewTarget(e) {
         /* Update Target */
-        if (this.intersected.object.isTarget == true){
+        if (this.intersected.object.isTarget == true) {
             this.selectedTarget = this.intersected;
         }
 
@@ -179,10 +201,10 @@ export class Controller {
         let x = terrainMesh.object.terrainX;
         let y = terrainMesh.object.terrainY;
 
-        if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN){
+        if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN) {
             this.mainScene.terrain.raiseHeightPoint(x, y, 1);
             this.mainScene.terrain.drawTerrainFromHeights();
-        } else if (this.mouseMode == MOUSE_STATE_DIG_TERRAIN){
+        } else if (this.mouseMode == MOUSE_STATE_DIG_TERRAIN) {
             this.mainScene.terrain.raiseHeightPoint(x, y, -1);
             this.mainScene.terrain.drawTerrainFromHeights();
         }
@@ -197,10 +219,10 @@ export class Controller {
 
             controller.outCurrentTarget(e);
             if (controller.intersected) {
-                if (controller.intersected.object.hasOwnProperty('isTerrain')){
+                if (controller.intersected.object.hasOwnProperty('isTerrain')) {
                     controller.terrainEventHandler(controller.intersected);
                 }
-                if (controller.intersected.object.hasOwnProperty('nodeName')){
+                if (controller.intersected.object.hasOwnProperty('nodeName')) {
                     controller.selectedNode = controller.intersected;
                 }
                 controller.inNewTarget(e);
