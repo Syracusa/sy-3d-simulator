@@ -13,7 +13,7 @@ export class Terrain {
             this.flatifyHeights();
         } else {
             this.initHeights(0);
-            this.randomTerrainHeight(0);
+            this.randomTerrainHeight(500);
         }
         this.drawTerrainFromHeights();
     }
@@ -22,7 +22,7 @@ export class Terrain {
         for (let i = 0; i < this.mapsize; i++){
             for (let j = 0; j < this.mapsize; j++){
                 this.raiseHeightPoint(
-                    i, j, Math.random() * 0.3 - 0.1);
+                    i, j, Math.random() * 0.3 - 0.15);
             }
         }
 
@@ -60,10 +60,10 @@ export class Terrain {
             let posY = positions.getY(i);
             if (posY > 16.0) {
                 color.setRGB(1.0 / 2.0, (posY / 20.0), (posY / 20.0));
-            } else if (posY > 14.0) {
-                color.setRGB(1.0 / 2.0, (posY / 20.0) * 0.5, (posY / 20.0) * 0.1);
+            } else if (posY > 13.0) {
+                color.setRGB((posY - 3) / 30.0, (posY - 5) / 30.0, (posY - 5) / 30.0);
             } else {
-                color.setRGB(0.5 / 2.0, (posY / 30.0) * 0.8, (posY / 20.0) * 0.1);
+                color.setRGB(0.5 / 2.0, (posY / 10.0) * 0.4, (posY / 10.0) * 0.1);
             }
             colors.setXYZ(i, color.r, color.g, color.b);
         }
