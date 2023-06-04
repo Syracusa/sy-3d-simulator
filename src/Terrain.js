@@ -7,9 +7,31 @@ export class Terrain {
 
     constructor(scene) {
         this.scene = scene;
-        this.initHeights(10);
-        this.flatifyHeights();
+
+        if (0) {
+            this.initHeights(10);
+            this.flatifyHeights();
+        } else {
+            this.initHeights(0);
+            this.randomTerrainHeight(0);
+        }
         this.drawTerrainFromHeights();
+    }
+
+    randomTerrainHeight(num) {
+        for (let i = 0; i < this.mapsize; i++){
+            for (let j = 0; j < this.mapsize; j++){
+                this.raiseHeightPoint(
+                    i, j, Math.random() * 0.3 - 0.1);
+            }
+        }
+
+        for (let i = 0; i < num; i++) {
+            this.raiseHeightPoint(
+                (Math.random() * this.mapsize) | 0,
+                (Math.random() * this.mapsize) | 0,
+                Math.random() * 3.0 - 1);
+        }
     }
 
     drawSquare(v) {
@@ -38,11 +60,12 @@ export class Terrain {
             let posY = positions.getY(i);
             if (posY > 16.0) {
                 color.setRGB(1.0 / 2.0, (posY / 20.0), (posY / 20.0));
-                colors.setXYZ(i, color.r, color.g, color.b);
-            } else {
+            } else if (posY > 14.0) {
                 color.setRGB(1.0 / 2.0, (posY / 20.0) * 0.5, (posY / 20.0) * 0.1);
-                colors.setXYZ(i, color.r, color.g, color.b);
+            } else {
+                color.setRGB(0.5 / 2.0, (posY / 30.0) * 0.8, (posY / 20.0) * 0.1);
             }
+            colors.setXYZ(i, color.r, color.g, color.b);
         }
         let material = new THREE.MeshStandardMaterial({
             color: 0xffffff,
@@ -177,8 +200,6 @@ export class Terrain {
                 }
             }
         }
-
-        this.drawTerrainFromHeights();
     }
 
     disposeTerrain() {

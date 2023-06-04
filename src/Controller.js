@@ -181,8 +181,10 @@ export class Controller {
 
         if (this.mouseMode == MOUSE_STATE_RAISE_TERRAIN){
             this.mainScene.terrain.raiseHeightPoint(x, y, 1);
+            this.mainScene.terrain.drawTerrainFromHeights();
         } else if (this.mouseMode == MOUSE_STATE_DIG_TERRAIN){
             this.mainScene.terrain.raiseHeightPoint(x, y, -1);
+            this.mainScene.terrain.drawTerrainFromHeights();
         }
     }
 
