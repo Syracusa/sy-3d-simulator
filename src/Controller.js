@@ -115,8 +115,7 @@ export class Controller {
         scenarioFolder.add(params, 'Scenario Duration').onChange((value) => {
             this.mainScene.scenario.slider.max = value;
         });
-        scenarioFolder.add(callbacks, 'Start simulation');
-        scenarioFolder.add(callbacks, 'Stop simulation');
+        scenarioFolder.add(this.mainScene.scenario, 'scenarioPlay');
         scenarioFolder.open();
 
         const mouseModeFolder = gui.addFolder('MouseMode');
