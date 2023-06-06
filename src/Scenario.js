@@ -1,4 +1,12 @@
 
+export class KeyFrame {
+    constructor() {
+        this.nodePositions = [];
+        this.senarioTime = 0;
+        
+    }
+}
+
 export class Scenario {
     constructor() {
         this.scenarioPlay = false;
