@@ -26,7 +26,7 @@ export class MainScene {
         this.terrain = new Terrain(scene);
         
         /* Scenario */
-        this.scenario = new Scenario();
+        this.scenario = new Scenario(this);
         
         /* Controller */
         this.controller = new Controller(this);
