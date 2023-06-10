@@ -6,7 +6,7 @@ export class NodeManager {
         this.nodeList = [];
 
         /* Drone */
-        this.droneModel = new DroneModel(mainScene);   
+        this.droneModel = new DroneModel(mainScene);
     }
 
     addNode() {
@@ -19,6 +19,14 @@ export class NodeManager {
 
     deleteNode(node) {
         node.removeFromParent();
+
+        for (let i = 0; i < this.nodeList.length; i++) { 
+            if (this.nodeList[i] == node){
+                this.nodeList.splice(i, 1);
+            }
+        }
+
+        delete this.nodeSet[node.nodeName];
     }
 
     deleteAllNode() {
