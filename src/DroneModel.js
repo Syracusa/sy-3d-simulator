@@ -28,9 +28,6 @@ export class DroneModel {
 
         const node = new THREE.Mesh(geometryS, materialS);
         node.position.set(55 + Math.random() * 15, 22 + Math.random() * 5, 26 + Math.random() * 15);
-        node.onMouseDownHandler = () => {
-            this.mainScene.controller.shiftHelper.retarget(node);
-        }
 
         node.meshName = 'Drone';
 

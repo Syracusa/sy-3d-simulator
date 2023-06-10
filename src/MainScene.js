@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import { Terrain } from './Terrain.js';
 import { Controller } from './Controller.js';
 import { Bulb } from './Bulb.js'
-import { DroneModel } from './DroneModel.js';
 import { LinkManager } from './LinkManager.js';
 import { FlyingPerspectiveCamera } from './FlyingPerspectiveCamera.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { Scenario } from './Scenario.js';
+import { NodeManager } from './NodeManager.js';
 
 export class MainScene {
     constructor() {
@@ -24,12 +24,15 @@ export class MainScene {
         
         /* Terrain */
         this.terrain = new Terrain(scene);
+
+        /* Node Manager */
+        this.nodeManager = new NodeManager(this, );
         
         /* Scenario */
-        this.scenario = new Scenario(this);
+        this.scenario = new Scenario(this, this.nodeManager);
         
         /* Controller */
-        this.controller = new Controller(this);
+        this.controller = new Controller(this, this.nodeManager);
 
         /* Panel */
         this.infoPanel = document.getElementById("info");
@@ -64,12 +67,8 @@ export class MainScene {
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(axesHelper);
 
-        /* Drone */
-        this.droneModel = new DroneModel(this);
-        this.droneList = [];
-
         /* LinkManager */
-        this.linkManager = new LinkManager(this);
+        this.linkManager = new LinkManager(this, this.nodeManager);
 
     }
 

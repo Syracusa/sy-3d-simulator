@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 
 export class DragHelper {
-    constructor(mainScene) {
+    constructor(mainScene, nodeManager) {
         this.camera = mainScene.flyingCamera.camera;
         this.mainScene = mainScene;
+        this.nodeManager = nodeManager;
 
         this.dragSquare = null;
     }
@@ -75,14 +76,14 @@ export class DragHelper {
 
     getDragIntersects() {
         let intersectedList = [];
-        let droneList = this.mainScene.droneList;
-        for (let i = 0; i < droneList.length; i++) {
+        let nodeList = this.nodeManager.nodeList;
+        for (let i = 0; i < nodeList.length; i++) {
 
-            let droneNdc = droneList[i].position.clone().project(this.camera);
+            let droneNdc = nodeList[i].position.clone().project(this.camera);
 
             if (this.x1 < droneNdc.x && droneNdc.x < this.x2 &&
                 this.y1 < droneNdc.y && droneNdc.y < this.y2) {
-                intersectedList.push(droneList[i]);
+                intersectedList.push(nodeList[i]);
             }
         }
         return intersectedList;

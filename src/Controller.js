@@ -10,8 +10,9 @@ const MOUSE_STATE_DIG_TERRAIN = 2;
 export class Controller {
     that = this;
 
-    constructor(mainScene) {
+    constructor(mainScene, nodeManager) {
         this.mainScene = mainScene;
+        this.nodeManager = nodeManager;
         this.keystate = {};
 
         window.onkeydown = (e) => {
@@ -37,7 +38,7 @@ export class Controller {
 
         this.initLilGui(this);
 
-        this.dragHelper = new DragHelper(mainScene);
+        this.dragHelper = new DragHelper(mainScene, this.nodeManager);
 
         this.dummyTargetSync = false;
 
@@ -48,31 +49,25 @@ export class Controller {
         this.shiftHelper = new ShiftHelper(mainScene.scene,
             this.mainScene.flyingCamera.camera,
             this.dummyTarget);
-
-
     }
 
     initLilGui(controller) {
         let callbacks = {
             'Create new node': function () {
                 console.log("Create new node");
-                let node = controller.mainScene.droneModel.generateDrone();
-                controller.mainScene.droneList.push(node);
+                let node = controller.nodeManager.addNode();
+                node.onMouseDownHandler = () => {
+                    controller.shiftHelper.retarget(node);
+                };
             },
             'Remove node': function () {
                 console.log("Remove node");
                 console.log(controller.selectedTarget);
-                controller.selectedTarget.object.removeFromParent();
+                controller.nodeManager.deleteNode(controller.selectdTarget.object);
             },
             'Remove all node': function () {
                 console.log("Remove all node");
-                let droneList = controller.mainScene.droneList;
-                console.log(droneList);
-                for (let i = 0; i < droneList.length; i++) {
-                    console.log(droneList[i]);
-                    droneList[i].removeFromParent();
-                }
-                controller.mainScene.droneList = [];
+                controller.nodeManager.deleteAllNode();
             },
             'Raise Terrain': function () {
                 controller.mouseMode = MOUSE_STATE_RAISE_TERRAIN;

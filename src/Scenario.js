@@ -5,10 +5,8 @@ export class KeyFrame {
         this.scenarioTime = 0;
     } 
 
-    initKeyFrameFromScene(mainScene) {
-        let scenario = mainScene.scenario;
-        let droneList = mainScene.droneList;
-
+    initKeyFrameFromScene(scenario, nodeManager) {
+        let droneList = nodeManager.nodeList;
         this.nodePositions = {};
         for (let i = 0; i < droneList.length; i++){
             let drone = droneList[i];
@@ -24,8 +22,9 @@ export class KeyFrame {
 }
 
 export class Scenario {
-    constructor(mainScene) {
+    constructor(mainScene, nodeManager) {
         this.mainScene = mainScene;
+        this.nodeManager = nodeManager;
         this.scenarioPlay = false;
 
         this.scenarioInfoPanel = document.getElementById("scenario-info");
@@ -91,7 +90,7 @@ export class Scenario {
  
     addKeyFrame() {
         let keyFrame = new KeyFrame();
-        this.keyFrameList.push(keyFrame.initKeyFrameFromScene(this.mainScene));
+        this.keyFrameList.push(keyFrame.initKeyFrameFromScene(this, this.nodeManager));
         this.keyFrameList.sort(KeyFrame.sortKeyFrame);
     }
 }
